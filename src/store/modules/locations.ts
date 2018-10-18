@@ -1,3 +1,5 @@
+import { StoreOptions } from 'vuex';
+
 export interface Location {
   name?: string;
   lat: number;
@@ -9,15 +11,14 @@ export interface LocationState {
   locations: Location[]
 }
 
-export default {
-  state: <LocationState>{
+const locationStore: StoreOptions<LocationState> = {
+  state: {
     mapCenter: {
       lat: 43.071584,
       lng: -89.380120,
     },
     locations: []
-  },
-  mutations: {},
-  actions: {},
-  getters: {}
+  }
 };
+
+export default locationStore;

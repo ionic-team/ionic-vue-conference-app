@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import store from './stores'
+import store from './store'
 
 Vue.config.productionTip = false;
 Vue.config.ignoredElements = [/ion-\w*/]
@@ -10,4 +10,4 @@ new Vue({
   router,
   store,
   render: h => h(App)
-}).$mount('#app')
+}).$mount('#app');

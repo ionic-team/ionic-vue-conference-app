@@ -1,3 +1,5 @@
+import { StoreOptions } from 'vuex';
+
 export interface Speaker {
   id: number,
   name: string,
@@ -9,9 +11,8 @@ export interface Speaker {
   phone: string
 }
 
-export default {
-  state: <Speaker[]>[],
-  mutations: {},
-  actions: {},
-  getters: {}
+const speakerStore: StoreOptions<Speaker[]> = {
+  state: []
 };
+
+export default speakerStore;
