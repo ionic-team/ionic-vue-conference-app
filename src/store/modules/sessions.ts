@@ -52,12 +52,32 @@ const sessionStore: StoreOptions<SessionState> = {
     removeFavorite(state: SessionState, sessionId: number) {
       state.favoriteSessions = state.favoriteSessions.filter(fsId => fsId !== sessionId);
     },
-    updateFavoriteFilter(state: SessionState) {}
+    updateFavoriteFilter(state: SessionState, sessionIds: number[]) {
+      state.favoriteSessions = sessionIds;
+    }
   },
   actions: {
     setSearchText({ commit }, searchText: string) {
       commit('setSearchText', searchText)
-    }
+    },
+    addTrackFilter({ commit }, trackName: string) {
+      commit('addTrackFilter', trackName);
+    },
+    removeTrackFilter({ commit }, trackName: string) {
+      commit('removeTrackFilter', trackName);
+    },
+    updateTrackFilters({ commit }, trackNames: string[]) {
+      commit('updateTrackFilters', trackNames);
+    },
+    addFavorite({ commit }, sessionId: number) {
+      commit('addFavorite', sessionId);
+    },
+    removeFavorite({ commit }, sessionId: number) {
+      commit('removeFavorite', sessionId);
+    },
+    updateFavoriteFilter({ commit }, sessionIds: number[]) {
+      commit('updateFavoriteFilter', sessionIds);
+    },
   },
   getters: {
     visibleSessions(state: SessionState) {
