@@ -30,29 +30,29 @@ const defaultState: SessionState = {
 const sessionStore: StoreOptions<SessionState> = {
   state: defaultState,
   mutations: {
-    setSearchText(state: SessionState, searchText: string) {
+    setSearchText(state, searchText: string) {
       state.searchText = searchText;
     },
-    addTrackFilter(state: SessionState, trackName: string) {
+    addTrackFilter(state, trackName: string) {
       if (!state.trackFilters.includes(trackName)) {
         state.trackFilters.push(trackName)
       }
     },
-    removeTrackFilter(state: SessionState, trackName: string) {
+    removeTrackFilter(state, trackName: string) {
       state.trackFilters = state.trackFilters.filter(tn => tn !== trackName);
     },
-    updateTrackFilters(state: SessionState, trackNames: string[]) {
+    updateTrackFilters(state, trackNames: string[]) {
       state.trackFilters = trackNames;
     },
-    addFavorite(state: SessionState, sessionId: number) {
+    addFavorite(state, sessionId: number) {
       if (!state.favoriteSessions.includes(sessionId)) {
         state.favoriteSessions.push(sessionId);
       }
     },
-    removeFavorite(state: SessionState, sessionId: number) {
+    removeFavorite(state, sessionId: number) {
       state.favoriteSessions = state.favoriteSessions.filter(fsId => fsId !== sessionId);
     },
-    updateFavoriteFilter(state: SessionState, sessionIds: number[]) {
+    updateFavoriteFilter(state, sessionIds: number[]) {
       state.favoriteSessions = sessionIds;
     }
   },
@@ -80,7 +80,7 @@ const sessionStore: StoreOptions<SessionState> = {
     },
   },
   getters: {
-    visibleSessions(state: SessionState) {
+    visibleSessions(state) {
       let filteredSessions = state.sessions;
 
       if (state.searchText) {

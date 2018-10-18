@@ -17,17 +17,17 @@ const defaultState: User = {
 const userStore: StoreOptions<User> = {
   state: defaultState,
   mutations: {
-    sawTutorial(state: User) {
+    sawTutorial(state) {
       state.hasSeenTutorial = true;
     },
-    logIn(state: User, userName: string) {
+    logIn(state, userName: string) {
       state.userName = userName;
       state.isAuthenticated = true;
     },
-    logOut(state: User) {
+    logOut(state) {
       state = defaultState;
     },
-    updateUserPicture(state: User, pictureLocation: string) {
+    updateUserPicture(state, pictureLocation: string) {
       state.pictureLocation = pictureLocation;
     }
   },
