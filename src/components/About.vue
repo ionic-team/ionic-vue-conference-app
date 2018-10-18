@@ -50,3 +50,38 @@
     </ion-content>
   </div>
 </template>
+
+<style>
+  .about-header {
+    background-color: var(--ion-color-dark);
+    padding: 16px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .about-header img {
+    max-width: 200px;
+    padding: 25px 5px 20px 0;
+  }
+
+  .about-info p {
+    color: var(--ion-color-medium);
+    text-align: left;
+  }
+
+  .about-info ion-icon {
+    color: var(--ion-color-primary);
+  }
+
+  .ios .about-info {
+    text-align: center;
+  }
+</style>
+
+<script lang="ts">
+  import { Component, Prop, Vue } from 'vue-property-decorator';
+
+  @Component
+  export default class About extends Vue {
+  }
+</script>

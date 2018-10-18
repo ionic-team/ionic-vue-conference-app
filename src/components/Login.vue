@@ -1,58 +1,81 @@
 <template>
-<div>
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
+  <div>
+    <ion-header>
+      <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
 
-    <ion-title>Login</ion-title>
-  </ion-toolbar>
-</ion-header>
+        <ion-title>Login</ion-title>
+      </ion-toolbar>
+    </ion-header>
 
-<ion-content>
-  <div class="login-logo">
-    <img src="assets/img/appicon.svg" alt="Ionic logo">
+    <ion-content>
+      <div class="login-logo">
+        <img src="assets/img/appicon.svg" alt="Ionic logo">
+      </div>
+
+      <form #loginForm="ngForm" novalidate>
+        <ion-list>
+          <ion-item>
+            <ion-label position="stacked" color="primary">Username</ion-label>
+            <ion-input [(ngModel)]="login.username" name="username" type="text" #username="ngModel" spellcheck="false" autocapitalize="off"
+              required>
+            </ion-input>
+          </ion-item>
+
+          <ion-text color="danger">
+            <p [hidden]="username.valid || submitted == false" padding-left>
+              Username is required
+            </p>
+          </ion-text>
+
+          <ion-item>
+            <ion-label position="stacked" color="primary">Password</ion-label>
+            <ion-input [(ngModel)]="login.password" name="password" type="password" #password="ngModel" required>
+            </ion-input>
+          </ion-item>
+
+          <ion-text color="danger">
+            <p [hidden]="password.valid || submitted == false" padding-left>
+              Password is required
+            </p>
+          </ion-text>
+        </ion-list>
+
+        <ion-row responsive-sm>
+          <ion-col>
+            <ion-button (click)="onLogin(loginForm)" type="submit" expand="block">Login</ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button (click)="onSignup()" color="light" expand="block">Signup</ion-button>
+          </ion-col>
+        </ion-row>
+      </form>
+    </ion-content>
   </div>
-
-  <form #loginForm="ngForm" novalidate>
-    <ion-list>
-      <ion-item>
-        <ion-label position="stacked" color="primary">Username</ion-label>
-        <ion-input [(ngModel)]="login.username" name="username" type="text" #username="ngModel" spellcheck="false" autocapitalize="off"
-          required>
-        </ion-input>
-      </ion-item>
-
-      <ion-text color="danger">
-        <p [hidden]="username.valid || submitted == false" padding-left>
-          Username is required
-        </p>
-      </ion-text>
-
-      <ion-item>
-        <ion-label position="stacked" color="primary">Password</ion-label>
-        <ion-input [(ngModel)]="login.password" name="password" type="password" #password="ngModel" required>
-        </ion-input>
-      </ion-item>
-
-      <ion-text color="danger">
-        <p [hidden]="password.valid || submitted == false" padding-left>
-          Password is required
-        </p>
-      </ion-text>
-    </ion-list>
-
-    <ion-row responsive-sm>
-      <ion-col>
-        <ion-button (click)="onLogin(loginForm)" type="submit" expand="block">Login</ion-button>
-      </ion-col>
-      <ion-col>
-        <ion-button (click)="onSignup()" color="light" expand="block">Signup</ion-button>
-      </ion-col>
-    </ion-row>
-  </form>
-
-</ion-content>
-</div>
 </template>
+
+<style>
+  page-login .login-logo {
+    padding: 20px 0;
+    min-height: 200px;
+    text-align: center;
+  }
+
+  page-login .login-logo img {
+    max-width: 150px;
+  }
+
+  page-login .list {
+    margin-bottom: 0;
+  }
+</style>
+
+<script lang="ts">
+  import { Component, Prop, Vue } from 'vue-property-decorator';
+
+  @Component
+  export default class Login extends Vue {
+  }
+</script>

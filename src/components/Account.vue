@@ -30,6 +30,13 @@
   </div>
 </template>
 
+<style>
+  page-account img {
+    max-width: 140px;
+    border-radius: 50%;
+  }
+</style>
+
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import UserAccount from '@/components/Account.vue'; // @ is an alias to /src
