@@ -1,4 +1,4 @@
-import { StoreOptions } from 'vuex';
+import { Module } from 'vuex';
 
 export interface Speaker {
   id: number,
@@ -11,7 +11,7 @@ export interface Speaker {
   phone: string
 }
 
-const speakerStore: StoreOptions<Speaker[]> = {
+const speakerStore: Module<Speaker[], {}> = {
   state: []
 };
 

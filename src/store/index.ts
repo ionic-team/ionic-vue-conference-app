@@ -1,13 +1,20 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import locations from './modules/locations';
-import sessions from './modules/sessions';
-import speakers from './modules/speakers';
-import user from './modules/user';
+import locations, { LocationState } from './modules/locations';
+import sessions, { SessionState } from './modules/sessions';
+import speakers, { Speaker} from './modules/speakers';
+import user, { User } from './modules/user';
 
-Vue.use(Vuex)
+export interface StoreState {
+  locations: LocationState,
+  sessions: SessionState,
+  speakers: Speaker[],
+  user: User
+}
 
-export default new Vuex.Store({
+Vue.use(Vuex);
+
+export default new Vuex.Store<StoreState>({
   modules: {
     locations,
     sessions,
@@ -15,4 +22,4 @@ export default new Vuex.Store({
     user
   },
   strict: process.env.NODE_ENV !== 'production'
-})
+});

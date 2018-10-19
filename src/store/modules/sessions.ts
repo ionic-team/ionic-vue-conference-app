@@ -1,4 +1,4 @@
-import { StoreOptions } from 'vuex';
+import { Module } from 'vuex';
 
 export interface Session {
   id: number,
@@ -27,7 +27,7 @@ const defaultState: SessionState = {
   filterFavorites: false
 }
 
-const sessionStore: StoreOptions<SessionState> = {
+const sessionStore: Module<SessionState, {}> = {
   state: defaultState,
   mutations: {
     setSearchText(state, searchText: string) {

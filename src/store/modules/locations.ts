@@ -1,4 +1,4 @@
-import { StoreOptions } from 'vuex';
+import { Module } from 'vuex';
 
 export interface Location {
   name?: string;
@@ -11,7 +11,7 @@ export interface LocationState {
   locations: Location[]
 }
 
-const locationStore: StoreOptions<LocationState> = {
+const locationStore: Module<LocationState, {}> = {
   state: {
     mapCenter: {
       lat: 43.071584,

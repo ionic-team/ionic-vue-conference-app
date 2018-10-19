@@ -1,10 +1,4 @@
-import locations from './data/locations.json';
-
-export async function getLocations() {
-  return Promise.resolve(locations);
-}
-
-export const loadLocalStore = () => {
+export const loadState = () => {
   try {
     const serializedState = localStorage.getItem('state');
     if (serializedState === null) {
@@ -16,7 +10,7 @@ export const loadLocalStore = () => {
   }
 }
 
-export const saveToLocalStore = (state: any) => {
+export const saveState = (state: any) => {
   try {
     const serializedState = JSON.stringify(state);
     localStorage.setItem('state', serializedState);

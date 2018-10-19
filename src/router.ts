@@ -1,11 +1,12 @@
 import Vue from 'vue';
 import Router, { NavigationGuard } from 'vue-router';
-import Tutorial from './views/Tutorial.vue';
+import store from './store';
+import Tutorial from './components/Tutorial.vue';
 
 Vue.use(Router);
 
 const privateRoute: NavigationGuard = function (to, from, next) {
-  if (!User.isAuthenticated) {
+  if (!store.state.user.isAuthenticated) {
     next({ name: 'login' });
   } else {
     next();
@@ -13,7 +14,7 @@ const privateRoute: NavigationGuard = function (to, from, next) {
 }
 
 const requiresTutorialRoute: NavigationGuard = function (to, from, next) {
-  if (!hasSeenTutorial) {
+  if (!store.state.user.hasSeenTutorial) {
     next({ name: 'tutorial' });
   } else {
     next();
@@ -27,7 +28,7 @@ export default new Router({
     {
       path: '/',
       name: 'app',
-      component: () => import(/* webpackChunkName: "about" */ './views/App.vue'),
+      component: () => import(/* webpackChunkName: "about" */ './components/App.vue'),
       beforeEnter: requiresTutorialRoute
     },
     {
@@ -38,25 +39,25 @@ export default new Router({
     {
       path: '/account',
       name: 'account',
-      component: () => import(/* webpackChunkName: "about" */ './views/Account.vue'),
+      component: () => import(/* webpackChunkName: "about" */ './components/Account.vue'),
       beforeEnter: privateRoute
     },
     {
       path: '/support',
       name: 'support',
-      component: () => import(/* webpackChunkName: "about" */ './views/Support.vue'),
+      component: () => import(/* webpackChunkName: "about" */ './components/Support.vue'),
       beforeEnter: requiresTutorialRoute
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import(/* webpackChunkName: "about" */ './views/Login.vue'),
+      component: () => import(/* webpackChunkName: "about" */ './components/Login.vue'),
       beforeEnter: requiresTutorialRoute
     },
     {
       path: '/signup',
       name: 'signup',
-      component: () => import(/* webpackChunkName: "about" */ './views/Signup.vue'),
+      component: () => import(/* webpackChunkName: "about" */ './components/Signup.vue'),
       beforeEnter: requiresTutorialRoute
     }
   ]

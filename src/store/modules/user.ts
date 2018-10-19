@@ -1,4 +1,4 @@
-import { StoreOptions } from 'vuex';
+import { Module } from 'vuex';
 
 export interface User {
   pictureLocation: string | null;
@@ -14,7 +14,7 @@ const defaultState: User = {
   hasSeenTutorial: false
 };
 
-const userStore: StoreOptions<User> = {
+const userStore: Module<User, {}> = {
   state: defaultState,
   mutations: {
     sawTutorial(state) {
