@@ -1,10 +1,10 @@
 <template>
   <div class="ion-page">
-    <ion-header key={1}>
+    <ion-header>
       <ion-navbar>
         <ion-buttons slot="start">
           <ion-button menuToggle>
-              <ion-icon slot="icon-only" name="menu"></ion-icon>
+            <ion-icon slot="icon-only" name="menu"></ion-icon>
           </ion-button>
         </ion-buttons>
         <ion-title>Account</ion-title>
@@ -13,12 +13,12 @@
     <ion-content key={2} class="outer-content page-account">
       <div>
         <img src="http://www.gravatar.com/avatar?d=mm&s=140" alt="avatar"/>
-        <h2>{user.userName}</h2>
+        <h2>{{username}}</h2>
         <ion-list inset>
-          <ion-item href="#" v-on:click="updatePicture">Update Picture</ion-item>
-          <ion-item href="#" v-on:click="changeUsername">Change Username</ion-item>
-          <ion-item href="#" v-on:click="changePassword">Change Password</ion-item>
-          <ion-item href="#" v-on:click="support">Support</ion-item>
+          <ion-item href="#" v-on:click="updatePicture()">Update Picture</ion-item>
+          <ion-item href="#" v-on:click="changeUsername()">Change Username</ion-item>
+          <ion-item href="#" v-on:click="changePassword()">Change Password</ion-item>
+          <ion-item href="#" v-on:click="support()">Support</ion-item>
           <ion-item href="#" v-on:click="logOutUser(logOutUser)">Logout</ion-item>
         </ion-list>
       </div>
@@ -40,6 +40,13 @@ import { Component, Vue } from 'vue-property-decorator';
 })
 export default class Home extends Vue {
   updatePicture() {}
+  changeUsername() {}
+  support() {}
   logOutUser() {}
+
+  get username() {
+
+    return this.$store.state.user.username;
+  }
 }
 </script>

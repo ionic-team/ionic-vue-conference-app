@@ -12,32 +12,32 @@
 
     <ion-content>
       <div class="login-logo">
-        <img src="assets/img/appicon.svg" alt="Ionic logo">
+        <img src="../assets/img/appicon.svg" alt="Ionic logo">
       </div>
 
-      <form #loginForm="ngForm" novalidate>
+      <form novalidate>
         <ion-list>
           <ion-item>
             <ion-label position="stacked" color="primary">Username</ion-label>
-            <ion-input [(ngModel)]="login.username" name="username" type="text" #username="ngModel" spellcheck="false" autocapitalize="off"
+            <ion-input v-model="username" name="username" type="text" spellcheck="false" autocapitalize="off"
               required>
             </ion-input>
           </ion-item>
 
           <ion-text color="danger">
-            <p [hidden]="username.valid || submitted == false" padding-left>
+            <p v-show="!usernameValid || submitted == true" padding-left>
               Username is required
             </p>
           </ion-text>
 
           <ion-item>
             <ion-label position="stacked" color="primary">Password</ion-label>
-            <ion-input [(ngModel)]="login.password" name="password" type="password" #password="ngModel" required>
+            <ion-input v-model="password" name="password" type="password" required>
             </ion-input>
           </ion-item>
 
           <ion-text color="danger">
-            <p [hidden]="password.valid || submitted == false" padding-left>
+            <p v-show="!passwordValid || submitted == true" padding-left>
               Password is required
             </p>
           </ion-text>
@@ -45,10 +45,10 @@
 
         <ion-row responsive-sm>
           <ion-col>
-            <ion-button (click)="onLogin(loginForm)" type="submit" expand="block">Login</ion-button>
+            <ion-button v-on:click="onLogin(loginForm)" type="submit" expand="block">Login</ion-button>
           </ion-col>
           <ion-col>
-            <ion-button (click)="onSignup()" color="light" expand="block">Signup</ion-button>
+            <ion-button v-on:click="onSignup()" color="light" expand="block">Signup</ion-button>
           </ion-col>
         </ion-row>
       </form>
@@ -77,5 +77,15 @@
 
   @Component
   export default class Login extends Vue {
+    username = '';
+    password = '';
+    submitted = false;
+
+    get usernameValid() {
+      return true;
+    }
+    get passwordValid() {
+      return true;
+    }
   }
 </script>

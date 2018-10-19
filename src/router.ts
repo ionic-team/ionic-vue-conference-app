@@ -6,31 +6,26 @@ import Tutorial from '@/views/Tutorial.vue';
 Vue.use(Router);
 
 const privateRoute: NavigationGuard = function (to, from, next) {
-  if (!store.state.user.isAuthenticated) {
-    next({ name: 'login' });
-  } else {
+
+  // if (!store.state.user.isAuthenticated) {
+  //   next({ name: 'login' });
+  // } else {
     next();
-  }
+  // }
 }
 
 const requiresTutorialRoute: NavigationGuard = function (to, from, next) {
-  if (!store.state.user.hasSeenTutorial) {
-    next({ name: 'tutorial' });
-  } else {
+  // if (!store.state.user.hasSeenTutorial) {
+  //   next({ name: 'tutorial' });
+  // } else {
     next();
-  }
+  // }
 }
 
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
-    {
-      path: '/',
-      name: 'speaker-list',
-      component: () => import(/* webpackChunkName: "about" */ '@/views/SpeakerList.vue'),
-      beforeEnter: requiresTutorialRoute
-    },
     {
       path: '/tutorial',
       name: 'tutorial',
@@ -39,26 +34,32 @@ export default new Router({
     {
       path: '/account',
       name: 'account',
-      component: () => import(/* webpackChunkName: "about" */ '@/views/Account.vue'),
+      component: () => import(/* webpackChunkName: "account" */ '@/views/Account.vue'),
       beforeEnter: privateRoute
     },
     {
       path: '/support',
       name: 'support',
-      component: () => import(/* webpackChunkName: "about" */ '@/views/Support.vue'),
+      component: () => import(/* webpackChunkName: "support" */ '@/views/Support.vue'),
       beforeEnter: requiresTutorialRoute
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import(/* webpackChunkName: "about" */ '@/views/Login.vue'),
+      component: () => import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
       beforeEnter: requiresTutorialRoute
     },
     {
       path: '/signup',
       name: 'signup',
-      component: () => import(/* webpackChunkName: "about" */ '@/views/Signup.vue'),
+      component: () => import(/* webpackChunkName: "signup" */ '@/views/Signup.vue'),
       beforeEnter: requiresTutorialRoute
-    }
+    },
+    {
+      path: '/:tabs*',
+      name: 'home',
+      component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
+      beforeEnter: requiresTutorialRoute
+    },
   ]
 });

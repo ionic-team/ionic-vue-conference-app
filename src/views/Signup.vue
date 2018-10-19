@@ -11,35 +11,53 @@
 
     <ion-content>
       <div class="signup-logo">
-        <img src="assets/img/appicon.svg" alt="Ionic Logo">
+        <img src="../assets/img/appicon.svg" alt="Ionic Logo">
       </div>
-      <form #signupForm="ngForm" novalidate>
+      <form>
         <ion-list lines="none">
           <ion-item>
             <ion-label position="stacked" color="primary">Username</ion-label>
-            <ion-input [(ngModel)]="signup.username" name="username" type="text" #username="ngModel" required>
+            <ion-input v-model="username" name="username" type="text" required>
             </ion-input>
           </ion-item>
           <ion-text color="danger">
-            <p [hidden]="username.valid || submitted == false" padding-left>
+            <p v-show="!usernameValid || submitted == true" padding-left>
               Username is required
             </p>
           </ion-text>
           <ion-item>
             <ion-label position="stacked" color="primary">Password</ion-label>
-            <ion-input [(ngModel)]="signup.password" name="password" type="password" #password="ngModel" required>
+            <ion-input v-model="password" name="password" type="password" required>
             </ion-input>
           </ion-item>
           <ion-text color="danger">
-            <p [hidden]="password.valid || submitted == false" padding-left>
+            <p v-show="!passwordValid || submitted == true" padding-left>
               Password is required
             </p>
           </ion-text>
         </ion-list>
         <div padding>
-          <ion-button (click)="onSignup(signupForm)" type="submit" expand="block">Create</ion-button>
+          <ion-button v-on:click="onSignup(signupForm)" type="submit" expand="block">Create</ion-button>
         </div>
       </form>
     </ion-content>
   </div>
 </template>
+
+<script lang="ts">
+  import { Component, Prop, Vue } from 'vue-property-decorator';
+
+  @Component
+  export default class Signup extends Vue {
+    username = '';
+    password = '';
+    submitted = false;
+
+    get usernameValid() {
+      return true;
+    }
+    get passwordValid() {
+      return true;
+    }
+  }
+</script>

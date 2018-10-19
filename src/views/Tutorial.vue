@@ -101,7 +101,7 @@ export default class Tutorial extends Vue {
 
   endTutorial() {
     this.$store.dispatch('sawTutorial');
-    this.$router.push({ name: 'speaker-list' })
+    this.$router.push('/speakers');
   }
 }
 </script>
