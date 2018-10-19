@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router, { NavigationGuard } from 'vue-router';
 import store from './store';
-import Tutorial from './components/Tutorial.vue';
+import Tutorial from '@/views/Tutorial.vue';
 
 Vue.use(Router);
 
@@ -27,8 +27,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'app',
-      component: () => import(/* webpackChunkName: "about" */ './components/App.vue'),
+      name: 'speaker-list',
+      component: () => import(/* webpackChunkName: "about" */ '@/views/SpeakerList.vue'),
       beforeEnter: requiresTutorialRoute
     },
     {
@@ -39,25 +39,25 @@ export default new Router({
     {
       path: '/account',
       name: 'account',
-      component: () => import(/* webpackChunkName: "about" */ './components/Account.vue'),
+      component: () => import(/* webpackChunkName: "about" */ '@/views/Account.vue'),
       beforeEnter: privateRoute
     },
     {
       path: '/support',
       name: 'support',
-      component: () => import(/* webpackChunkName: "about" */ './components/Support.vue'),
+      component: () => import(/* webpackChunkName: "about" */ '@/views/Support.vue'),
       beforeEnter: requiresTutorialRoute
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import(/* webpackChunkName: "about" */ './components/Login.vue'),
+      component: () => import(/* webpackChunkName: "about" */ '@/views/Login.vue'),
       beforeEnter: requiresTutorialRoute
     },
     {
       path: '/signup',
       name: 'signup',
-      component: () => import(/* webpackChunkName: "about" */ './components/Signup.vue'),
+      component: () => import(/* webpackChunkName: "about" */ '@/views/Signup.vue'),
       beforeEnter: requiresTutorialRoute
     }
   ]

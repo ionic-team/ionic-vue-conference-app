@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import locations, { LocationState } from './modules/locations';
 import sessions, { SessionState } from './modules/sessions';
-import speakers, { Speaker} from './modules/speakers';
+import speakers, { Speaker } from './modules/speakers';
 import user, { User } from './modules/user';
 
 export interface StoreState {
