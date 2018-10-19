@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="ion-page">
     <ion-header>
       <ion-toolbar color="primary">
         <ion-buttons slot="start">
@@ -51,7 +51,7 @@
   </div>
 </template>
 
-<style>
+<style scoped>
   .about-header {
     background-color: var(--ion-color-dark);
     padding: 16px;

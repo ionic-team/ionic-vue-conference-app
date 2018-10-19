@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="ion-page">
     <ion-header key={1}>
       <ion-navbar>
         <ion-buttons slot="start">
@@ -26,8 +26,8 @@
   </div>
 </template>
 
-<style>
-  page-account img {
+<style scoped>
+  img {
     max-width: 140px;
     border-radius: 50%;
   }

@@ -1,5 +1,5 @@
 <template>
-  <div class=" ion-page page-tutorial">
+  <div class="ion-page">
     <ion-header no-border>
       <ion-toolbar>
         <ion-buttons slot="end">
@@ -52,53 +52,39 @@
   </div>
 </template>
 
-<style>
-  .page-tutorial ion-toolbar {
+<style scoped>
+  ion-toolbar {
     --background: transparent;
     --border-color: transparent;
   }
 
-  .page-tutorial .swiper-slide {
+  .swiper-slide {
     display: block;
   }
 
-  .page-tutorial .slide-title {
+  .slide-title {
     margin-top: 2.8rem;
   }
 
-  .page-tutorial .slide-image {
+  .slide-image {
     max-height: 50%;
     max-width: 60%;
     margin: 36px 0;
   }
 
-  .page-tutorial b {
+  b {
     font-weight: 500;
   }
 
-  .page-tutorial p {
+  p {
     padding: 0 40px;
     font-size: 14px;
     line-height: 1.5;
     color: #60646B;
   }
 
-  .page-tutorial p b {
+  p b {
     color: #000000;
-  }
-
-  .ion-page {
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    display: flex;
-    position: absolute;
-    flex-direction: column;
-    justify-content: space-between;
-    contain: layout size style;
-    overflow: hidden;
-    z-index: 0;
   }
 </style>
 

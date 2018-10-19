@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="ion-page">
     <ion-header>
       <ion-toolbar color="primary">
         <ion-buttons slot="start">
@@ -56,18 +56,18 @@
   </div>
 </template>
 
-<style>
-  page-login .login-logo {
+<style scoped>
+  .login-logo {
     padding: 20px 0;
     min-height: 200px;
     text-align: center;
   }
 
-  page-login .login-logo img {
+  .login-logo img {
     max-width: 150px;
   }
 
-  page-login .list {
+  .list {
     margin-bottom: 0;
   }
 </style>
