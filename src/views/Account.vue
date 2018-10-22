@@ -15,11 +15,11 @@
         <img src="http://www.gravatar.com/avatar?d=mm&s=140" alt="avatar"/>
         <h2>{{username}}</h2>
         <ion-list inset>
-          <ion-item href="#" v-on:click="updatePicture()">Update Picture</ion-item>
-          <ion-item href="#" v-on:click="changeUsername()">Change Username</ion-item>
-          <ion-item href="#" v-on:click="changePassword()">Change Password</ion-item>
-          <ion-item href="#" v-on:click="support()">Support</ion-item>
-          <ion-item href="#" v-on:click="logOutUser(logOutUser)">Logout</ion-item>
+          <ion-item href="#" @click="updatePicture()">Update Picture</ion-item>
+          <ion-item href="#" @click="changeUsername()">Change Username</ion-item>
+          <ion-item href="#" @click="changePassword()">Change Password</ion-item>
+          <ion-item href="#" @click="support()">Support</ion-item>
+          <ion-item href="#" @click="logOutUser(logOutUser)">Logout</ion-item>
         </ion-list>
       </div>
     </ion-content>

@@ -19,6 +19,11 @@ export interface SessionState {
   filterFavorites: boolean
 }
 
+export interface SessionGroup {
+  startTime: string,
+  sessions: Session[]
+}
+
 const defaultState: SessionState = {
   searchText: '',
   trackFilters: [],
@@ -80,27 +85,54 @@ const sessionStore: Module<SessionState, {}> = {
     },
   },
   getters: {
-    visibleSessions(state) {
-      let filteredSessions = state.sessions;
+    groupedByStartTime(state) {
+      let searchSessions = searchText(state.searchText);
+      let searchTracks = filterByTrack(state.trackFilters);
 
-      if (state.searchText) {
-        const lowerSearchText = state.searchText.toLowerCase();
-        filteredSessions = filteredSessions.filter(session => (
-          session.name.toLowerCase().indexOf(lowerSearchText) !== -1)
-        );
-      }
+      return state.sessions
+        .filter(searchSessions)
+        .filter(searchTracks)
+        .sort((a, b) => (
+          new Date(b.dateTimeStart).valueOf() - new Date(a.dateTimeStart).valueOf()
+        ))
+        .reduce((groups, session) => {
+          let starterHour = new Date(session.dateTimeStart);
+          starterHour.setMinutes(0);
+          starterHour.setSeconds(0);
+          const starterHourStr = starterHour.toJSON();
 
-      if (state.trackFilters.length > 0) {
-        filteredSessions = filteredSessions.filter(session => (
-          session.tracks.some(sessionTrackName => (
-            state.trackFilters.some(trackName => trackName === sessionTrackName)
-          ))
-        ));
-      }
-
-      return filteredSessions;
+          const foundGroup = groups.find(group => group.startTime === starterHourStr);
+          if (foundGroup) {
+            foundGroup.sessions.push(session);
+          } else {
+            groups.push({
+              startTime: starterHourStr,
+              sessions: [session]
+            });
+          }
+          return groups;
+      }, [] as SessionGroup[]);
     }
   }
 };
+
+function searchText(searchText: string) {
+  if (!searchText) {
+    return () => true;
+  }
+  const lowerSearchText = searchText.toLowerCase();
+  return (session: Session) => session.name.toLowerCase().indexOf(lowerSearchText) !== -1;
+}
+
+function filterByTrack(trackFilters: string[]) {
+  if (trackFilters.length === 0) {
+    return () => true;
+  }
+  return (session: Session) => (
+    session.tracks.some(sessionTrackName => (
+      trackFilters.some(trackName => trackName === sessionTrackName)
+    ))
+  );
+}
 
 export default sessionStore;

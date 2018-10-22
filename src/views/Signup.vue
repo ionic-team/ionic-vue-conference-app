@@ -37,7 +37,7 @@
           </ion-text>
         </ion-list>
         <div padding>
-          <ion-button v-on:click="onSignup(signupForm)" type="submit" expand="block">Create</ion-button>
+          <ion-button @click="onSignup(signupForm)" type="submit" expand="block">Create</ion-button>
         </div>
       </form>
     </ion-content>

@@ -11,8 +11,24 @@ export interface Speaker {
   phone: string
 }
 
-const speakerStore: Module<Speaker[], {}> = {
-  state: []
+export interface SpeakerState {
+  speakers: Speaker[]
+}
+
+
+const speakerStore: Module<SpeakerState, {}> = {
+  state: {
+    speakers: []
+  },
+  getters: {
+    allSpeakers(state) {
+      return state.speakers.concat().sort((a, b) => {
+        if(a.name < b.name) { return -1; }
+        if(a.name > b.name) { return 1; }
+        return 0;
+      })
+    }
+  }
 };
 
 export default speakerStore;

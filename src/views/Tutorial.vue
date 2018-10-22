@@ -3,13 +3,13 @@
     <ion-header no-border>
       <ion-toolbar>
         <ion-buttons slot="end">
-          <ion-button color='primary' v-on:click="endTutorial()" v-show="!showSkip">Skip</ion-button>
+          <ion-button color='primary' @click="endTutorial()" v-show="!showSkip">Skip</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
 
     <ion-content>
-      <ion-slides v-on:ionSlideDidChange="onSlideChangeStart($event)" pager="false">
+      <ion-slides @ionSlideDidChange="onSlideChangeStart($event)" pager="false">
         <ion-slide>
           <img src="../assets/img/ica-slidebox-img-1.png" class="slide-image" />
           <h2 class="slide-title">
@@ -42,7 +42,7 @@
         <ion-slide>
           <img src="../assets/img/ica-slidebox-img-4.png" class="slide-image" />
           <h2 class="slide-title">Ready to Play?</h2>
-          <ion-button fill="clear" v-on:click="endTutorial()">
+          <ion-button fill="clear" @click="endTutorial()">
             Continue
             <ion-icon slot="end" name="arrow-forward"></ion-icon>
           </ion-button>

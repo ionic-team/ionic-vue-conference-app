@@ -7,19 +7,19 @@ Vue.use(Router);
 
 const privateRoute: NavigationGuard = function (to, from, next) {
 
-  // if (!store.state.user.isAuthenticated) {
-  //   next({ name: 'login' });
-  // } else {
+  if (!store.state.user.isAuthenticated) {
+    next({ name: 'login' });
+  } else {
     next();
-  // }
+  }
 }
 
 const requiresTutorialRoute: NavigationGuard = function (to, from, next) {
-  // if (!store.state.user.hasSeenTutorial) {
-  //   next({ name: 'tutorial' });
-  // } else {
+  if (!store.state.user.hasSeenTutorial) {
+    next({ name: 'tutorial' });
+  } else {
     next();
-  // }
+  }
 }
 
 export default new Router({

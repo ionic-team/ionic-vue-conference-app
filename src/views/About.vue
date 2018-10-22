@@ -7,7 +7,7 @@
         </ion-buttons>
         <ion-title>About</ion-title>
         <ion-buttons slot="end">
-          <ion-button (click)="presentPopover($event)">
+          <ion-button @click="presentPopover($event)">
             <ion-icon slot="icon-only" name="more"></ion-icon>
           </ion-button>
         </ion-buttons>
@@ -16,7 +16,7 @@
 
     <ion-content>
       <div class="about-header">
-        <img src="assets/img/ionic-logo-white.svg" alt="ionic logo">
+        <img src="../assets/img/ionic-logo-white.svg" alt="ionic logo">
       </div>
       <div padding class="about-info">
         <h4>Ionic Conference</h4>
@@ -25,7 +25,7 @@
           <ion-item>
             <ion-icon name="calendar" slot="start"></ion-icon>
             <ion-label>Date</ion-label>
-            <ion-datetime displayFormat="MMM DD, YYYY" max="2056" [(ngModel)]="conferenceDate"></ion-datetime>
+            <ion-datetime displayFormat="MMM DD, YYYY" max="2056" v-model="conferenceDate"></ion-datetime>
           </ion-item>
 
           <ion-item>
@@ -83,5 +83,6 @@
 
   @Component
   export default class About extends Vue {
+    conferenceDate = '';
   }
 </script>

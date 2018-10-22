@@ -13,7 +13,7 @@
       <div class="support-logo">
         <img src="../assets/img/appicon.svg" alt="Ionic Logo">
       </div>
-      <form novalidate v-on:submit="submit(submitForm)">
+      <form novalidate @submit="submit(submitForm)">
         <ion-list lines="none">
           <ion-item>
             <ion-label position="stacked" color="primary">Enter your support message below</ion-label>

@@ -45,10 +45,10 @@
 
         <ion-row responsive-sm>
           <ion-col>
-            <ion-button v-on:click="onLogin(loginForm)" type="submit" expand="block">Login</ion-button>
+            <ion-button @click="onLogin(loginForm)" type="submit" expand="block">Login</ion-button>
           </ion-col>
           <ion-col>
-            <ion-button v-on:click="onSignup()" color="light" expand="block">Signup</ion-button>
+            <ion-button @click="onSignup()" color="light" expand="block">Signup</ion-button>
           </ion-col>
         </ion-row>
       </form>
