@@ -28,7 +28,7 @@
       </ion-toolbar>
     </ion-header>
     <ion-content>
-      <ion-list v-show="groupedByStartTime > 0">
+      <ion-list v-show="groupedByStartTime.length > 0">
         <ion-item-group v-for="group in groupedByStartTime" :key="group.id">
           <ion-item-divider sticky>
             <ion-label>
@@ -36,7 +36,7 @@
             </ion-label>
           </ion-item-divider>
 
-          <ion-item-sliding v-for="session in group.sessions" :track="session.tracks[0] | lowercase" v-show="!session.hide" :key="session">
+          <ion-item-sliding v-for="session in group.sessions" :track="session.tracks[0] | lowercase" :key="session">
             <ion-item button @click="goToSessionDetail(session)">
               <ion-label>
                 <h3>{{session.name}}</h3>
@@ -57,7 +57,7 @@
         </ion-item-group>
       </ion-list>
 
-      <ion-list-header v-show="groupedByStartTime === 0">
+      <ion-list-header v-show="groupedByStartTime.length === 0">
         No Sessions Found
       </ion-list-header>
 
