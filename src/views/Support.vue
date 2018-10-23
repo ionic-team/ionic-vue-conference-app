@@ -11,7 +11,7 @@
 
     <ion-content>
       <div class="support-logo">
-        <img src="../assets/img/appicon.svg" alt="Ionic Logo">
+        <img src="/assets/img/appicon.svg" alt="Ionic Logo">
       </div>
       <form novalidate @submit="submit(submitForm)">
         <ion-list lines="none">

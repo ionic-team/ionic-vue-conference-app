@@ -10,7 +10,7 @@
     </ion-header>
 
     <ion-content>
-      <div class="map-canvas"></div>
+      <div ref="map" class="map-canvas"></div>
     </ion-content>
   </div>
 </template>
@@ -32,39 +32,41 @@
 
 <script lang="ts">
   import { Component, Prop, Vue } from 'vue-property-decorator';
+  import { mapGetters } from 'vuex';
 
-  @Component
+  @Component({
+    computed: mapGetters(['mapCenter', 'allLocations'])
+  })
   export default class Login extends Vue {
+    mounted() {
+      this.$store.dispatch('loadLocationData');
 
-    ionViewDidEnter() {
+      const mapEle = this.$refs.map;
+
       /*
-      this.confData.getMap().subscribe((mapData: any) => {
-        const mapEle = this.mapElement.nativeElement;
+      const map = new google.maps.Map(mapEle, {
+        center: this.$store.getters.mapCenter,
+        zoom: 16
+      });
 
-        const map = new google.maps.Map(mapEle, {
-          center: mapData.find((d: any) => d.center),
-          zoom: 16
+      mapData.forEach((markerData: any) => {
+        const infoWindow = new google.maps.InfoWindow({
+          content: `<h5>${markerData.name}</h5>`
         });
 
-        mapData.forEach((markerData: any) => {
-          const infoWindow = new google.maps.InfoWindow({
-            content: `<h5>${markerData.name}</h5>`
-          });
-
-          const marker = new google.maps.Marker({
-            position: markerData,
-            map,
-            title: markerData.name
-          });
-
-          marker.addListener('click', () => {
-            infoWindow.open(map, marker);
-          });
+        const marker = new google.maps.Marker({
+          position: markerData,
+          map,
+          title: markerData.name
         });
 
-        google.maps.event.addListenerOnce(map, 'idle', () => {
-          mapEle.classList.add('show-map');
+        marker.addListener('click', () => {
+          infoWindow.open(map, marker);
         });
+      });
+
+      google.maps.event.addListenerOnce(map, 'idle', () => {
+        mapEle.classList.add('show-map');
       });
       */
     }

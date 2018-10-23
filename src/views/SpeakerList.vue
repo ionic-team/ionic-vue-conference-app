@@ -89,7 +89,9 @@
     computed: mapGetters(['allSpeakers'])
   })
   export default class SpeakerList extends Vue {
-    computed() {
+    mounted() {
+      this.$store.dispatch('loadSessionData');
+      this.$store.dispatch('loadSpeakerData');
     }
     goToSpeakerDetail(speaker: Speaker) {
 

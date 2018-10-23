@@ -5,14 +5,13 @@
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
-
         <ion-title>Login</ion-title>
       </ion-toolbar>
     </ion-header>
 
     <ion-content>
       <div class="login-logo">
-        <img src="../assets/img/appicon.svg" alt="Ionic logo">
+        <img src="/assets/img/appicon.svg" alt="Ionic logo">
       </div>
 
       <form novalidate>

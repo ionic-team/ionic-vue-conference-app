@@ -11,7 +11,7 @@
 
     <ion-content>
       <div class="signup-logo">
-        <img src="../assets/img/appicon.svg" alt="Ionic Logo">
+        <img src="/assets/img/appicon.svg" alt="Ionic Logo">
       </div>
       <form>
         <ion-list lines="none">

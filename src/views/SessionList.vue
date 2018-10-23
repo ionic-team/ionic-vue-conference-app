@@ -36,12 +36,12 @@
             </ion-label>
           </ion-item-divider>
 
-          <ion-item-sliding v-for="session in group.sessions" :track="session.tracks[0] | lowercase" :key="session">
+          <ion-item-sliding v-for="session in group.sessions" :key="session.id">
             <ion-item button @click="goToSessionDetail(session)">
               <ion-label>
                 <h3>{{session.name}}</h3>
                 <p>
-                  {{session.timeStart}} &mdash; {{session.timeEnd}}: {{session.location}}
+                  {{session.dateTimeStart}} &mdash; {{session.dateTimeEnd}}: {{session.location}}
                 </p>
               </ion-label>
             </ion-item>
@@ -100,13 +100,19 @@
 <script lang="ts">
   import { Component, Prop, Vue } from 'vue-property-decorator';
   import { mapGetters } from 'vuex';
-  import { Speaker } from '../store/modules/speakers';
+  import { Session } from '../store/modules/sessions';
 
   @Component({
-    computed: mapGetters(['groupedByStartTime'])
+    computed: mapGetters(['groupedByStartTime', 'allSpeakers'])
   })
   export default class SessionList extends Vue {
+    mounted() {
+      this.$store.dispatch('loadSessionData');
+      this.$store.dispatch('loadSpeakerData');
+    }
     segment = 'all';
     queryText = '';
+    goToSessionDetail(session: Session) {
+    }
   }
 </script>

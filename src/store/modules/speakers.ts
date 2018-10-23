@@ -15,10 +15,21 @@ export interface SpeakerState {
   speakers: Speaker[]
 }
 
-
 const speakerStore: Module<SpeakerState, {}> = {
   state: {
     speakers: []
+  },
+  mutations: {
+    updateSpeakers(state, speakers: Speaker[]) {
+      state.speakers = speakers;
+    },
+  },
+  actions: {
+    async loadSpeakerData({ commit }) {
+      const response = await fetch('/data/speakers.json');
+      const data = await response.json();
+      commit('updateSpeakers', data);
+    }
   },
   getters: {
     allSpeakers(state) {

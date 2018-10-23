@@ -35,6 +35,9 @@ const defaultState: SessionState = {
 const sessionStore: Module<SessionState, {}> = {
   state: defaultState,
   mutations: {
+    updateSessions(state, sessions: Session[]) {
+      state.sessions = sessions;
+    },
     setSearchText(state, searchText: string) {
       state.searchText = searchText;
     },
@@ -62,6 +65,11 @@ const sessionStore: Module<SessionState, {}> = {
     }
   },
   actions: {
+    async loadSessionData({ commit }) {
+      const response = await fetch('/data/sessions.json');
+      const data = await response.json();
+      commit('updateSessions', data);
+    },
     setSearchText({ commit }, searchText: string) {
       commit('setSearchText', searchText)
     },
