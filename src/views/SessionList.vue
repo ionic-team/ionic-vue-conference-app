@@ -6,24 +6,24 @@
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
 
-        <ion-segment v-model="segment" @ionChange="updateSchedule()">
-          <ion-segment-button value="all">
+        <ion-segment @ionChange="updateSchedule">
+          <ion-segment-button value="all" checked="segment === 'all'">
             All
           </ion-segment-button>
-          <ion-segment-button value="favorites">
+          <ion-segment-button value="favorites" checked="segment === 'favorites'">
             Favorites
           </ion-segment-button>
         </ion-segment>
 
         <ion-buttons slot="end">
-          <ion-button @click="presentFilter()">
+          <ion-button @click="presentFilter">
             <ion-icon slot="icon-only" name="options"></ion-icon>
           </ion-button>
         </ion-buttons>
       </ion-toolbar>
 
       <ion-toolbar color="primary">
-        <ion-searchbar v-model="queryText" @ionChange="updateSchedule()" placeholder="Search">
+        <ion-searchbar v-model="queryText" @ionChange="updateSchedule" placeholder="Search">
         </ion-searchbar>
       </ion-toolbar>
     </ion-header>
@@ -62,18 +62,18 @@
       </ion-list-header>
 
       <ion-fab slot="fixed" vertical="bottom" horizontal="end" ref="fab">
-        <ion-fab-button ref="fabButton" @click="toggleList(fabButton, fabList)"><ion-icon name="share"></ion-icon></ion-fab-button>
+        <ion-fab-button ref="fabButton"><ion-icon name="share"></ion-icon></ion-fab-button>
         <ion-fab-list ref="fabList" side="top">
-          <ion-fab-button color="vimeo" @click="openSocial('Vimeo', fab)">
+          <ion-fab-button color="vimeo" @click="openSocial('Vimeo')">
             <ion-icon name="logo-vimeo"></ion-icon>
           </ion-fab-button>
-          <ion-fab-button color="google" @click="openSocial('Google+', fab)">
+          <ion-fab-button color="google" @click="openSocial('Google+')">
             <ion-icon name="logo-googleplus"></ion-icon>
           </ion-fab-button>
-          <ion-fab-button color="twitter" @click="openSocial('Twitter', fab)">
+          <ion-fab-button color="twitter" @click="openSocial('Twitter')">
             <ion-icon name="logo-twitter"></ion-icon>
           </ion-fab-button>
-          <ion-fab-button color="facebook" @click="openSocial('Facebook', fab)">
+          <ion-fab-button color="facebook" @click="openSocial('Facebook')">
             <ion-icon name="logo-facebook"></ion-icon>
           </ion-fab-button>
         </ion-fab-list>
@@ -113,6 +113,14 @@
     segment = 'all';
     queryText = '';
     goToSessionDetail(session: Session) {
+    }
+    presentFilter() {
+    }
+    updateSchedule(e: CustomEvent) {
+      this.segment = e.detail.value;
+    }
+    openSocial() {
+
     }
   }
 </script>
