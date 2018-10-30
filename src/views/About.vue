@@ -25,7 +25,7 @@
           <ion-item>
             <ion-icon name="calendar" slot="start"></ion-icon>
             <ion-label>Date</ion-label>
-            <ion-datetime displayFormat="MMM DD, YYYY" max="2056" v-model="conferenceDate"></ion-datetime>
+            <ion-datetime displayFormat="MMM DD, YYYY" max="2056" :value="conferenceStart"></ion-datetime>
           </ion-item>
 
           <ion-item>
@@ -52,37 +52,52 @@
 </template>
 
 <style scoped>
-  .about-header {
-    background-color: var(--ion-color-dark);
-    padding: 16px;
-    width: 100%;
-    text-align: center;
-  }
+.about-header {
+  background-color: #434954;
+  padding: 16px;
+  width: 100%;
+  min-height: 150px;
+  text-align: center;
+}
 
-  .about-header img {
-    max-width: 200px;
-    padding: 25px 5px 20px 0;
-  }
+.about-header img {
+  max-width: 200px;
+  min-height: 115px;
+  margin-left: -15px;
+  padding: 25px 0 20px 0;
+}
 
-  .about-info p {
-    color: var(--ion-color-medium);
-    text-align: left;
-  }
+.about-info p {
+  color: #697072;
+  text-align: left;
+}
 
-  .about-info ion-icon {
-    color: var(--ion-color-primary);
-  }
+.about-info ion-icon {
+  width: 20px;
+}
 
-  .ios .about-info {
-    text-align: center;
-  }
+.md .about-info [text-right],
+.wp .about-info [text-right] {
+  margin-right: 0;
+}
+
+.ios .about-info {
+  text-align: center;
+}
+
+.ios .about-info ion-icon {
+  width: auto;
+  margin-right: 10px;
+}
 </style>
 
 <script lang="ts">
   import { Component, Prop, Vue } from 'vue-property-decorator';
+  import { mapGetters } from 'vuex';
 
-  @Component
+  @Component({
+    computed: mapGetters(['conferenceStart'])
+  })
   export default class About extends Vue {
-    conferenceDate = '';
   }
 </script>

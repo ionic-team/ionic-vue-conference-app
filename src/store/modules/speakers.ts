@@ -30,15 +30,6 @@ const speakerStore: Module<SpeakerState, {}> = {
       const data = await response.json();
       commit('updateSpeakers', data);
     }
-  },
-  getters: {
-    allSpeakers(state) {
-      return state.speakers.concat().sort((a, b) => {
-        if(a.name < b.name) { return -1; }
-        if(a.name > b.name) { return 1; }
-        return 0;
-      })
-    }
   }
 };
 

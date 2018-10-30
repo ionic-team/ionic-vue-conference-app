@@ -32,7 +32,7 @@
         <ion-item-group v-for="group in groupedByStartTime" :key="group.id">
           <ion-item-divider sticky>
             <ion-label>
-              {{group.startTime}}
+              {{group.startTime | dateFormat("h:MM a")}}
             </ion-label>
           </ion-item-divider>
 
@@ -41,7 +41,7 @@
               <ion-label>
                 <h3>{{session.name}}</h3>
                 <p>
-                  {{session.dateTimeStart}} &mdash; {{session.dateTimeEnd}}: {{session.location}}
+                  {{session.dateTimeStart | dateFormat("h:MM a")}} &mdash; {{session.dateTimeEnd | dateFormat("h:MM a")}}: {{session.location}}
                 </p>
               </ion-label>
             </ion-item>

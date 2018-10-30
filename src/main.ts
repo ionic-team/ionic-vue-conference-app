@@ -1,14 +1,19 @@
 import Vue from 'vue';
-import { Ionic, IonicAPI } from '@ionic/vue';
+import { Ionic } from '@ionic/vue';
 import App from './App.vue';
 import router from './router';
 import store from './store';
+import { format, parse } from 'date-fns';
+
 
 Vue.config.productionTip = false;
 Vue.config.ignoredElements = [/ion-\w*/];
 
-Ionic.init();
-Vue.use(IonicAPI);
+Vue.use(Ionic);
+
+Vue.filter('dateFormat', function (dateString: string, formatString: string) {
+  return format(parse(dateString), formatString);
+});
 
 new Vue({
   router,

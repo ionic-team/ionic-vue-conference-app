@@ -13,12 +13,12 @@
       <ion-list>
         <ion-grid fixed>
           <ion-row align-items-stretch>
-            <ion-col size="12" size-md="6" v-for="speaker in allSpeakers" :key="speaker.id">
+            <ion-col size="12" size-md="6" v-for="speaker in speakers" :key="speaker.id">
               <ion-card class="speaker-card">
                 <ion-card-header>
-                  <ion-item detail="false" lines="none" button :href="'app/tabs/(speakers:speaker-details/'+ speaker.id">
+                  <ion-item detail="false" lines="none" button :href="'app/tabs/(speakers:speaker-details/' + speaker.id">
                     <ion-avatar slot="start">
-                      <img :src="speaker.profilePic" alt="Speaker profile pic">
+                      <img v-bind:src="speaker.profilePic" alt="Speaker profile pic" />
                     </ion-avatar>
                     {{speaker.name}}
                   </ion-item>
@@ -86,7 +86,11 @@
   import { Speaker } from '../store/modules/speakers';
 
   @Component({
-    computed: mapGetters(['allSpeakers'])
+    computed: {
+      speakers() {
+        return this.$store.state.speakers.speakers.concat().sort();
+      }
+    }
   })
   export default class SpeakerList extends Vue {
     mounted() {
@@ -94,7 +98,7 @@
       this.$store.dispatch('loadSpeakerData');
     }
     goToSpeakerDetail(speaker: Speaker) {
-
+      console.log(speaker);
     }
     gotToSpeakerTwitter(speaker: Speaker) {
 

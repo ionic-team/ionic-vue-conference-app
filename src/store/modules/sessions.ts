@@ -1,4 +1,5 @@
 import { Module } from 'vuex';
+import { parse as parseDate } from 'date-fns';
 
 export interface Session {
   id: number,
@@ -93,6 +94,14 @@ const sessionStore: Module<SessionState, {}> = {
     },
   },
   getters: {
+    conferenceStart(state) {
+      const firstSession = state.sessions
+        .concat()
+        .sort((a, b) => (
+          parseDate(a.dateTimeStart).valueOf() - parseDate(b.dateTimeStart).valueOf()
+        ))[0];
+      return firstSession ? firstSession.dateTimeStart : null;
+    },
     groupedByStartTime(state) {
       let searchSessions = searchText(state.searchText);
       let searchTracks = filterByTrack(state.trackFilters);
@@ -101,10 +110,10 @@ const sessionStore: Module<SessionState, {}> = {
         .filter(searchSessions)
         .filter(searchTracks)
         .sort((a, b) => (
-          new Date(b.dateTimeStart).valueOf() - new Date(a.dateTimeStart).valueOf()
+          parseDate(a.dateTimeStart).valueOf() - parseDate(b.dateTimeStart).valueOf()
         ))
         .reduce((groups, session) => {
-          let starterHour = new Date(session.dateTimeStart);
+          let starterHour = parseDate(session.dateTimeStart);
           starterHour.setMinutes(0);
           starterHour.setSeconds(0);
           const starterHourStr = starterHour.toJSON();

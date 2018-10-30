@@ -26,7 +26,7 @@ const locationStore: Module<LocationState, {}> = {
     async loadLocationData({ commit }) {
       const response = await fetch('/data/locations.json');
       const data = await response.json();
-      commit('updateSpeakers', data);
+      commit('updateLocations', data);
     }
   },
   getters: {

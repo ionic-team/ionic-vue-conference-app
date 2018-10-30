@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@ionic/core": "^4.0.0-beta.13",
+    "date-fns": "^1.29.0",
     "vue": "^2.5.17",
     "vue-class-component": "^6.0.0",
     "vue-property-decorator": "^7.0.0",
@@ -21,7 +22,7 @@
     "@vue/cli-plugin-typescript": "^3.0.4",
     "@vue/cli-service": "^3.0.4",
     "@vue/eslint-config-typescript": "^3.0.4",
-    "typescript": "^3.0.0",
+    "typescript": "^3.0.1",
     "vue-template-compiler": "^2.5.17"
   },
   "eslintConfig": {
