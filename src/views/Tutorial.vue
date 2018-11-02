@@ -1,5 +1,5 @@
 <template>
-  <div class="ion-page">
+  <div main class="ion-page">
     <ion-header no-border>
       <ion-toolbar>
         <ion-buttons slot="end">

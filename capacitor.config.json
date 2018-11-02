@@ -2,9 +2,5 @@
   "appId": "com.ionic.conferenceappvue",
   "appName": "Ionic Conference App Vue",
   "bundledWebRuntime": false,
-  "webDir": "dist",
-  "server": {
-    "port": 8080,
-    "url": "http://10.0.1.38"
-  }
+  "webDir": "dist"
 }
