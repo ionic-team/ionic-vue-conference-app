@@ -8,7 +8,12 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@capacitor/android": "^1.0.0-beta.8",
+    "@capacitor/cli": "^1.0.0-beta.8",
+    "@capacitor/core": "^1.0.0-beta.8",
+    "@capacitor/ios": "^1.0.0-beta.8",
     "@ionic/core": "^4.0.0-beta.13",
+    "cache-loader": "^1.2.2",
     "date-fns": "^1.29.0",
     "vue": "^2.5.17",
     "vue-class-component": "^6.0.0",

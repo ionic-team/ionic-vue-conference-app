@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { Ionic } from '@ionic/vue';
+import Ionic, { Controllers } from '@ionic/vue';
 import App from './App.vue';
 import router from './router';
 import store from './store';
@@ -8,6 +8,12 @@ import { format, parse } from 'date-fns';
 
 Vue.config.productionTip = false;
 Vue.config.ignoredElements = [/ion-\w*/];
+
+declare module 'vue/types/vue' {
+  interface Vue {
+    $ionic: Controllers;
+  }
+}
 
 Vue.use(Ionic);
 

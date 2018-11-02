@@ -17,7 +17,6 @@ export interface SessionState {
   trackFilters: string[];
   sessions: Session[];
   favoriteSessions: number[];
-  filterFavorites: boolean
 }
 
 export interface SessionGroup {
@@ -29,8 +28,7 @@ const defaultState: SessionState = {
   searchText: '',
   trackFilters: [],
   sessions: [],
-  favoriteSessions: [],
-  filterFavorites: false
+  favoriteSessions: []
 }
 
 const sessionStore: Module<SessionState, {}> = {
@@ -102,33 +100,26 @@ const sessionStore: Module<SessionState, {}> = {
         ))[0];
       return firstSession ? firstSession.dateTimeStart : null;
     },
-    groupedByStartTime(state) {
+    allFiltered(state) {
       let searchSessions = searchText(state.searchText);
       let searchTracks = filterByTrack(state.trackFilters);
 
       return state.sessions
         .filter(searchSessions)
-        .filter(searchTracks)
-        .sort((a, b) => (
-          parseDate(a.dateTimeStart).valueOf() - parseDate(b.dateTimeStart).valueOf()
-        ))
-        .reduce((groups, session) => {
-          let starterHour = parseDate(session.dateTimeStart);
-          starterHour.setMinutes(0);
-          starterHour.setSeconds(0);
-          const starterHourStr = starterHour.toJSON();
+        .filter(searchTracks);
+    },
+    favoritesFiltered(state) {
+      let searchSessions = searchText(state.searchText);
+      let searchTracks = filterByTrack(state.trackFilters);
 
-          const foundGroup = groups.find(group => group.startTime === starterHourStr);
-          if (foundGroup) {
-            foundGroup.sessions.push(session);
-          } else {
-            groups.push({
-              startTime: starterHourStr,
-              sessions: [session]
-            });
-          }
-          return groups;
-      }, [] as SessionGroup[]);
+      function isFavorite(session: Session) {
+        return state.favoriteSessions.indexOf(session.id) !== -1;
+      }
+
+      return state.sessions
+        .filter(isFavorite)
+        .filter(searchSessions)
+        .filter(searchTracks);
     }
   }
 };
