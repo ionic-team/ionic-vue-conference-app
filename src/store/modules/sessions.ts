@@ -100,6 +100,12 @@ const sessionStore: Module<SessionState, {}> = {
         ))[0];
       return firstSession ? firstSession.dateTimeStart : null;
     },
+    allTracks(state) {
+      return state.sessions
+        .reduce((all, session) => all.concat(session.tracks), <string[]>[])
+        .filter((trackName, index, array) => array.indexOf(trackName) === index)
+        .sort();
+    },
     allFiltered(state) {
       let searchSessions = searchText(state.searchText);
       let searchTracks = filterByTrack(state.trackFilters);

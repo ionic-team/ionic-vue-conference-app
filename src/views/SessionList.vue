@@ -99,14 +99,15 @@
 
 <script lang="ts">
   import { Component, Prop, Vue } from 'vue-property-decorator';
-  import { mapGetters } from 'vuex';
   import { Session, SessionGroup } from '../store/modules/sessions';
   import { parse as parseDate } from 'date-fns';
-
-
+  import SessionListFilter from './SessionListFilter.vue';
 
   @Component
   export default class SessionList extends Vue {
+    $refs!: {
+      fab: HTMLIonFabElement
+    }
     segment = 'all';
 
     mounted() {
@@ -207,8 +208,24 @@
     }
 
     goToSessionDetail(session: Session) {
+      // go to the session detail page
+      // and pass in the session data
+      this.$router.push(`app/tabs/(schedule:session/${session.id})`);
     }
-    presentFilter() {
+    async presentFilter() {
+      const modal = await this.$ionic.modalController.create({
+        component: SessionListFilter,
+        componentProps: {
+          excludedTracks: this.$store.state.sessions.trackFilters,
+          allTracks: this.$store.getters.allTracks
+        }
+      });
+      await modal.present();
+
+      const { data } = await modal.onWillDismiss();
+      if (data) {
+        this.$store.dispatch('updateTrackFilters', data);
+      }
     }
     updateSegment(e: CustomEvent) {
       this.segment = e.detail.value;
@@ -216,8 +233,14 @@
     updateSearchTerm(e: CustomEvent) {
       this.$store.dispatch('setSearchText', e.detail.value);
     }
-    openSocial() {
-
+    async openSocial(network: string) {
+      const loading = await this.$ionic.loadingController.create({
+        message: `Posting to ${network}`,
+        duration: (Math.random() * 1000) + 500
+      });
+      await loading.present();
+      await loading.onWillDismiss();
+      this.$refs.fab.close();
     }
   }
 </script>
