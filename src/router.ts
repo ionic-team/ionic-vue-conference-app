@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router, { NavigationGuard } from 'vue-router';
 import store from './store';
 import Tutorial from '@/views/Tutorial.vue';
+import Home from '@/views/Home.vue';
 
 Vue.use(Router);
 
@@ -58,7 +59,7 @@ export default new Router({
     {
       path: '/:tabs*',
       name: 'home',
-      component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
+      component: Home,
       beforeEnter: requiresTutorialRoute
     },
   ]

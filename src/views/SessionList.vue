@@ -32,16 +32,16 @@
         <ion-item-group v-for="group in allGrouped" :key="group.id">
           <ion-item-divider sticky>
             <ion-label>
-              {{group.startTime | dateFormat("h:MM a")}}
+              {{group.startTime | dateFormat("h:mm a")}}
             </ion-label>
           </ion-item-divider>
 
-          <ion-item-sliding v-for="session in group.sessions" :key="session.id">
-            <ion-item button @click="goToSessionDetail(session)">
+          <ion-item-sliding v-for="session in group.sessions" :key="session.id" :track="session.tracks[0] | lowercase">
+            <ion-item button @click="goToSessionDetail(session)" >
               <ion-label>
                 <h3>{{session.name}}</h3>
                 <p>
-                  {{session.dateTimeStart | dateFormat("h:MM a")}} &mdash; {{session.dateTimeEnd | dateFormat("h:MM a")}}: {{session.location}}
+                  {{session.dateTimeStart | dateFormat("h:mm a")}} &mdash; {{session.dateTimeEnd | dateFormat("h:mm a")}}: {{session.location}}
                 </p>
               </ion-label>
             </ion-item>
@@ -83,17 +83,58 @@
 </template>
 
 <style scoped>
-  .map-canvas {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    background-color: transparent;
-    opacity: 0;
-    transition: opacity 150ms ease-in
+  ion-content {
+    --cat-ionic: #488aff;
+    --cat-angular: #ac282b;
+    --cat-communication: #8e8d93;
+    --cat-tooling: #fe4c52;
+    --cat-services: #fd8b2d;
+    --cat-design: #fed035;
+    --cat-workshop: #69bb7b;
+    --cat-food: #3bc7c4;
+    --cat-documentation: #b16be3;
+    --cat-navigation: #6600cc;
   }
 
-  .show-map {
-    opacity: 1;
+  ion-item-sliding[track=ionic] ion-label {
+    border-left: 2px solid var(--cat-ionic);
+    padding-left: 10px;
+  }
+  ion-item-sliding[track=angular] ion-label {
+    border-left: 2px solid var(--cat-angular);
+    padding-left: 10px;
+  }
+  ion-item-sliding[track=communication] ion-label {
+    border-left: 2px solid var(--cat-communication);
+    padding-left: 10px;
+  }
+  ion-item-sliding[track=tooling] ion-label {
+    border-left: 2px solid var(--cat-tooling);
+    padding-left: 10px;
+  }
+  ion-item-sliding[track=services] ion-label {
+    border-left: 2px solid var(--cat-services);
+    padding-left: 10px;
+  }
+  ion-item-sliding[track=design] ion-label {
+    border-left: 2px solid var(--cat-design);
+    padding-left: 10px;
+  }
+  ion-item-sliding[track=workshop] ion-label {
+    border-left: 2px solid var(--cat-workshop);
+    padding-left: 10px;
+  }
+  ion-item-sliding[track=food] ion-label {
+    border-left: 2px solid var(--cat-food);
+    padding-left: 10px;
+  }
+  ion-item-sliding[track=documentation] ion-label {
+    border-left: 2px solid var(--cat-documentation);
+    padding-left: 10px;
+  }
+  ion-item-sliding[track=navigation] ion-label {
+    border-left: 2px solid var(--cat-navigation);
+    padding-left: 10px;
   }
 </style>
 

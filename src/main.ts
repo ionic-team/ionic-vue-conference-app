@@ -21,6 +21,10 @@ Vue.filter('dateFormat', function (dateString: string, formatString: string) {
   return format(parse(dateString), formatString);
 });
 
+Vue.filter('lowercase', function (value: string) {
+  return value.toLowerCase();
+});
+
 new Vue({
   router,
   store,
