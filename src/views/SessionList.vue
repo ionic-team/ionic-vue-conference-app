@@ -83,57 +83,44 @@
 </template>
 
 <style scoped>
-  ion-content {
-    --cat-ionic: #488aff;
-    --cat-angular: #ac282b;
-    --cat-communication: #8e8d93;
-    --cat-tooling: #fe4c52;
-    --cat-services: #fd8b2d;
-    --cat-design: #fed035;
-    --cat-workshop: #69bb7b;
-    --cat-food: #3bc7c4;
-    --cat-documentation: #b16be3;
-    --cat-navigation: #6600cc;
-  }
-
   ion-item-sliding[track=ionic] ion-label {
-    border-left: 2px solid var(--cat-ionic);
+    border-left: 2px solid var(--ion-color-primary);
     padding-left: 10px;
   }
   ion-item-sliding[track=angular] ion-label {
-    border-left: 2px solid var(--cat-angular);
+    border-left: 2px solid var(--ion-color-angular);
     padding-left: 10px;
   }
   ion-item-sliding[track=communication] ion-label {
-    border-left: 2px solid var(--cat-communication);
+    border-left: 2px solid var(--ion-color-communication);
     padding-left: 10px;
   }
   ion-item-sliding[track=tooling] ion-label {
-    border-left: 2px solid var(--cat-tooling);
+    border-left: 2px solid var(--ion-color-tooling);
     padding-left: 10px;
   }
   ion-item-sliding[track=services] ion-label {
-    border-left: 2px solid var(--cat-services);
+    border-left: 2px solid var(--ion-color-services);
     padding-left: 10px;
   }
   ion-item-sliding[track=design] ion-label {
-    border-left: 2px solid var(--cat-design);
+    border-left: 2px solid var(--ion-color-design);
     padding-left: 10px;
   }
   ion-item-sliding[track=workshop] ion-label {
-    border-left: 2px solid var(--cat-workshop);
+    border-left: 2px solid var(--ion-color-workshop);
     padding-left: 10px;
   }
   ion-item-sliding[track=food] ion-label {
-    border-left: 2px solid var(--cat-food);
+    border-left: 2px solid var(--ion-color-food);
     padding-left: 10px;
   }
   ion-item-sliding[track=documentation] ion-label {
-    border-left: 2px solid var(--cat-documentation);
+    border-left: 2px solid var(--ion-color-documentation);
     padding-left: 10px;
   }
   ion-item-sliding[track=navigation] ion-label {
-    border-left: 2px solid var(--cat-navigation);
+    border-left: 2px solid var(--ion-color-navigation);
     padding-left: 10px;
   }
 </style>
@@ -151,10 +138,6 @@
     }
     segment = 'all';
 
-    mounted() {
-      this.$store.dispatch('loadSessionData');
-      this.$store.dispatch('loadSpeakerData');
-    }
     groupedByStartTime(sessions: Session[]) {
       return sessions
         .sort((a, b) => (

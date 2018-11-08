@@ -5,27 +5,27 @@
         <ion-buttons slot="start">
           <ion-back-button text="Schedule" defaultHref="/app/tabs/(schedule:schedule)"></ion-back-button>
         </ion-buttons>
-        <ion-title>{{session.name}}</ion-title>
+        <ion-title>{{session ? session.name : ''}}</ion-title>
       </ion-toolbar>
     </ion-header>
 
     <ion-content>
-      <div padding *ngIf="session">
+      <div padding v-if="session">
         <ion-grid no-padding>
           <ion-row>
             <ion-col size="6">
               <span v-for="track in session.tracks" :class="'session-track-'+track.toLowerCase()" :key="track | lowercase">{{track}}</span>
             </ion-col>
-            <ion-col size="6" text-right :class]="isFavorite ? 'show-favorite': ''">
-              <ion-icon name="heart-empty" size="large" class="icon-heart-empty" @click="toggleFavorite(true)"></ion-icon>
-              <ion-icon name="heart" color="danger" size="large" class="icon-heart" @click="toggleFavorite(false)"></ion-icon>
+            <ion-col size="6" text-right :class="favorites.indexOf(sessionId) !== -1 ? 'show-favorite': ''">
+              <ion-icon name="heart-empty" size="large" class="icon-heart-empty" @click="addFavorite()"></ion-icon>
+              <ion-icon name="heart" color="danger" size="large" class="icon-heart" @click="removeFavorite()"></ion-icon>
             </ion-col>
           </ion-row>
         </ion-grid>
         <h1>{{session.name}}</h1>
         <p>{{session.description}}</p>
         <ion-text color="medium">
-          {{session.timeStart}} &ndash; {{session.timeEnd}}
+          {{session.dateTimeStart | dateFormat("h:mm a")}} &mdash; {{session.dateTimeEnd | dateFormat("h:mm a")}}
           <br /> {{session.location}}
         </ion-text>
       </div>
@@ -52,22 +52,102 @@
   </div>
 </template>
 
+<style scoped>
+.session-track-ionic {
+  color: var(--ion-color-primary);
+}
+
+.session-track-angular {
+  color: var(--ion-color-angular);
+}
+
+.session-track-communication {
+  color: var(--ion-color-communication);
+}
+
+.session-track-tooling {
+  color: var(--ion-color-tooling);
+}
+
+.session-track-services {
+  color: var(--ion-color-services);
+}
+
+.session-track-design {
+  color: var(--ion-color-design);
+}
+
+.session-track-workshop {
+  color: var(--ion-color-workshop);
+}
+
+.session-track-food {
+  color: var(--ion-color-food);
+}
+
+.session-track-documentation {
+  color: var(--ion-color-documentation);
+}
+
+.session-track-navigation {
+  color: var(--ion-color-navigation);
+}
+
+.show-favorite {
+  position: relative;
+}
+
+.icon-heart-empty {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  transform: scale(1);
+  transition: transform 0.3s ease;
+}
+
+.icon-heart {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  transform: scale(0);
+  transition: transform 0.3s ease;
+}
+
+.show-favorite .icon-heart {
+  transform: scale(1);
+}
+
+.show-favorite .icon-heart-empty {
+  transform: scale(0);
+}
+</style>
+
+
 <script lang="ts">
   import { Component, Prop, Vue } from 'vue-property-decorator';
   import { Session } from '@/store/modules/sessions';
 
   @Component
   export default class SessionDetail extends Vue {
+    @Prop() sessionId!: number;
+
     get session(): Session {
-      const sessionId = parseInt(this.$route.params.sessionId);
-      return this.$store.state.speakers.speakers.find((s: Session) => s.id === sessionId);
+      return this.$store.state.sessions.sessions.find((s: Session) => s.id === this.sessionId);
     }
 
-    toggleFavorite(addFavorite: boolean) {
-      this.$store.dispatch(addFavorite ? 'addFavorite' : 'removeFavorite', this.session.id);
+    get favorites(): number[] {
+      return this.$store.state.sessions.favoriteSessions;
     }
 
-    async openSocial(message: string) {
+    addFavorite() {
+      this.$store.dispatch('addFavorite', this.sessionId);
+    }
+
+    removeFavorite() {
+      this.$store.dispatch('removeFavorite', this.sessionId);
+    }
+
+    async sessionClick(message: string) {
       const alert = await this.$ionic.alertController.create({
         message: `${message}`,
       });

@@ -5,7 +5,7 @@
         <ion-buttons slot="start">
           <ion-back-button text="Speakers"></ion-back-button>
         </ion-buttons>
-        <ion-title>{{speaker.name}}</ion-title>
+        <ion-title>{{speaker ? speaker.name : ''}}</ion-title>
       </ion-toolbar>
     </ion-header>
 
@@ -24,10 +24,22 @@
         </ion-button>
       </div>
 
-      <p>{{speaker.about}}</p>
+      <p>{{speaker ? speaker.about : ''}}</p>
     </ion-content>
   </div>
 </template>
+
+<style scoped>
+  .speaker-detail img {
+    max-width: 140px;
+    border-radius: 50%;
+  }
+
+  .speaker-detail p {
+    color: #60646B;
+  }
+</style>
+
 
 <script lang="ts">
   import { Component, Prop, Vue } from 'vue-property-decorator';
@@ -35,13 +47,10 @@
 
   @Component
   export default class SpeakerDetail extends Vue {
-    get speaker() {
-      const speakerId = parseInt(this.$route.params.speakerId);
-      return this.$store.state.speakers.speakers.find((s: Speaker) => s.id === speakerId);
-    }
+    @Prop() speakerId!: number;
 
-    goToSessionDetail(session: any) {
-      this.$router.push({ name: 'sessionDetail', params: {sessionId: session.id}});
+    get speaker() {
+      return this.$store.state.speakers.speakers.find((s: Speaker) => s.id === this.speakerId);
     }
   }
 </script>
