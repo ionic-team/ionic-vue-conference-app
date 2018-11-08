@@ -1,17 +1,36 @@
 <template>
   <ion-tabs>
-    <ion-tab label="Schedule" icon="calendar">
+    <ion-tab tab="schedule">
       <SessionList />
     </ion-tab>
-    <ion-tab label="Speakers" icon="contacts">
+    <ion-tab tab="speakers">
       <SpeakerList />
     </ion-tab>
-    <ion-tab label="Map" icon="map">
+    <ion-tab tab="map">
       <Map />
     </ion-tab>
-    <ion-tab label="About" icon="information-circle">
+    <ion-tab tab="about">
       <About />
     </ion-tab>
+
+    <ion-tab-bar slot="bottom">
+      <ion-tab-button tab="schedule">
+        <ion-label>Schedule</ion-label>
+        <ion-icon name="calendar" />
+      </ion-tab-button>
+      <ion-tab-button tab="speakers">
+        <ion-icon name="contacts" />
+        <ion-label>Speakers</ion-label>
+      </ion-tab-button>
+      <ion-tab-button tab="map">
+        <ion-icon name="map" />
+        <ion-label>Map</ion-label>
+      </ion-tab-button>
+      <ion-tab-button tab="about">
+        <ion-icon name="information-circle" />
+        <ion-label>About</ion-label>
+      </ion-tab-button>
+    </ion-tab-bar>
   </ion-tabs>
 </template>
 
