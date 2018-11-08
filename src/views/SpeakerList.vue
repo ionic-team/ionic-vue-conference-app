@@ -26,7 +26,7 @@
 
                 <ion-card-content>
                   <ion-list>
-                    <ion-item v-for="session in speaker.sessions" button :href="'app/tabs/(speakers:session/'+session.id" :key="session.id">
+                    <ion-item v-for="session in sessionsBySpeaker(speaker.id)" button :href="'app/tabs/(speakers:session/'+session.id" :key="session.id">
                       <h3>{{session.name}}</h3>
                     </ion-item>
 
@@ -83,16 +83,20 @@
 <script lang="ts">
   import { Component, Prop, Vue } from 'vue-property-decorator';
   import { mapGetters } from 'vuex';
-  import { Speaker } from '../store/modules/speakers';
+  import { Speaker } from '@/store/modules/speakers';
+  import { Session} from '@/store/modules/sessions';
 
-  @Component({
-    computed: {
-      speakers() {
-        return this.$store.state.speakers.speakers.concat().sort();
-      }
-    }
-  })
+  @Component
   export default class SpeakerList extends Vue {
+    get speakers() {
+      return this.$store.state.speakers.speakers.concat().sort();
+    }
+
+    sessionsBySpeaker(speakerId: number) {
+      return this.$store.state.sessions.sessions
+        .filter((s: Session) => s.speakerIds.indexOf(speakerId) !== -1);
+    }
+
     mounted() {
       this.$store.dispatch('loadSessionData');
       this.$store.dispatch('loadSpeakerData');
