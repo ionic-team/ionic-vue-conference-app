@@ -26,11 +26,11 @@
 
                 <ion-card-content>
                   <ion-list>
-                    <ion-item v-for="session in sessionsBySpeaker(speaker.id)" button :href="'app/tabs/(speakers:session/'+session.id" :key="session.id">
+                    <ion-item v-for="session in sessionsBySpeaker(speaker.id)" button @click="goToSessionDetail(session)" :key="session.id">
                       <h3>{{session.name}}</h3>
                     </ion-item>
 
-                    <ion-item button @click="goToSpeakerDetail(speaker)" :href="'app/tabs/(speakers:speaker-details/'+ speaker.id">
+                    <ion-item button @click="goToSpeakerDetail(speaker)">
                       <h3>About {{speaker.name}}</h3>
                     </ion-item>
                   </ion-list>
@@ -38,19 +38,19 @@
 
                 <ion-row no-padding justify-content-center>
                   <ion-col text-left size="4">
-                    <ion-button fill="clear" size="small" color="primary" @click="goToSpeakerTwitter(speaker)">
+                    <ion-button fill="clear" size="small" color="primary" @click="gotToOffsite('Tweet')">
                       <ion-icon name="logo-twitter" slot="start"></ion-icon>
                       Tweet
                     </ion-button>
                   </ion-col>
                   <ion-col text-center size="4">
-                    <ion-button fill="clear" size="small" color="primary" @click="openSpeakerShare(speaker)">
+                    <ion-button fill="clear" size="small" color="primary" @click="gotToOffsite('Share')">
                       <ion-icon name='share-alt' slot="start"></ion-icon>
                       Share
                     </ion-button>
                   </ion-col>
                   <ion-col text-right size="4">
-                    <ion-button fill="clear" size="small" color="primary" @click="openContact(speaker)">
+                    <ion-button fill="clear" size="small" color="primary" @click="gotToOffsite('Contact')">
                       <ion-icon name='chatboxes' slot="start"></ion-icon>
                       Contact
                     </ion-button>
@@ -101,17 +101,19 @@
       this.$store.dispatch('loadSessionData');
       this.$store.dispatch('loadSpeakerData');
     }
+    goToSessionDetail(session: Session) {
+      this.$router.push({ name: 'session-detail', params: { sessionId: session.id.toString() } });
+    }
     goToSpeakerDetail(speaker: Speaker) {
-      console.log(speaker);
+      this.$router.push({ name: 'speaker-detail', params: { sessionId: speaker.id.toString() } });
     }
-    gotToSpeakerTwitter(speaker: Speaker) {
-
-    }
-    openSpeakerShare(speaker: Speaker) {
-
-    }
-    openConnect(speaker: Speaker) {
-
+    async gotToOffsite(msg: string) {
+      const loading = await this.$ionic.loadingController.create({
+        message: msg,
+        duration: (Math.random() * 1000) + 500
+      });
+      await loading.present();
+      await loading.onWillDismiss();
     }
   }
 </script>

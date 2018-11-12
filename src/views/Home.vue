@@ -2,12 +2,12 @@
   <div main class="ion-page">
   <ion-tabs ref="tabs" @ionChange="updateRoute">
     <ion-tab tab="schedule">
-      <!-- <SessionList /> -->
-      <SessionDetail :sessionId="1"/>
+      <SessionList />
+      <!-- <SessionDetail :sessionId="1"/> -->
     </ion-tab>
     <ion-tab tab="speakers">
-      <!-- <SpeakerList /> -->
-      <SpeakerDetail :speakerId="1"/>
+      <SpeakerList />
+      <!-- <SpeakerDetail :speakerId="1"/> -->
     </ion-tab>
     <ion-tab tab="map">
       <Map />
