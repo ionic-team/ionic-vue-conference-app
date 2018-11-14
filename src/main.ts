@@ -1,29 +1,13 @@
 import Vue from 'vue';
-import Ionic, { Controllers } from '@ionic/vue';
+import Ionic from '@ionic/vue';
 import App from './App.vue';
 import router from './router';
 import store from './store';
-import { format, parse } from 'date-fns';
-
+import './filters';
 
 Vue.config.productionTip = false;
-Vue.config.ignoredElements = [/ion-\w*/];
-
-declare module 'vue/types/vue' {
-  interface Vue {
-    $ionic: Controllers;
-  }
-}
 
 Vue.use(Ionic);
-
-Vue.filter('dateFormat', function (dateString: string, formatString: string) {
-  return format(parse(dateString), formatString);
-});
-
-Vue.filter('lowercase', function (value: string) {
-  return value.toLowerCase();
-});
 
 new Vue({
   router,

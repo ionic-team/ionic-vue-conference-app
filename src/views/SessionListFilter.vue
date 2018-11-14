@@ -20,7 +20,7 @@
         <ion-item v-for="track in allTracks" :key="track">
           <span slot="start" class="dot"></span>
           <ion-label>{{track}}</ion-label>
-          <ion-toggle checked="excludedTracks.indexOf(track) !== -1" color="success"></ion-toggle>
+          <ion-toggle @ionChange="updateTrackFilter(track)" checked="excludedTracks.indexOf(track) !== -1" color="success"></ion-toggle>
         </ion-item>
       </ion-list>
       <ion-list>
@@ -42,5 +42,19 @@
   export default class SessionListFilter extends Vue {
     @Prop() excludedTracks: string[] = [];
     @Prop() allTracks: string[] = [];
+
+    updateTrackFilter(track: string) {
+      console.log(track);
+    }
+    dismiss() {
+      this.$ionic.modalController.dismiss();
+    }
+    resetFilters() {
+      // this.$store.dispatch('updateTrackFilters', []);
+    }
+    applyFilters() {
+      // this.$store.dispatch('updateTrackFilters', []);
+      this.$ionic.modalController.dismiss();
+    }
   }
 </script>
