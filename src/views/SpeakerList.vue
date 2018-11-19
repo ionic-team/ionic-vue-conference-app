@@ -102,10 +102,10 @@
       this.$store.dispatch('loadSpeakerData');
     }
     goToSessionDetail(session: Session) {
-      this.$router.push({ name: 'session-detail', params: { sessionId: session.id.toString() } });
+      // this.$router.push({ name: 'session-detail', params: { sessionId: session.id.toString() } });
     }
     goToSpeakerDetail(speaker: Speaker) {
-      this.$router.push({ name: 'speaker-detail', params: { sessionId: speaker.id.toString() } });
+      // this.$router.push({ name: 'speaker-detail', params: { sessionId: speaker.id.toString() } });
     }
     async gotToOffsite(msg: string) {
       const loading = await this.$ionic.loadingController.create({

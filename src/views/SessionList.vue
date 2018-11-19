@@ -234,7 +234,7 @@
     goToSessionDetail(session: Session) {
       // go to the session detail page
       // and pass in the session data
-      this.$router.push({ name: 'session-detail', params: { sessionId: session.id.toString() } });
+      // this.$router.push({ name: 'session-detail', params: { sessionId: session.id.toString() } });
     }
     async presentFilter() {
       const modal = await this.$ionic.modalController.create({
