@@ -65,21 +65,6 @@
   </div>
 </template>
 
-<style scoped>
-  .map-canvas {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    background-color: transparent;
-    opacity: 0;
-    transition: opacity 150ms ease-in
-  }
-
-  .show-map {
-    opacity: 1;
-  }
-</style>
-
 <script lang="ts">
   import { Component, Prop, Vue } from 'vue-property-decorator';
   import { mapGetters } from 'vuex';
