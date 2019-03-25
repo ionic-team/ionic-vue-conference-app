@@ -61,13 +61,14 @@ export default new IonicVueRouter({
       children: [
         {
           path: 'schedule',
-          children: [
-            {
-              path: '',
-              component: () => import('@/views/SessionList.vue')
-            }
-          ]
+          components: { session: () => import('@/views/SessionList.vue') }
+        },
+        {
+          name: 'session-detail',
+          path: 'schedule/session/:sessionId',
+          components: { session: () => import('@/views/SessionDetail.vue') }
         }
+
         // { path: 'speakers', name: 'tabs.speakers', children: [] },
         // { path: 'map', name: 'tabs.map', children: [] },
         // { path: 'about', name: 'tabs.about', children: [] }

@@ -2,8 +2,7 @@
   <div>
     <ion-tabs ref="tabs">
       <ion-tab tab="schedule" >
-        <!-- <SessionDetail></SessionDetail>        -->
-        <!-- <SessionList></SessionList> -->
+        <ion-vue-router name="session"></ion-vue-router>
       </ion-tab>
 
       <!-- <ion-tab tab="speakers">
