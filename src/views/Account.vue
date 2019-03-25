@@ -3,9 +3,7 @@
     <ion-header>
       <ion-navbar>
         <ion-buttons slot="start">
-          <ion-button menuToggle>
-            <ion-icon slot="icon-only" name="menu"></ion-icon>
-          </ion-button>
+          <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <ion-title>Account</ion-title>
       </ion-navbar>

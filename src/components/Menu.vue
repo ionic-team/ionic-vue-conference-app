@@ -1,5 +1,5 @@
 <template>
-  <ion-menu>
+  <ion-menu contentId="menu-content">
     <ion-header>
       <ion-toolbar color="primary">
         <ion-title>Menu</ion-title>
@@ -12,7 +12,7 @@
           Navigate
         </ion-list-header>
         <ion-menu-toggle auto-hide="false" v-for="p in appPages" :key="p.title">
-          <ion-item button @click="navigate(p.url)">
+          <ion-item button @click="navigate(p.url)" >
             <ion-icon slot="start" :name="p.icon"></ion-icon>
             <ion-label>
               {{p.title}}
@@ -21,8 +21,7 @@
 
         </ion-menu-toggle>
       </ion-list>
-
-      <ion-list v-if="loggedIn">
+   <ion-list v-if="loggedIn">
         <ion-list-header>
           Account
         </ion-list-header>
@@ -114,12 +113,14 @@
          return this.$store.state.user.isAuthenticated;
        }
      }
+     
   })
   export default class Menu extends Vue {
     appPages = [
       {
         title: 'Schedule',
-        url: '/app/tabs/(schedule:schedule)',
+        url: '/tabs/schedule',
+        name: 'tabs.schedule',
         icon: 'calendar'
       },
       {
@@ -138,5 +139,10 @@
         icon: 'information-circle'
       }
     ];
+
+    navigate(url: string){
+      this.$router.directionOverride = 0;
+      this.$router.push(url)
+    }
   }
 </script>

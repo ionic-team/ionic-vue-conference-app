@@ -1,66 +1,83 @@
 import Vue from 'vue';
-import Router, { NavigationGuard } from 'vue-router';
+import { IonicVueRouter } from '@ionic/vue';
 import store from './store';
-import Tutorial from '@/views/Tutorial.vue';
-import Home from '@/views/Home.vue';
 
-Vue.use(Router);
+Vue.use(IonicVueRouter);
 
-const privateRoute: NavigationGuard = function (to, from, next) {
+// const privateRoute: NavigationGuard = function(to, from, next) {
+//   if (!store.state.user.isAuthenticated) {
+//     next({ name: 'login' });
+//   } else {
+//     next();
+//   }
+// };
 
-  if (!store.state.user.isAuthenticated) {
-    next({ name: 'login' });
-  } else {
-    next();
-  }
-}
+// const requiresTutorialRoute: NavigationGuard = function(to, from, next) {
+//   // if (!store.state.user.hasSeenTutorial) {
+//   // next({ name: 'tutorial' });
+//   // } else {
+//   next();
+//   // }
+// };
 
-const requiresTutorialRoute: NavigationGuard = function (to, from, next) {
-  // if (!store.state.user.hasSeenTutorial) {
-    // next({ name: 'tutorial' });
-  // } else {
-    next();
-  // }
-}
-
-export default new Router({
+export default new IonicVueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
-    {
-      path: '/tutorial',
-      name: 'tutorial',
-      component: Tutorial
-    },
-    {
-      path: '/account',
-      name: 'account',
-      component: () => import(/* webpackChunkName: "account" */ '@/views/Account.vue'),
-      beforeEnter: privateRoute
-    },
+    // {
+    //   path: '/tutorial',
+    //   name: 'tutorial',
+    //   component: Tutorial
+    // },
+    // {
+    //   path: '/account',
+    //   name: 'account',
+    //   component: () => import('@/views/Account.vue')
+    //   // beforeEnter: privateRoute
+    // },
     {
       path: '/support',
       name: 'support',
-      component: () => import(/* webpackChunkName: "support" */ '@/views/Support.vue'),
-      beforeEnter: requiresTutorialRoute
+      component: () => import('@/views/Support.vue')
+    },
+    // {
+    //   path: '/login',
+    //   name: 'login',
+    //   component: () =>
+    //     import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
+    //   beforeEnter: requiresTutorialRoute
+    // },
+    // {
+    //   path: '/signup',
+    //   name: 'signup',
+    //   component: () =>
+    //     import(/* webpackChunkName: "signup" */ '@/views/Signup.vue'),
+    //   beforeEnter: requiresTutorialRoute
+    // },
+
+    {
+      path: '/tabs',
+      component: () => import('@/views/Tabs.vue'),
+      children: [
+        {
+          path: 'schedule',
+          children: [
+            {
+              path: '',
+              component: () => import('@/views/SessionList.vue')
+            }
+          ]
+        }
+        // { path: 'speakers', name: 'tabs.speakers', children: [] },
+        // { path: 'map', name: 'tabs.map', children: [] },
+        // { path: 'about', name: 'tabs.about', children: [] }
+      ]
     },
     {
-      path: '/login',
-      name: 'login',
-      component: () => import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
-      beforeEnter: requiresTutorialRoute
-    },
-    {
-      path: '/signup',
-      name: 'signup',
-      component: () => import(/* webpackChunkName: "signup" */ '@/views/Signup.vue'),
-      beforeEnter: requiresTutorialRoute
-    },
-    {
-      path: '/:tabs*',
-      name: 'home',
-      component: Home,
-      beforeEnter: requiresTutorialRoute
-    },
+      path: '/',
+      redirect: '/support'
+    }
+
+    // beforeEnter: requiresTutorialRoute
   ]
 });

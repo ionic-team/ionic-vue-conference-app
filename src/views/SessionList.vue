@@ -137,7 +137,9 @@
       fab: HTMLIonFabElement
     }
     segment = 'all';
-
+    mounted(){
+      this.$store.dispatch('loadSessionData');
+    }
     groupedByStartTime(sessions: Session[]) {
       return sessions
         .sort((a, b) => (
