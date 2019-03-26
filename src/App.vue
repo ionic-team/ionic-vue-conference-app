@@ -3,13 +3,12 @@
     <ion-app>
       <ion-split-pane>
         <Menu/>
-        <ion-vue-router main id="menu-content" />
+        <ion-vue-router main :animated="false" id="menu-content" />
       </ion-split-pane>
     </ion-app>
   </div>
 </template>
 
-<style src='@ionic/core/css/ionic.bundle.css'></style>
 <style src='./theme.css'></style>
 
 <script lang="ts">
@@ -22,8 +21,9 @@ import Menu from "./components/Menu.vue";
   }
 })
 export default class App extends Vue {
-  mounted() {
-    console.log("tes");
+    mounted() {
+    this.$store.dispatch("loadSessionData");
+    this.$store.dispatch("loadSpeakerData");
   }
 }
 </script>

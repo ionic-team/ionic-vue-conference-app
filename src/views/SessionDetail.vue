@@ -3,7 +3,7 @@
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button text="Schedule" defaultHref="/app/tabs/(schedule:schedule)"></ion-back-button>
+          <ion-back-button default-href="/"></ion-back-button>
         </ion-buttons>
         <ion-title>{{session ? session.name : ''}}</ion-title>
       </ion-toolbar>
@@ -14,11 +14,30 @@
         <ion-grid no-padding>
           <ion-row>
             <ion-col size="6">
-              <span v-for="track in session.tracks" :class="'session-track-'+track.toLowerCase()" :key="track | lowercase">{{track}}</span>
+              <span
+                v-for="track in session.tracks"
+                :class="'session-track-'+track.toLowerCase()"
+                :key="track | lowercase"
+              >{{track}}</span>
             </ion-col>
-            <ion-col size="6" text-right :class="favorites.indexOf(sessionId) !== -1 ? 'show-favorite': ''">
-              <ion-icon name="heart-empty" size="large" class="icon-heart-empty" @click="addFavorite()"></ion-icon>
-              <ion-icon name="heart" color="danger" size="large" class="icon-heart" @click="removeFavorite()"></ion-icon>
+            <ion-col
+              size="6"
+              text-right
+              :class="favorites.indexOf(session.id) !== -1 ? 'show-favorite': ''"
+            >
+              <ion-icon
+                name="heart-empty"
+                size="large"
+                class="icon-heart-empty"
+                @click="addFavorite()"
+              ></ion-icon>
+              <ion-icon
+                name="heart"
+                color="danger"
+                size="large"
+                class="icon-heart"
+                @click="removeFavorite()"
+              ></ion-icon>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -26,7 +45,8 @@
         <p>{{session.description}}</p>
         <ion-text color="medium">
           {{session.dateTimeStart | dateFormat("h:mm a")}} &mdash; {{session.dateTimeEnd | dateFormat("h:mm a")}}
-          <br /> {{session.location}}
+          <br>
+          {{session.location}}
         </ion-text>
       </div>
 
@@ -124,34 +144,40 @@
 
 
 <script lang="ts">
-  import { Component, Prop, Vue } from 'vue-property-decorator';
-  import { Session } from '@/store/modules/sessions';
+import { Component, Prop, Vue } from "vue-property-decorator";
+import { Session } from "@/store/modules/sessions";
 
-  @Component
-  export default class SessionDetail extends Vue {
-    @Prop() sessionId!: number;
+@Component
+export default class SessionDetail extends Vue {
+  session: Session | null = null;
 
-    get session(): Session {
-      return this.$store.state.sessions.sessions.find((s: Session) => s.id === this.sessionId);
-    }
+  mounted() {
+    this.session = this.$store.state.sessions.sessions.find(
+      (s: Session) => s.id === parseInt(this.$route.params.sessionId)
+    );
+  }
 
-    get favorites(): number[] {
-      return this.$store.state.sessions.favoriteSessions;
-    }
+  get favorites(): number[] {
+    return this.$store.state.sessions.favoriteSessions;
+  }
 
-    addFavorite() {
-      this.$store.dispatch('addFavorite', this.sessionId);
-    }
-
-    removeFavorite() {
-      this.$store.dispatch('removeFavorite', this.sessionId);
-    }
-
-    async sessionClick(message: string) {
-      const alert = await this.$ionic.alertController.create({
-        message: `${message}`,
-      });
-      await alert.present();
+  addFavorite() {
+    if (this.session) {
+      this.$store.dispatch("addFavorite", this.session.id);
     }
   }
+
+  removeFavorite() {
+    if (this.session) {
+      this.$store.dispatch("removeFavorite", this.session.id);
+    }
+  }
+
+  async sessionClick(message: string) {
+    const alert = await this.$ionic.alertController.create({
+      message: `${message}`
+    });
+    await alert.present();
+  }
+}
 </script>

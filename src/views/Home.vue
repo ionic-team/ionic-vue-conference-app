@@ -41,37 +41,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import SessionList from "@/views/SessionList.vue";
-import SessionDetail from '@/views/SessionDetail.vue';
-// import SpeakerList from '@/views/SpeakerList.vue';
-// import SpeakerDetail from '@/views/SpeakerDetail.vue';
-// import Map from '@/views/Map.vue';
-// import About from '@/views/About.vue';
 
-@Component({
-  components: {
-    SessionList,
-      SessionDetail,
-    //   SpeakerList,
-    //   SpeakerDetail,
-    //   Map,
-    //   About
-  }
-})
-export default class Home extends Vue {
-  mounted() {
-    console.log("test");
-    //   this.$store.dispatch('loadSessionData');
-    //   this.$store.dispatch('loadSpeakerData');
-  }
-  // get tabname() {
-  //   return this.$route.params.tabs;
-  // }
-  // updateRoute(event: CustomEvent) {
-  //   if (event.detail.tab) {
-  //     const activeTab = event.detail.tab.tab;
-  //     this.$router.push('/' + activeTab);
-  //   }
-  // }
-}
+@Component
+export default class Home extends Vue {}
 </script>

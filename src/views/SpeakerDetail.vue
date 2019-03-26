@@ -30,27 +30,28 @@
 </template>
 
 <style scoped>
-  .speaker-detail img {
-    max-width: 140px;
-    border-radius: 50%;
-  }
+.speaker-detail img {
+  max-width: 140px;
+  border-radius: 50%;
+}
 
-  .speaker-detail p {
-    color: #60646B;
-  }
+.speaker-detail p {
+  color: #60646b;
+}
 </style>
 
 
 <script lang="ts">
-  import { Component, Prop, Vue } from 'vue-property-decorator';
-  import { Speaker } from '@/store/modules/speakers';
+import { Component, Prop, Vue } from "vue-property-decorator";
+import { Speaker } from "@/store/modules/speakers";
 
-  @Component
-  export default class SpeakerDetail extends Vue {
-    @Prop() speakerId!: number;
+@Component
+export default class SpeakerDetail extends Vue {
 
-    get speaker() {
-      return this.$store.state.speakers.speakers.find((s: Speaker) => s.id === this.speakerId);
-    }
+  get speaker() {
+    return this.$store.state.speakers.speakers.find(
+      (s: Speaker) => s.id === parseInt(this.$route.params.speakerId)
+    );
   }
+}
 </script>

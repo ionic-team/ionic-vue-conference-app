@@ -125,24 +125,28 @@
       },
       {
         title: 'Speakers',
-        url: '/app/tabs/(speakers:speakers)',
+        url: '/tabs/speakers',
         icon: 'contacts'
       },
       {
         title: 'Map',
-        url: '/app/tabs/(map:map)',
+        url: '/tabs/map',
         icon: 'map'
       },
       {
         title: 'About',
-        url: '/app/tabs/(about:about)',
+        url: '/tabs/about',
         icon: 'information-circle'
       }
     ];
 
     navigate(url: string){
-      this.$router.directionOverride = 0;
+      // this.$router.directionOverride = 0;
       this.$router.push(url)
+    }
+    openTutorial(){
+      this.$store.state.user.hasSeenTutorial = false;
+      this.$router.push('tutorial')
     }
   }
 </script>
