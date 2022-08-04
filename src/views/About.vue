@@ -58,7 +58,7 @@
   })
   export default class About extends Vue {
 
-    presentPopover(event){
+    presentPopover(event: any){
       console.log('click', event)
     }
   }
