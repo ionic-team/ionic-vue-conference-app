@@ -1,7 +1,7 @@
 <template>
-  <div class="ion-page">
+  <ion-page>
     <ion-header>
-      <ion-toolbar color="primary">
+      <ion-toolbar>
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
@@ -9,40 +9,78 @@
       </ion-toolbar>
     </ion-header>
 
-    <ion-content>
+    <ion-content class="ion-padding">
       <div class="support-logo">
-        <img src="/assets/img/appicon.svg" alt="Ionic Logo">
+        <img src="../../public/assets/img/appicon.svg" alt="Ionic Logo">
       </div>
-      <form novalidate @submit="submit(submitForm)">
-        <ion-list lines="none">
+      <form novalidate @submit="submitForm">
+        <ion-list>
           <ion-item>
-            <ion-label position="stacked" color="primary">Enter your support message below</ion-label>
-            <ion-textarea v-model="supportMessage" name="supportQuestion" rows="6" required></ion-textarea>
+            <ion-label position="stacked">Enter your support message below</ion-label>
+            <ion-textarea
+              label="Support Message"
+              labelPlacement="floating"
+              fill="outline"
+              placeholder="Message..."
+              v-model="supportMessage"
+              name="supportQuestion"
+              rows="6"
+              required
+              ></ion-textarea>
           </ion-item>
         </ion-list>
-        <ion-text color="danger">
-          <p v-show="!questionValid || submitted === true" padding-left>
-            Support message is required
-          </p>
-        </ion-text>
-        <div padding>
+        <div class="ion-padding">
           <ion-button expand="block" type="submit">Submit</ion-button>
         </div>
       </form>
+      <ion-toast
+        :is-open="showToast"
+        :message="toastMessage"
+        :duration="2000"
+      ></ion-toast>
     </ion-content>
-  </div>
+  </ion-page>
 </template>
 
-<script lang="ts">
-  import { Component, Prop, Vue } from 'vue-property-decorator';
+<script lang="ts" setup>
+import { computed, ref, onMounted } from 'vue';
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonButtons,
+  IonMenuButton,
+  IonButton,
+  IonContent,
+  IonList,
+  IonItem,
+  IonTitle,
+  IonLabel,
+  IonTextarea,
+  IonToast
+} from '@ionic/vue';
 
-  @Component
-  export default class Login extends Vue {
-    supportMessage = '';
-    submitted = false;
+const supportMessage = ref('');
+const submitted = ref(false);
 
-    get questionValid() {
-      return true;
-    }
+const showToast = ref(false);
+const toastMessage = ref('');
+
+const canSubmit = computed(() => supportMessage.value.trim() !== "");
+
+const submitForm = (event: any) => {
+  event.preventDefault();
+  submitted.value = true;
+
+  if (canSubmit) {
+    toastMessage.value = 'Successfully sent support message!';
+    showToast.value = true;
+    supportMessage.value = '';
   }
+};
+
+onMounted(() => {
+  toastMessage.value = 'This does not actually send a support request.';
+  showToast.value = true;
+});
 </script>

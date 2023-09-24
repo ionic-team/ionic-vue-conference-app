@@ -1,7 +1,7 @@
 <template>
-  <div class="ion-page">
+  <ion-page>
     <ion-header>
-      <ion-toolbar color="primary">
+      <ion-toolbar>
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
@@ -9,15 +9,15 @@
       </ion-toolbar>
     </ion-header>
 
-    <ion-content>
+    <ion-content class="ion-padding">
       <div class="login-logo">
-        <img src="/assets/img/appicon.svg" alt="Ionic logo">
+        <img src="./../../public/assets/img/appicon.svg" alt="Ionic logo">
       </div>
 
-      <form novalidate>
+      <form novalidate @submit.prevent="onLogin">
         <ion-list>
           <ion-item>
-            <ion-label position="stacked" color="primary">Username</ion-label>
+            <ion-label position="stacked">Username</ion-label>
             <ion-input
               v-model="username"
               name="username"
@@ -25,34 +25,32 @@
               spellcheck="false"
               autocapitalize="off"
               required
+              aria-label="Username"
             ></ion-input>
           </ion-item>
 
-          <ion-text color="danger">
-            <p v-show="!usernameValid || submitted == true" padding-left>Username is required</p>
-          </ion-text>
-
           <ion-item>
-            <ion-label position="stacked" color="primary">Password</ion-label>
-            <ion-input v-model="password" name="password" type="password" required></ion-input>
+            <ion-label position="stacked">Password</ion-label>
+            <ion-input aria-label="Password Input" v-model="password" name="password" type="password" required></ion-input>
           </ion-item>
-
-          <ion-text color="danger">
-            <p v-show="!passwordValid || submitted == true" padding-left>Password is required</p>
-          </ion-text>
         </ion-list>
 
-        <ion-row responsive-sm>
+        <ion-row responsive-sm class="ion-padding">
           <ion-col>
-            <ion-button @click="onLogin(loginForm)" type="submit" expand="block">Login</ion-button>
+            <ion-button :disabled="!canSubmit" type="submit" expand="block">Login</ion-button>
           </ion-col>
           <ion-col>
-            <ion-button @click="onSignup()" color="light" expand="block">Signup</ion-button>
+            <ion-button :disabled="!canSubmit" @click="onSignup" color="light" expand="block">Signup</ion-button>
           </ion-col>
         </ion-row>
       </form>
+      <ion-toast
+        :is-open="showToast"
+        :message="toastMessage"
+        :duration="2000"
+      ></ion-toast>
     </ion-content>
-  </div>
+  </ion-page>
 </template>
 
 <style scoped>
@@ -71,23 +69,50 @@
 }
 </style>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { computed, ref } from "vue";
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonButtons,
+  IonMenuButton,
+  IonButton,
+  IonContent,
+  IonList,
+  IonItem,
+  IonTitle,
+  IonRow,
+  IonCol,
+  IonLabel,
+  IonInput,
+  IonToast
+} from '@ionic/vue';
 
-@Component
-export default class Login extends Vue {
-  username = "";
-  password = "";
-  submitted = false;
+const username = ref("");
+const password = ref("");
+const submitted = ref(false);
 
-  get usernameValid() {
-    return true;
+const usernameValid = true;
+const passwordValid = true;
+
+const showToast = ref(false);
+const toastMessage = ref('');
+
+const canSubmit = computed(() => username.value.trim() !== "" && password.value.trim() !== "");
+
+const onLogin = () => {
+  submitted.value = true;
+  if (usernameValid && passwordValid) {
   }
-  get passwordValid() {
-    return true;
-  }
-  onLogin(ev: any) {
-    ev.preventDefault();
-  }
-}
+};
+
+const onSignup = () => {
+  toastMessage.value = 'Successfully logged in!';
+
+  showToast.value = true;
+
+  username.value = '';
+  password.value = '';
+};
 </script>

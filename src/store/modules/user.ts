@@ -25,11 +25,14 @@ const userStore: Module<User, {}> = {
       state.isAuthenticated = true;
     },
     logOut(state) {
-      state = defaultState;
+      Object.assign(state, defaultState);
     },
     updateUserPicture(state, pictureLocation: string) {
       state.pictureLocation = pictureLocation;
-    }
+    },
+    setHasSeenTutorial(state, value: boolean) {
+      state.hasSeenTutorial = value;
+    },
   },
   actions: {
     sawTutorial({ commit }) {
@@ -49,7 +52,10 @@ const userStore: Module<User, {}> = {
       setTimeout(() => {
         commit('updateUserPicture', pictureLocation);
       }, 50);
-    }
+    },
+    setHasSeenTutorial({ commit }, value: boolean) {
+      commit('setHasSeenTutorial', value);
+    },
   }
 };
 

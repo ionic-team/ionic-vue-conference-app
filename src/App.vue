@@ -1,29 +1,55 @@
 <template>
-  <div id="app">
-    <ion-app>
-      <ion-split-pane>
-        <Menu/>
-        <ion-vue-router main :animated="false" id="menu-content" />
-      </ion-split-pane>
-    </ion-app>
-  </div>
+  <ion-app>
+    <ion-split-pane content-id="main-content">
+      <Menu :dark="dark" @dark-mode-changed="handleDarkModeChanged" />
+      <ion-router-outlet id="main-content" />
+    </ion-split-pane>
+  </ion-app>
 </template>
 
-<style src='./theme.css'></style>
+<style src='./theme/variables.css'></style>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { IonApp, IonSplitPane, IonRouterOutlet } from '@ionic/vue';
+import { Ref, defineComponent, onMounted, ref } from 'vue';
 import Menu from "./components/Menu.vue";
+import { useStore } from '@/store';
+import { Storage } from '@ionic/storage';
 
-@Component({
+export default defineComponent({
+  name: 'App',
   components: {
-    Menu
-  }
-})
-export default class App extends Vue {
-    mounted() {
-    this.$store.dispatch("loadSessionData");
-    this.$store.dispatch("loadSpeakerData");
-  }
-}
+    IonApp,
+    IonSplitPane,
+    IonRouterOutlet,
+    Menu,
+  },
+  setup() {
+    let dark: Ref<boolean> = ref(false);
+    let globalStorage;
+    async function initializeStorage() {
+      const storage = new Storage();
+      await storage.create();
+      return storage;
+    }
+    const store = useStore();
+
+    const handleDarkModeChanged = (newDarkValue: boolean) => {
+      dark.value = newDarkValue;
+      document.body.classList.toggle('dark', newDarkValue);
+    };
+
+    onMounted(async () => {
+      globalStorage = await initializeStorage();
+      store.dispatch("loadSessionData");
+      store.dispatch("loadSpeakerData");
+      await store.dispatch("fetchTracks");
+    });
+
+    return {
+      dark,
+      handleDarkModeChanged,
+    };
+  },
+});
 </script>
