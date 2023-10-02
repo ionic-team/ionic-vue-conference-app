@@ -106,7 +106,6 @@ const applyFilters = () => {
 
 const selectAll = (check: boolean) => {
   tracks.value.forEach((track) => (track.isChecked = check));
-  applyFilters();
 };
 
 </script>
