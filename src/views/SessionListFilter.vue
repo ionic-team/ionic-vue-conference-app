@@ -19,7 +19,7 @@
         <ion-list-header>Tracks</ion-list-header>
         <ion-item v-for="track in tracks" :key="track.name">
           <ion-icon slot="start" :icon="track.icon" color="primary"></ion-icon>
-          <ion-toggle @ionChange="track.isChecked = !track.isChecked" :checked="track.isChecked" color="success" :aria-label="track.name">
+          <ion-toggle @ionChange="track.isChecked = !track.isChecked" :checked="track.isChecked" color="success">
             {{ track.name }}
           </ion-toggle>
         </ion-item>

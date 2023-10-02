@@ -30,23 +30,23 @@
       <form @submit.prevent="onSignup">
         <ion-list>
           <ion-item>
-            <ion-label position="stacked">Username</ion-label>
             <ion-input
+              labelPlacement="stacked"
+              label="Username"
               v-model="username"
               name="username"
               type="text"
               required
-              aria-label="Username"
             ></ion-input>
           </ion-item>
           <ion-item>
-            <ion-label position="stacked">Password</ion-label>
             <ion-input
+              labelPlacement="stacked"
+              label="Password"
               v-model="password"
               name="password"
               type="password"
               required
-              aria-label="Password"
             ></ion-input>
           </ion-item>
         </ion-list>
@@ -76,7 +76,6 @@ import {
   IonList,
   IonItem,
   IonTitle,
-  IonLabel,
   IonInput,
   IonToast,
 } from "@ionic/vue";
