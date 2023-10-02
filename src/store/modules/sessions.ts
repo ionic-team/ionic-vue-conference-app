@@ -2,14 +2,15 @@ import { Module } from 'vuex';
 import { parse as parseDate } from 'date-fns';
 
 export interface Session {
-  id: number,
-  dateTimeStart: string,
-  dateTimeEnd: string,
-  name: string,
-  location: string,
-  description: string,
-  speakerIds: number[],
-  tracks: string[]
+  id: number;
+  dateTimeStart: string;
+  dateTimeEnd: string;
+  name: string;
+  location: string;
+  description: string;
+  speakerIds: number[];
+  tracks: string[];
+  selectedTrackFilters: string[];
 }
 
 export interface SessionState {
@@ -17,18 +18,25 @@ export interface SessionState {
   trackFilters: string[];
   sessions: Session[];
   favoriteSessions: number[];
+  tracks: any[];
+  selectedTrackFilters: [];
+  isFirstLoad: boolean;
 }
 
 export interface SessionGroup {
   startTime: string,
-  sessions: Session[]
+  sessions: Session[],
+  isFirstLoad: true,
 }
 
 const defaultState: SessionState = {
   searchText: '',
   trackFilters: [],
   sessions: [],
-  favoriteSessions: []
+  favoriteSessions: [],
+  tracks: [],
+  selectedTrackFilters: [],
+  isFirstLoad: true
 }
 
 const sessionStore: Module<SessionState, {}> = {
@@ -51,6 +59,9 @@ const sessionStore: Module<SessionState, {}> = {
     updateTrackFilters(state, trackNames: string[]) {
       state.trackFilters = trackNames;
     },
+    updateSelectedTrackFilters(state, trackFilters) {
+      state.selectedTrackFilters = trackFilters;
+    },
     addFavorite(state, sessionId: number) {
       if (!state.favoriteSessions.includes(sessionId)) {
         state.favoriteSessions.push(sessionId);
@@ -61,13 +72,44 @@ const sessionStore: Module<SessionState, {}> = {
     },
     updateFavoriteFilter(state, sessionIds: number[]) {
       state.favoriteSessions = sessionIds;
-    }
+    },
+    setTracks(state, tracks) {
+      state.tracks = tracks;
+    },
+    setFirstLoad(state, value: boolean) {
+      state.isFirstLoad = value;
+    },
   },
   actions: {
-    async loadSessionData({ commit }) {
-      const response = await fetch('/data/sessions.json');
-      const data = await response.json();
-      commit('updateSessions', data);
+    loadSessionData({ commit }) {
+      return fetch('/data/sessions.json')
+        .then(response => {
+          if (!response.ok) {
+            throw Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          commit('updateSessions', data);
+        })
+        .catch(error => {
+          console.error('Error loading session data:', error);
+        });
+    },
+    fetchTracks({ commit }) {
+      return fetch('/data/tracks.json')
+      .then(response => {
+        if (!response.ok) {
+          throw Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        commit('setTracks', data);
+      })
+      .catch(error => {
+        console.error('Error loading session data:', error);
+      });
     },
     setSearchText({ commit }, searchText: string) {
       commit('setSearchText', searchText)
@@ -90,13 +132,17 @@ const sessionStore: Module<SessionState, {}> = {
     updateFavoriteFilter({ commit }, sessionIds: number[]) {
       commit('updateFavoriteFilter', sessionIds);
     },
+    setSelectedTrackFilters({ commit }, trackFilters) {
+      commit('updateSelectedTrackFilters', trackFilters);
+    },
   },
   getters: {
     conferenceStart(state) {
       const firstSession = state.sessions
         .concat()
         .sort((a, b) => (
-          parseDate(a.dateTimeStart).valueOf() - parseDate(b.dateTimeStart).valueOf()
+          parseDate(a.dateTimeStart, 'yyyy-MM-dd HH:mm:ss', new Date()).valueOf() -
+          parseDate(b.dateTimeStart, 'yyyy-MM-dd HH:mm:ss', new Date()).valueOf()
         ))[0];
       return firstSession ? firstSession.dateTimeStart : null;
     },
@@ -105,6 +151,9 @@ const sessionStore: Module<SessionState, {}> = {
         .reduce((all, session) => all.concat(session.tracks), <string[]>[])
         .filter((trackName, index, array) => array.indexOf(trackName) === index)
         .sort();
+    },
+    allTracksFilter(state) {
+      return state.tracks;
     },
     allFiltered(state) {
       let searchSessions = searchText(state.searchText);

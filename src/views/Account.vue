@@ -1,45 +1,54 @@
 <template>
-<div class="ion-page">
-  <ion-header>
-    <ion-navbar>
-      <ion-buttons slot="start">
-        <ion-menu-button></ion-menu-button>
-      </ion-buttons>
-      <ion-title>Account</ion-title>
-    </ion-navbar>
-  </ion-header>
-  <ion-content key={2} class="outer-content page-account">
-    <div>
-      <img src="http://www.gravatar.com/avatar?d=mm&s=140" alt="avatar" />
-      <h2>{{username}}</h2>
-      <ion-list inset>
-        <ion-item href="#" @click="updatePicture()">Update Picture</ion-item>
-        <ion-item href="#" @click="changeUsername()">Change Username</ion-item>
-        <ion-item href="#" @click="changePassword()">Change Password</ion-item>
-        <ion-item href="#" @click="support()">Support</ion-item>
-        <ion-item href="#" @click="logOutUser(logOutUser)">Logout</ion-item>
-      </ion-list>
-    </div>
-  </ion-content>
-</div>
+  <ion-page>
+    <ion-header>
+      <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+          <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-title>Account</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="outer-content page-account">
+      <div>
+        <img src="http://www.gravatar.com/avatar?d=mm&s=140" alt="avatar" />
+        <h2>{{ username }}</h2>
+        <ion-list inset>
+          <ion-item @click="updatePicture">Update Picture</ion-item>
+          <ion-item @click="changeUsername">Change Username</ion-item>
+          <ion-item @click="changePassword">Change Password</ion-item>
+          <ion-item @click="support">Support</ion-item>
+          <ion-item @click="logOutUser">Logout</ion-item>
+        </ion-list>
+      </div>
+    </ion-content>
+  </ion-page>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useStore } from 'vuex';
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonButtons,
+  IonBackButton,
+  IonContent,
+  IonList,
+  IonItem,
+  IonTitle,
+} from '@ionic/vue';
 
-@Component({
-})
-export default class Home extends Vue {
-  updatePicture() {}
-  changeUsername() {}
-  support() {}
-  logOutUser() {}
+const store = useStore();
 
-  get username() {
+const updatePicture = () => {};
+const changeUsername = () => {};
+const changePassword = () => {};
+const support = () => {};
+const logOutUser = () => {};
 
-    return this.$store.state.user.username;
-  }
-}
+const username = ref(store.state.user.username);
 </script>
 
 <style scoped>

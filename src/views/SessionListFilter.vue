@@ -1,15 +1,15 @@
 <template>
-  <div class="ion-page">
+  <ion-page>
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-button @click="dismiss()">Cancel</ion-button>
+          <ion-button @click="dismiss">Cancel</ion-button>
         </ion-buttons>
         <ion-title>
           Filter Sessions
         </ion-title>
         <ion-buttons slot="end">
-          <ion-button @click="applyFilters()" strong>Done</ion-button>
+          <ion-button @click="applyFilters" strong>Done</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
@@ -17,44 +17,95 @@
     <ion-content class="outer-content">
       <ion-list>
         <ion-list-header>Tracks</ion-list-header>
-        <ion-item v-for="track in allTracks" :key="track">
-          <span slot="start" class="dot"></span>
-          <ion-label>{{track}}</ion-label>
-          <ion-toggle @ionChange="updateTrackFilter(track)" checked="excludedTracks.indexOf(track) !== -1" color="success"></ion-toggle>
-        </ion-item>
-      </ion-list>
-      <ion-list>
-        <ion-item @click="resetFilters()" detail="false" class="reset-filters">
-          Reset All Filters
+        <ion-item v-for="track in tracks" :key="track.name">
+          <ion-icon slot="start" :icon="track.icon" color="primary"></ion-icon>
+          <ion-toggle @ionChange="track.isChecked = !track.isChecked" :checked="track.isChecked" color="success">
+            {{ track.name }}
+          </ion-toggle>
         </ion-item>
       </ion-list>
     </ion-content>
-  </div>
+    <ion-footer translucent="true">
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button @click="selectAll(false)">Deselect All</ion-button>
+        </ion-buttons>
+        <ion-buttons slot="end">
+          <ion-button @click="selectAll(true)">Select All</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-footer>
+  </ion-page>
 </template>
 
 <style scoped>
 </style>
 
-<script lang="ts">
-  import { Component, Prop, Vue, Inject } from 'vue-property-decorator';
+<script lang="ts" setup>
+import { ref, onMounted, defineProps } from 'vue';
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonButtons,
+  IonButton,
+  IonContent,
+  IonList,
+  IonIcon,
+  IonItem,
+  IonTitle,
+  IonListHeader,
+  IonToggle,
+  IonFooter,
+  modalController
+} from '@ionic/vue';
+import * as ionIcons from "ionicons/icons";
+import store from '@/store';
 
-  @Component
-  export default class SessionListFilter extends Vue {
-    @Prop() excludedTracks: string[] = [];
-    @Prop() allTracks: string[] = [];
-
-    updateTrackFilter(track: string) {
-      console.log(track);
-    }
-    dismiss() {
-      this.$ionic.modalController.dismiss();
-    }
-    resetFilters() {
-      // this.$store.dispatch('updateTrackFilters', []);
-    }
-    applyFilters() {
-      // this.$store.dispatch('updateTrackFilters', []);
-      this.$ionic.modalController.dismiss();
-    }
+const props = defineProps({
+  excludedTracks: {
+    type: Array,
+    default: () => []
+  },
+  allTracks: {
+    type: Array,
+    default: () => []
   }
+});
+
+const emit = defineEmits();
+const tracks = ref<{ name: string; icon: string; isChecked: boolean }[]>([]);
+const selectedTrackNames = ref<string[]>(props.allTracks.map((track: any) => track.name));
+const isFirstLoad = store.state.sessions.isFirstLoad;
+
+onMounted(() => {
+  const availableTracks = props.allTracks.length ? props.allTracks : [];
+  const selectedTrackFilters = store.state.sessions.selectedTrackFilters;
+
+  tracks.value = availableTracks.map((track: any) => ({
+    name: track.name,
+    icon: ionIcons[track.icon],
+    isChecked: isFirstLoad ? true : selectedTrackFilters.includes(track.name),
+  }));
+
+  if(isFirstLoad) store.commit('setFirstLoad', false);
+});
+
+const dismiss = () => modalController.dismiss();
+
+const applyFilters = () => {
+  const newSelectedTrackNames = tracks.value
+    .filter((t) => t.isChecked)
+    .map((t) => t.name);
+
+  store.dispatch('setSelectedTrackFilters', newSelectedTrackNames);
+
+  emit('filtersSelected', newSelectedTrackNames);
+  dismiss();
+};
+
+const selectAll = (check: boolean) => {
+  tracks.value.forEach((track) => (track.isChecked = check));
+};
+
 </script>

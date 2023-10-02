@@ -2,58 +2,45 @@
   "name": "ionic-conference-app-vue",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview",
+    "test:e2e": "cypress run",
+    "test:unit": "vitest",
+    "lint": "eslint"
   },
   "dependencies": {
-    "@capacitor/android": "^1.0.0-beta.8",
-    "@capacitor/cli": "1.0.0-beta.8",
-    "@capacitor/core": "1.0.0-beta.8",
-    "@capacitor/ios": "^1.0.0-beta.8",
-    "@ionic/core": "4.1.2",
-    "@ionic/vue": "0.0.4",
-    "cache-loader": "^1.2.2",
-    "date-fns": "^1.29.0",
-    "vue": "^2.5.17",
-    "vue-class-component": "^6.0.0",
-    "vue-property-decorator": "^7.0.0",
-    "vue-router": "^3.0.1",
-    "vuex": "^3.0.1"
+    "@capacitor/app": "5.0.6",
+    "@capacitor/core": "5.4.0",
+    "@capacitor/haptics": "5.0.6",
+    "@capacitor/keyboard": "5.0.6",
+    "@capacitor/status-bar": "5.0.6",
+    "@ionic/storage": "^4.0.0",
+    "@ionic/vue": "^7.0.0",
+    "@ionic/vue-router": "^7.0.0",
+    "date-fns": "^2.30.0",
+    "ionicons": "^7.0.0",
+    "swiper": "^10.3.0",
+    "vue": "^3.2.45",
+    "vue-router": "^4.2.4",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.0.4",
-    "@vue/cli-plugin-eslint": "^3.0.4",
-    "@vue/cli-plugin-typescript": "^3.0.4",
-    "@vue/cli-service": "^3.0.4",
-    "@vue/eslint-config-typescript": "^3.0.4",
-    "typescript": "^3.0.1",
-    "vue-template-compiler": "^2.5.17"
+    "@capacitor/cli": "5.4.0",
+    "@vitejs/plugin-legacy": "^4.0.2",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "@vue/eslint-config-typescript": "^11.0.2",
+    "@vue/test-utils": "^2.3.0",
+    "cypress": "^12.7.0",
+    "eslint": "^8.35.0",
+    "eslint-plugin-vue": "^9.9.0",
+    "jsdom": "^22.1.0",
+    "typescript": "^5.1.6",
+    "vite": "^4.3.9",
+    "vitest": "^0.32.2",
+    "vue-tsc": "^1.0.24"
   },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended",
-      "@vue/typescript"
-    ],
-    "rules": {},
-    "parserOptions": {
-      "parser": "typescript-eslint-parser"
-    }
-  },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {}
-    }
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ]
+  "description": "An Ionic project"
 }

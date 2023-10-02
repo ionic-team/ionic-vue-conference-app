@@ -1,52 +1,39 @@
 <template>
-  <div class="ion-page">
+  <ion-page>
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
           <ion-back-button default-href="/"></ion-back-button>
         </ion-buttons>
-        <ion-title>{{session ? session.name : ''}}</ion-title>
+        <ion-title>{{ session ? session.name : '' }}</ion-title>
       </ion-toolbar>
     </ion-header>
 
-    <ion-content>
+    <ion-content class="ion-padding">
       <div padding v-if="session">
+        <h1>{{ session.name }}</h1>
         <ion-grid no-padding>
           <ion-row>
             <ion-col size="6">
               <span
                 v-for="track in session.tracks"
-                :class="'session-track-'+track.toLowerCase()"
-                :key="track | lowercase"
-              >{{track}}</span>
+                :class="'session-track-' + track.toLowerCase()"
+                :key="track.toLowerCase()"
+              >{{ track }}</span>
             </ion-col>
             <ion-col
               size="6"
               text-right
-              :class="favorites.indexOf(session.id) !== -1 ? 'show-favorite': ''"
+              :class="favorites.indexOf(session.id) !== -1 ? 'show-favorite' : ''"
             >
-              <ion-icon
-                name="heart-empty"
-                size="large"
-                class="icon-heart-empty"
-                @click="addFavorite()"
-              ></ion-icon>
-              <ion-icon
-                name="heart"
-                color="danger"
-                size="large"
-                class="icon-heart"
-                @click="removeFavorite()"
-              ></ion-icon>
             </ion-col>
           </ion-row>
         </ion-grid>
-        <h1>{{session.name}}</h1>
-        <p>{{session.description}}</p>
+        <p>{{ session.description }}</p>
         <ion-text color="medium">
-          {{session.dateTimeStart | dateFormat("h:mm a")}} &mdash; {{session.dateTimeEnd | dateFormat("h:mm a")}}
+          {{ dateFormat(session.dateTimeStart, "h:mm a") }} &mdash; {{ dateFormat(session.dateTimeEnd, "h:mm a") }}
           <br>
-          {{session.location}}
+          {{ session.location }}
         </ion-text>
       </div>
 
@@ -62,14 +49,14 @@
         </ion-item>
         <ion-item @click="sessionClick('Downloaded Video')" button>
           <ion-label color="primary">Download Video</ion-label>
-          <ion-icon slot="end" color="primary" size="small" name="cloud-download"></ion-icon>
+          <ion-icon slot="end" color="primary" size="small" :icon="cloudDownload"></ion-icon>
         </ion-item>
         <ion-item @click="sessionClick('Left Feedback')" button>
           <ion-label color="primary">Leave Feedback</ion-label>
         </ion-item>
       </ion-list>
     </ion-content>
-  </div>
+  </ion-page>
 </template>
 
 <style scoped>
@@ -79,38 +66,6 @@
 
 .session-track-angular {
   color: var(--ion-color-angular);
-}
-
-.session-track-communication {
-  color: var(--ion-color-communication);
-}
-
-.session-track-tooling {
-  color: var(--ion-color-tooling);
-}
-
-.session-track-services {
-  color: var(--ion-color-services);
-}
-
-.session-track-design {
-  color: var(--ion-color-design);
-}
-
-.session-track-workshop {
-  color: var(--ion-color-workshop);
-}
-
-.session-track-food {
-  color: var(--ion-color-food);
-}
-
-.session-track-documentation {
-  color: var(--ion-color-documentation);
-}
-
-.session-track-navigation {
-  color: var(--ion-color-navigation);
 }
 
 .show-favorite {
@@ -142,42 +97,83 @@
 }
 </style>
 
-
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { Session } from "@/store/modules/sessions";
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import { useStore } from "@/store";
+import { dateFormat } from "@/filters/dateFormat";
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonButtons,
+  IonIcon,
+  IonContent,
+  IonList,
+  IonLabel,
+  IonItem,
+  alertController,
+  IonBackButton,
+  IonTitle,
+  IonText,
+  IonGrid,
+  IonRow,
+  IonCol,
+} from '@ionic/vue';
+import {
+  heart,
+  heartOutline,
+  cloudDownload
+} from "ionicons/icons";
 
-@Component
-export default class SessionDetail extends Vue {
-  session: Session | null = null;
+export default {
+  components: {
+    IonPage,
+    IonHeader,
+    IonToolbar,
+    IonButtons,
+    IonIcon,
+    IonContent,
+    IonList,
+    IonLabel,
+    IonItem,
+    IonBackButton,
+    IonTitle,
+    IonText,
+    IonGrid,
+    IonRow,
+    IonCol,
+   },
+  setup() {
+    const route = useRoute();
+    const store = useStore();
 
-  mounted() {
-    this.session = this.$store.state.sessions.sessions.find(
-      (s: Session) => s.id === parseInt(this.$route.params.sessionId)
-    );
-  }
+    const session = ref(null);
+    const favorites = ref([]);
 
-  get favorites(): number[] {
-    return this.$store.state.sessions.favoriteSessions;
-  }
+    const sessionClick = async (message: any) => {
+      const alert = await alertController.create({
+        message: `${message}`,
+      });
+      await alert.present();
+    };
 
-  addFavorite() {
-    if (this.session) {
-      this.$store.dispatch("addFavorite", this.session.id);
-    }
-  }
-
-  removeFavorite() {
-    if (this.session) {
-      this.$store.dispatch("removeFavorite", this.session.id);
-    }
-  }
-
-  async sessionClick(message: string) {
-    const alert = await this.$ionic.alertController.create({
-      message: `${message}`
+    onMounted(() => {
+      session.value = store.state.sessions.sessions.find(
+        (s: any) => s.id === parseInt(route.params.sessionId.toString())
+      );
+      favorites.value = store.state.sessions.favoriteSessions;
     });
-    await alert.present();
-  }
-}
+
+    return {
+      heart,
+      heartOutline,
+      cloudDownload,
+      session,
+      favorites,
+      sessionClick,
+      dateFormat,
+    };
+  },
+};
 </script>

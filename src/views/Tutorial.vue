@@ -1,65 +1,77 @@
 <template>
-  <div main class="ion-page">
-    <ion-header no-border>
-      <ion-toolbar>
+  <ion-page v-show="ionDidTutorial">
+    <ion-header>
+      <ion-toolbar color="translucent">
         <ion-buttons slot="end">
-          <ion-button color='primary' @click="endTutorial()" v-show="!showSkip">Skip</ion-button>
+          <ion-button color='primary' @click="navigateToSchedule">Skip</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
-
-    <ion-content>
-      <ion-slides @ionSlideDidChange="onSlideChangeStart($event)" pager="false">
-        <ion-slide>
-          <img src="/assets/img/ica-slidebox-img-1.png" class="slide-image" />
+    <ion-content class="ion-padding">
+      <Swiper :slides-per-view="1" @swiper="onSwiper" @slideChange="onSlideChange">
+        <SwiperSlide class="slide">
+          <img src="./../../public/assets/img/ica-slidebox-img-1.png" class="slide-image" />
           <h2 class="slide-title">
             Welcome to
             <b>ICA</b>
           </h2>
           <p>
             The
-            <b>ionic conference app</b> is a practical preview of the ionic framework in action, and a demonstration of proper code
-            use.
+            <b>ionic conference app</b> is a practical preview of the ionic framework in action, and a demonstration of proper code use.
           </p>
-        </ion-slide>
+        </SwiperSlide>
 
-        <ion-slide>
-          <img src="/assets/img/ica-slidebox-img-2.png" class="slide-image" />
+        <SwiperSlide class="slide">
+          <img src="./../../public/assets/img/ica-slidebox-img-1.png" class="slide-image" />
           <h2 class="slide-title">What is Ionic?</h2>
           <p>
-            <b>Ionic Framework</b> is an open source SDK that enables developers to build high quality mobile apps with web technologies
-            like HTML, CSS, and JavaScript.</p>
-        </ion-slide>
+            <b>Ionic Framework</b> is an open source SDK that enables developers to build high-quality mobile apps with web technologies
+            like HTML, CSS, and JavaScript.
+          </p>
+        </SwiperSlide>
 
-        <ion-slide>
-          <img src="/assets/img/ica-slidebox-img-3.png" class="slide-image" />
+        <SwiperSlide class="slide">
+          <img src="./../../public/assets/img/ica-slidebox-img-3.png" class="slide-image" />
           <h2 class="slide-title">What is Ionic Pro?</h2>
           <p>
             <b>Ionic Pro</b> is a powerful set of services and features built on top of Ionic Framework that brings a totally new
-            level of app development agility to mobile dev teams.</p>
-        </ion-slide>
+            level of app development agility to mobile dev teams.
+          </p>
+        </SwiperSlide>
 
-        <ion-slide>
-          <img src="/assets/img/ica-slidebox-img-4.png" class="slide-image" />
+        <SwiperSlide class="slide">
+          <img src="./../../public/assets/img/ica-slidebox-img-4.png" class="slide-image" />
           <h2 class="slide-title">Ready to Play?</h2>
-          <ion-button fill="clear" @click="endTutorial()">
+
+          <ion-button fill="clear" @click="navigateToSchedule">
             Continue
-            <ion-icon slot="end" name="arrow-forward"></ion-icon>
+            <ion-icon slot="end" :icon="arrowForward"></ion-icon>
           </ion-button>
-        </ion-slide>
-      </ion-slides>
+        </SwiperSlide>
+      </Swiper>
     </ion-content>
-  </div>
+  </ion-page>
 </template>
 
 <style scoped>
-  ion-toolbar {
-    --background: transparent;
-    --border-color: transparent;
+  ion-header {
+    background-color: var(--ion-background-color, #fff);
   }
 
-  .swiper-slide {
-    display: block;
+  .slide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+  }
+
+  .swiper {
+    width: 100%;
+    height: 100%;
   }
 
   .slide-title {
@@ -67,41 +79,81 @@
   }
 
   .slide-image {
-    max-height: 50%;
-    max-width: 60%;
+    max-height: 100%;
+    max-width: 100%;
     margin: 36px 0;
   }
 
   b {
-    font-weight: 500;
+    font-weight: bold;
   }
 
   p {
     padding: 0 40px;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #60646B;
-  }
 
-  p b {
-    color: #000000;
+    color: var(--ion-color-step-600, #60646b);
+
+    font-size: 14px;
+
+    line-height: 1.5;
+
+    b {
+      color: var(--ion-text-color, #000000);
+    }
   }
 </style>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+<script setup lang="ts">
+import { onMounted, ref } from 'vue';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonButtons,
+  IonContent,
+  IonIcon,
+  IonButton,
+  menuController,
+} from '@ionic/vue';
+import { arrowForward } from "ionicons/icons";
+import 'swiper/css';
+import router from '@/router';
+import { Storage } from '@ionic/storage';
 
-@Component({})
-export default class Tutorial extends Vue {
-  showSkip = false;
+const swiper = ref(null);
+const ionDidTutorial = ref(false);
+const storage = new Storage();
 
-  onSlideChangeStart() {
-    this.showSkip = true;
-  }
+const onSwiper = (instance: any) => {
+  swiper.value = instance;
+};
 
-  endTutorial() {
-    this.$store.dispatch('sawTutorial');
-    this.$router.push('/speakers');
-  }
-}
+const onSlideChange = () => {
+};
+
+const navigateToSchedule = async () => {
+  menuController.enable(true);
+  await storage.set('ion_did_tutorial', true);
+  await router.push({ name: 'schedule' });
+};
+
+const checkTutorialStatus = async () => {
+  await storage.create().then(async () => {
+    await storage.get('ion_did_tutorial').then(async (result: any) => {
+      if (result === true) {
+        await navigateToSchedule();
+      } else {
+        ionDidTutorial.value = true;
+      }
+    });
+  });
+};
+
+onMounted(async () => {
+  await storage.create();
+  menuController.enable(false);
+  await checkTutorialStatus();
+});
+
 </script>

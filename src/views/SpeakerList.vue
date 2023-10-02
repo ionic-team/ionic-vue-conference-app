@@ -1,15 +1,21 @@
 <template>
-  <div class="ion-page">
-    <ion-header>
-      <ion-toolbar color="primary">
+  <ion-page>
+    <ion-header translucent="true">
+      <ion-toolbar>
+        <ion-title>Speakers</ion-title>
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
-        <ion-title>Speakers</ion-title>
       </ion-toolbar>
+
     </ion-header>
 
-    <ion-content class="outer-content">
+    <ion-content :fullscreen="true">
+      <ion-header collapse="condense">
+        <ion-toolbar>
+          <ion-title size="large">Speakers</ion-title>
+        </ion-toolbar>
+      </ion-header>
       <ion-list>
         <ion-grid fixed>
           <ion-row align-items-stretch>
@@ -18,25 +24,28 @@
                 <ion-card-header>
                   <ion-item detail="false" lines="none" button @click="goToSpeakerDetail(speaker)">
                     <ion-avatar slot="start">
-                      <img v-bind:src="speaker.profilePic" alt="Speaker profile pic">
+                      <img :src="speaker.profilePic" alt="Speaker profile pic">
                     </ion-avatar>
-                    {{speaker.name}}
+                    <ion-label>
+                    <h2>{{speaker.name}}</h2>
+                    <p>{{speaker.title}}</p>
+                  </ion-label>
                   </ion-item>
                 </ion-card-header>
 
                 <ion-card-content>
-                  <ion-list>
+                  <ion-list lines="none">
                     <ion-item
                       v-for="session in sessionsBySpeaker(speaker.id)"
                       button
                       @click="goToSessionDetail(session)"
                       :key="session.id"
                     >
-                      <h3>{{session.name}}</h3>
+                      <h3>{{ session.name }}</h3>
                     </ion-item>
 
                     <ion-item button @click="goToSpeakerDetail(speaker)">
-                      <h3>About {{speaker.name}}</h3>
+                      <h3>About {{ speaker.name }}</h3>
                     </ion-item>
                   </ion-list>
                 </ion-card-content>
@@ -49,7 +58,7 @@
                       color="primary"
                       @click="gotToOffsite('Tweet')"
                     >
-                      <ion-icon name="logo-twitter" slot="start"></ion-icon>Tweet
+                      <ion-icon :icon="logoTwitter" slot="start"></ion-icon>Tweet
                     </ion-button>
                   </ion-col>
                   <ion-col text-center size="4">
@@ -59,7 +68,7 @@
                       color="primary"
                       @click="gotToOffsite('Share')"
                     >
-                      <ion-icon name="share-alt" slot="start"></ion-icon>Share
+                      <ion-icon :icon="share" slot="start"></ion-icon>Share
                     </ion-button>
                   </ion-col>
                   <ion-col text-right size="4">
@@ -69,7 +78,7 @@
                       color="primary"
                       @click="gotToOffsite('Contact')"
                     >
-                      <ion-icon name="chatboxes" slot="start"></ion-icon>Contact
+                      <ion-icon :icon="chatbubbles" slot="start"></ion-icon>Contact
                     </ion-button>
                   </ion-col>
                 </ion-row>
@@ -79,45 +88,71 @@
         </ion-grid>
       </ion-list>
     </ion-content>
-  </div>
+  </ion-page>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { mapGetters } from "vuex";
-import { Speaker } from "@/store/modules/speakers";
-import { Session } from "@/store/modules/sessions";
+<script lang="ts" setup>
+import { computed } from 'vue';
+import { Speaker } from '@/store/modules/speakers';
+import { Session } from '@/store/modules/sessions';
+import { useRouter } from 'vue-router';
+import { useStore } from "@/store";
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonButtons,
+  IonMenuButton,
+  IonButton,
+  IonIcon,
+  IonContent,
+  IonList,
+  IonItem,
+  IonTitle,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonLabel,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonAvatar,
+loadingController,
+} from '@ionic/vue';
+import {
+  share,
+  logoTwitter,
+  chatbubbles,
+} from "ionicons/icons";
 
-@Component
-export default class SpeakerList extends Vue {
-  get speakers() {
-    return this.$store.state.speakers.speakers.concat().sort();
-  }
+const store = useStore();
+const router = useRouter();
+const speakers = computed(() => store.state.speakers.speakers.concat().sort());
 
-  sessionsBySpeaker(speakerId: number) {
-    return this.$store.state.sessions.sessions.filter(
-      (s: Session) => s.speakerIds.indexOf(speakerId) !== -1
-    );
-  }
-  goToSessionDetail(session: Session) {
-    this.$router.push({
-      name: "speaker-session-detail",
-      params: { sessionId: session.id.toString() }
-    });
-  }
-  goToSpeakerDetail(speaker: Speaker) {
-    this.$router.push({
-      name: "speaker-detail",
-      params: { speakerId: speaker.id.toString() }
-    });
-  }
-  async gotToOffsite(msg: string) {
-    const loading = await this.$ionic.loadingController.create({
-      message: msg,
-      duration: Math.random() * 1000 + 500
-    });
-    await loading.present();
-    await loading.onWillDismiss();
-  }
-}
+const sessionsBySpeaker = (speakerId: number) => {
+  return store.state.sessions.sessions.filter((s: Session) => s.speakerIds.includes(speakerId));
+};
+
+const goToSessionDetail = (session: Session) => {
+  router.push({
+    name: 'speaker-session-detail',
+    params: { sessionId: session.id.toString() },
+  });
+};
+
+const goToSpeakerDetail = (speaker: Speaker) => {
+  router.push({
+    name: 'speaker-detail',
+    params: { speakerId: speaker.id.toString() },
+  });
+};
+
+const gotToOffsite = async (msg: string) => {
+  const loading = await loadingController.create({
+    message: msg,
+    duration: Math.random() * 1000 + 500,
+  });
+  await loading.present();
+  await loading.onWillDismiss();
+};
 </script>

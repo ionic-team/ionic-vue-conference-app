@@ -1,50 +1,67 @@
 <template>
-<div>
-  <ion-tabs>
-    <ion-tab tab="schedule" :routes="['schedule', 'session-detail']">
-      <ion-vue-router name="session"></ion-vue-router>
-    </ion-tab>
+  <ion-page>
+    <ion-tabs>
+      <ion-router-outlet></ion-router-outlet>
 
-    <ion-tab tab="speakers" :routes="['speakers', 'speaker-detail', 'speaker-session-detail']">
-      <ion-vue-router name="speaker"></ion-vue-router>
-    </ion-tab>
+      <ion-tab-bar slot="bottom">
+        <ion-tab-button tab="schedule" href="/tabs/schedule">
+          <ion-icon :icon="calendar" />
+          <ion-label>Schedule</ion-label>
+        </ion-tab-button>
 
-    <ion-tab tab="map">
-      <ion-vue-router name="map"></ion-vue-router>
-    </ion-tab>
+        <ion-tab-button tab="speakers" href="/tabs/speakers">
+          <ion-icon :icon="people" />
+          <ion-label>Speakers</ion-label>
+        </ion-tab-button>
 
-    <ion-tab tab="about">
-      <ion-vue-router name="about"></ion-vue-router>
-    </ion-tab>
+        <ion-tab-button tab="map" href="/tabs/map">
+          <ion-icon :icon="location" />
+          <ion-label>Map</ion-label>
+        </ion-tab-button>
 
-    <ion-tab-bar slot="bottom">
-      <ion-tab-button tab="schedule">
-        <ion-label>Schedule</ion-label>
-        <ion-icon name="calendar" />
-      </ion-tab-button>
-
-      <ion-tab-button tab="speakers">
-        <ion-icon name="contacts" />
-        <ion-label>Speakers</ion-label>
-      </ion-tab-button>
-
-      <ion-tab-button tab="map">
-        <ion-icon name="map" />
-        <ion-label>Map</ion-label>
-      </ion-tab-button>
-
-      <ion-tab-button tab="about">
-        <ion-icon name="information-circle" />
-        <ion-label>About</ion-label>
-      </ion-tab-button>
-    </ion-tab-bar>
-  </ion-tabs>
-</div>
+        <ion-tab-button tab="about" href="/tabs/about">
+          <ion-icon :icon="informationCircle" />
+          <ion-label>About</ion-label>
+        </ion-tab-button>
+      </ion-tab-bar>
+    </ion-tabs>
+  </ion-page>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import {
+  IonPage,
+  IonTabs,
+  IonRouterOutlet,
+  IonTabBar,
+  IonTabButton,
+  IonLabel,
+  IonIcon
+} from '@ionic/vue';
+import {
+  calendar,
+  people,
+  location,
+  informationCircle
+} from 'ionicons/icons';
 
-@Component
-export default class Tabs extends Vue {}
+export default {
+  components: {
+    IonPage,
+    IonTabs,
+    IonRouterOutlet,
+    IonTabBar,
+    IonTabButton,
+    IonLabel,
+    IonIcon
+  },
+  data() {
+    return {
+      calendar,
+      people,
+      location,
+      informationCircle,
+    };
+  },
+};
 </script>
