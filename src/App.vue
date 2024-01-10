@@ -36,7 +36,7 @@ export default defineComponent({
 
     const handleDarkModeChanged = (newDarkValue: boolean) => {
       dark.value = newDarkValue;
-      document.body.classList.toggle('dark', newDarkValue);
+      document.documentElement.classList.toggle('ion-theme-dark', newDarkValue);
     };
 
     onMounted(async () => {
