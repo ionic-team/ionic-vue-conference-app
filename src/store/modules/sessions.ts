@@ -19,7 +19,7 @@ export interface SessionState {
   sessions: Session[];
   favoriteSessions: number[];
   tracks: any[];
-  selectedTrackFilters: [];
+  selectedTrackFilters: string[];
   isFirstLoad: boolean;
 }
 

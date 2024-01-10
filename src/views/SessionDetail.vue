@@ -125,6 +125,7 @@ import {
   heartOutline,
   cloudDownload
 } from "ionicons/icons";
+import { Session } from '@/store/modules/sessions';
 
 export default {
   components: {
@@ -148,8 +149,8 @@ export default {
     const route = useRoute();
     const store = useStore();
 
-    const session = ref(null);
-    const favorites = ref([]);
+    const session = ref<Session>();
+    const favorites = ref<number[]>([]);
 
     const sessionClick = async (message: any) => {
       const alert = await alertController.create({
@@ -160,7 +161,7 @@ export default {
 
     onMounted(() => {
       session.value = store.state.sessions.sessions.find(
-        (s: any) => s.id === parseInt(route.params.sessionId.toString())
+        (s) => s.id === parseInt(route.params.sessionId.toString())
       );
       favorites.value = store.state.sessions.favoriteSessions;
     });

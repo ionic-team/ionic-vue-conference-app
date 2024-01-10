@@ -42,7 +42,7 @@
               <ion-select-option value="seattle">Seattle, WA</ion-select-option>
             </ion-select>
           </ion-item>
-          <ion-item button="true" id="open-date-input">
+          <ion-item :button="true" id="open-date-input">
             <ion-label>
               Date
             </ion-label>
@@ -249,7 +249,7 @@ const support = async () => {
 };
 
 watch(location, (newLocation: string, oldLocation: string) => {
-  const aboutImages = document.querySelectorAll('.about-image');
+  const aboutImages = document.querySelectorAll<HTMLElement>('.about-image');
   aboutImages.forEach((image) => {
     const city = image.classList[1];
     image.style.opacity = newLocation === city ? '1' : '0';

@@ -5,7 +5,7 @@
         <ion-list-header>
           Navigate
         </ion-list-header>
-        <ion-menu-toggle auto-hide="false" v-for="p in appPages" :key="p.title">
+        <ion-menu-toggle :auto-hide="false" v-for="p in appPages" :key="p.title">
           <ion-item button @click="navigate(p.url)">
             <ion-icon slot="start" :icon="p.icon"></ion-icon>
             <ion-label>
@@ -18,7 +18,7 @@
         <ion-list-header>
           Account
         </ion-list-header>
-        <ion-menu-toggle auto-hide="false">
+        <ion-menu-toggle :auto-hide="false">
           <ion-item button @click="navigate('/account')">
             <ion-icon slot="start" :icon="ionIcons.person"></ion-icon>
             <ion-label>
@@ -26,7 +26,7 @@
             </ion-label>
           </ion-item>
         </ion-menu-toggle>
-        <ion-menu-toggle auto-hide="false">
+        <ion-menu-toggle :auto-hide="false">
           <ion-item button @click="navigate('/support')">
             <ion-icon slot="start" :icon="ionIcons.help"></ion-icon>
             <ion-label>
@@ -34,7 +34,7 @@
             </ion-label>
           </ion-item>
         </ion-menu-toggle>
-        <ion-menu-toggle auto-hide="false">
+        <ion-menu-toggle :auto-hide="false">
           <ion-item button @click="logout()">
             <ion-icon slot="start" :icon="ionIcons.logOut"></ion-icon>
             <ion-label>
@@ -47,7 +47,7 @@
         <ion-list-header>
           Account
         </ion-list-header>
-        <ion-menu-toggle auto-hide="false">
+        <ion-menu-toggle :auto-hide="false">
           <ion-item button @click="navigate('/login')">
             <ion-icon slot="start" :icon="ionIcons.logIn"></ion-icon>
             <ion-label>
@@ -55,7 +55,7 @@
             </ion-label>
           </ion-item>
         </ion-menu-toggle>
-        <ion-menu-toggle auto-hide="false">
+        <ion-menu-toggle :auto-hide="false">
           <ion-item button @click="navigate('/support')">
             <ion-icon slot="start" :icon="ionIcons.help"></ion-icon>
             <ion-label>
@@ -63,7 +63,7 @@
             </ion-label>
           </ion-item>
         </ion-menu-toggle>
-        <ion-menu-toggle auto-hide="false">
+        <ion-menu-toggle :auto-hide="false">
           <ion-item button @click="navigate('/signup')">
             <ion-icon slot="start" :icon="ionIcons.personAdd"></ion-icon>
             <ion-label>
@@ -82,7 +82,7 @@
         <ion-list-header>
           Tutorial
         </ion-list-header>
-        <ion-menu-toggle auto-hide="false">
+        <ion-menu-toggle :auto-hide="false">
           <ion-item button @click="openTutorial()">
             <ion-icon slot="start" :icon="ionIcons.hammer"></ion-icon>
             <ion-label>Show Tutorial</ion-label>

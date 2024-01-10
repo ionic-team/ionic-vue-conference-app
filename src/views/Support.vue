@@ -35,7 +35,7 @@
           placeholder="Message..."
           v-model="supportMessage"
           name="supportQuestion"
-          rows="6"
+          :rows="6"
           required
         ></ion-textarea>
         <div class="ion-padding-top">

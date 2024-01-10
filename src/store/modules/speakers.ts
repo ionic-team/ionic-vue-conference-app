@@ -1,18 +1,19 @@
 import { Module } from 'vuex';
 
 export interface Speaker {
-  id: number,
-  name: string,
-  profilePic: string,
-  twitter: string,
-  about: string,
-  location: string,
-  email: string,
-  phone: string
+  id: number;
+  name: string;
+  profilePic: string;
+  twitter: string;
+  about: string;
+  title: string;
+  location: string;
+  email: string;
+  phone: string;
 }
 
 export interface SpeakerState {
-  speakers: Speaker[]
+  speakers: Speaker[];
 }
 
 const speakerStore: Module<SpeakerState, {}> = {

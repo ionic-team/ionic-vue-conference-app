@@ -1,13 +1,12 @@
 <template>
   <ion-page>
-    <ion-header translucent="true">
+    <ion-header :translucent="true">
       <ion-toolbar>
         <ion-title>Speakers</ion-title>
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
       </ion-toolbar>
-
     </ion-header>
 
     <ion-content :fullscreen="true">
@@ -19,17 +18,30 @@
       <ion-list>
         <ion-grid fixed>
           <ion-row align-items-stretch>
-            <ion-col size="12" size-md="6" v-for="speaker in speakers" :key="speaker.id">
+            <ion-col
+              size="12"
+              size-md="6"
+              v-for="speaker in speakers"
+              :key="speaker.id"
+            >
               <ion-card class="speaker-card">
                 <ion-card-header>
-                  <ion-item detail="false" lines="none" button @click="goToSpeakerDetail(speaker)">
+                  <ion-item
+                    :detail="false"
+                    lines="none"
+                    button
+                    @click="goToSpeakerDetail(speaker)"
+                  >
                     <ion-avatar slot="start">
-                      <img :src="speaker.profilePic" alt="Speaker profile pic">
+                      <img
+                        :src="speaker.profilePic"
+                        alt="Speaker profile pic"
+                      />
                     </ion-avatar>
                     <ion-label>
-                    <h2>{{speaker.name}}</h2>
-                    <p>{{speaker.title}}</p>
-                  </ion-label>
+                      <h2>{{ speaker.name }}</h2>
+                      <p>{{ speaker.title }}</p>
+                    </ion-label>
                   </ion-item>
                 </ion-card-header>
 
@@ -58,7 +70,8 @@
                       color="primary"
                       @click="gotToOffsite('Tweet')"
                     >
-                      <ion-icon :icon="logoTwitter" slot="start"></ion-icon>Tweet
+                      <ion-icon :icon="logoTwitter" slot="start"></ion-icon
+                      >Tweet
                     </ion-button>
                   </ion-col>
                   <ion-col text-center size="4">
@@ -78,7 +91,8 @@
                       color="primary"
                       @click="gotToOffsite('Contact')"
                     >
-                      <ion-icon :icon="chatbubbles" slot="start"></ion-icon>Contact
+                      <ion-icon :icon="chatbubbles" slot="start"></ion-icon
+                      >Contact
                     </ion-button>
                   </ion-col>
                 </ion-row>
@@ -92,10 +106,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
-import { Speaker } from '@/store/modules/speakers';
-import { Session } from '@/store/modules/sessions';
-import { useRouter } from 'vue-router';
+import { computed } from "vue";
+import { Speaker } from "@/store/modules/speakers";
+import { Session } from "@/store/modules/sessions";
+import { useRouter } from "vue-router";
 import { useStore } from "@/store";
 import {
   IonPage,
@@ -117,32 +131,31 @@ import {
   IonCardContent,
   IonCardHeader,
   IonAvatar,
-loadingController,
-} from '@ionic/vue';
-import {
-  share,
-  logoTwitter,
-  chatbubbles,
-} from "ionicons/icons";
+  loadingController,
+} from "@ionic/vue";
+import { share, logoTwitter, chatbubbles } from "ionicons/icons";
 
 const store = useStore();
 const router = useRouter();
-const speakers = computed(() => store.state.speakers.speakers.concat().sort());
+const thing = computed(() => store.state.speakers);
+const speakers = computed(() => store.state.speakers);
 
 const sessionsBySpeaker = (speakerId: number) => {
-  return store.state.sessions.sessions.filter((s: Session) => s.speakerIds.includes(speakerId));
+  return store.state.sessions.sessions.filter((s: Session) =>
+    s.speakerIds.includes(speakerId)
+  );
 };
 
 const goToSessionDetail = (session: Session) => {
   router.push({
-    name: 'speaker-session-detail',
+    name: "speaker-session-detail",
     params: { sessionId: session.id.toString() },
   });
 };
 
 const goToSpeakerDetail = (speaker: Speaker) => {
   router.push({
-    name: 'speaker-detail',
+    name: "speaker-detail",
     params: { speakerId: speaker.id.toString() },
   });
 };
