@@ -137,8 +137,7 @@ import { share, logoTwitter, chatbubbles } from "ionicons/icons";
 
 const store = useStore();
 const router = useRouter();
-const thing = computed(() => store.state.speakers);
-const speakers = computed(() => store.state.speakers);
+const speakers = computed(() => store.state.speakers.speakers.concat().sort());
 
 const sessionsBySpeaker = (speakerId: number) => {
   return store.state.sessions.sessions.filter((s: Session) =>
