@@ -63,7 +63,7 @@ import { useRoute } from 'vue-router';
 import { useStore } from '@/store';
 
 const speaker = computed(() => {
-  return store.state.speakers.find((s: Speaker) => s.id === parseInt(route.params.speakerId.toString()));
+  return store.state.speakers.speakers.find((s: Speaker) => s.id === parseInt(route.params.speakerId.toString()));
 });
 
 const store = useStore();
