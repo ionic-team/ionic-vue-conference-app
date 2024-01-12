@@ -23,7 +23,7 @@
               v-model="username"
               name="username"
               type="text"
-              spellcheck="false"
+              :spellcheck="false"
               autocapitalize="off"
               required
             ></ion-input>

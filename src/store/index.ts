@@ -1,14 +1,14 @@
 import { createStore, useStore as baseUseStore, Store } from 'vuex';
 import locations, { LocationState } from './modules/locations';
 import sessions, { SessionState } from './modules/sessions';
-import speakers, { Speaker } from './modules/speakers';
+import speakers, { SpeakerState } from './modules/speakers';
 import user, { User } from './modules/user';
 import darkMode, { DarkModeState } from './modules/darkMode';
 
 export interface StoreState {
   locations: LocationState,
   sessions: SessionState,
-  speakers: Speaker[],
+  speakers: SpeakerState,
   user: User,
   darkMode: DarkModeState,
 }

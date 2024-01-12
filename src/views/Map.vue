@@ -30,7 +30,6 @@
 }
 </style>
 
-
 <script lang="ts">
 import {
   IonPage,
@@ -41,6 +40,8 @@ import {
   IonButtons,
   IonTitle,
 } from "@ionic/vue";
+
+declare const google: any;
 
 export default {
   name: "Map",
@@ -60,7 +61,7 @@ export default {
     };
   },
   async mounted() {
-    const appEl = document.querySelector("ion-app");
+    const appEl = document.querySelector("ion-app")!;
     const darkStyle: never[] = [];
 
     try {
@@ -75,7 +76,9 @@ export default {
     fetch("/data/locations.json")
       .then((response) => response.json())
       .then((locations) => {
-        const mapCenter = locations.find((location: { id: number }) => location.id === 1);
+        const mapCenter = locations.find(
+          (location: { id: number }) => location.id === 1
+        );
 
         const mapData = locations.slice(1); // Exclude the first item (Map Center)
 
@@ -108,7 +111,7 @@ export default {
         });
 
         google.maps.event.addListenerOnce(map, "idle", () => {
-          this.$refs.mapCanvas.classList.add("show-map");
+          (this.$refs.mapCanvas as HTMLElement).classList.add("show-map");
         });
 
         const observer = new MutationObserver((mutations) => {
@@ -133,7 +136,7 @@ export default {
       }
 
       return new Promise<void>((resolve, reject) => {
-        window.initMap = () => {
+        (window as any).initMap = () => {
           resolve();
         };
 

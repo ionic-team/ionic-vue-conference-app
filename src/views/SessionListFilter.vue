@@ -25,7 +25,7 @@
         </ion-item>
       </ion-list>
     </ion-content>
-    <ion-footer translucent="true">
+    <ion-footer :translucent="true">
       <ion-toolbar>
         <ion-buttons slot="start">
           <ion-button @click="selectAll(false)">Deselect All</ion-button>
@@ -84,7 +84,7 @@ onMounted(() => {
 
   tracks.value = availableTracks.map((track: any) => ({
     name: track.name,
-    icon: ionIcons[track.icon],
+    icon: (ionIcons as any)[track.icon],
     isChecked: isFirstLoad ? true : selectedTrackFilters.includes(track.name),
   }));
 
