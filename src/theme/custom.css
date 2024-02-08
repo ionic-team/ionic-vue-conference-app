@@ -1,11 +1,3 @@
-html {
-  /*
-   * For more information on dynamic font scaling, visit the documentation:
-   * https://ionicframework.com/docs/layout/dynamic-font-scaling
-   */
-  --ion-dynamic-font: var(--ion-default-dynamic-font);
-}
-
 ion-menu ion-content {
     --padding-top: 20px;
     --padding-bottom: 20px;
