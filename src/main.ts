@@ -28,15 +28,15 @@ import '@ionic/core/css/core.css';
 import '@ionic/core/css/ionic.bundle.css';
 
 /**
- * Ionic Dark Theme
+ * Ionic Dark Mode
  * -----------------------------------------------------
  * For more info, please see:
  * https://ionicframework.com/docs/theming/dark-mode
  */
 
-// import "@ionic/vue/css/themes/dark.always.css";
-// import "@ionic/vue/css/themes/dark.system.css";
-import "@ionic/vue/css/themes/dark.class.css";
+// import "@ionic/vue/css/palettes/dark.always.css";
+// import "@ionic/vue/css/palettes/dark.system.css";
+import "@ionic/vue/css/palettes/dark.class.css";
 
 import { register } from 'swiper/element/bundle';
 
