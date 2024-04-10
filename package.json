@@ -23,8 +23,8 @@
     "date-fns": "^2.30.0",
     "ionicons": "^7.0.0",
     "swiper": "^10.3.0",
-    "vue": "^3.2.45",
-    "vue-router": "^4.2.4",
+    "vue": "^3.4.21",
+    "vue-router": "^4.3.0",
     "vuex": "^4.1.0"
   },
   "devDependencies": {
