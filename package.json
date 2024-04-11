@@ -18,13 +18,13 @@
     "@capacitor/keyboard": "5.0.6",
     "@capacitor/status-bar": "5.0.6",
     "@ionic/storage": "^4.0.0",
-    "@ionic/vue": "^7.7.2-dev.11707425083.192d8103",
-    "@ionic/vue-router": "^7.7.2-dev.11707425083.192d8103",
+    "@ionic/vue": "^8.0.0-rc.1",
+    "@ionic/vue-router": "^8.0.0-rc.1",
     "date-fns": "^2.30.0",
     "ionicons": "^7.0.0",
     "swiper": "^10.3.0",
-    "vue": "^3.2.45",
-    "vue-router": "^4.2.4",
+    "vue": "^3.4.21",
+    "vue-router": "^4.3.0",
     "vuex": "^4.1.0"
   },
   "devDependencies": {
