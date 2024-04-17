@@ -366,4 +366,19 @@ onMounted(() => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+  ion-fab-button {
+    --background: var(--ion-color-step-150, #ffffff);
+    --background-hover: var(--ion-color-step-200, #f2f2f2);
+    --background-focused: var(--ion-color-step-250, #d9d9d9);
+    --color: var(--ion-color-primary, #3880ff);
+  }
+
+  /*
+   * Material Design uses the ripple for activated
+   * so only style the iOS activated background
+   */
+  .ios ion-fab-button {
+    --background-activated: var(--ion-color-step-250, #d9d9d9);
+  }
+</style>

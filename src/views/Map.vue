@@ -117,7 +117,7 @@ export default {
         const observer = new MutationObserver((mutations) => {
           mutations.forEach((mutation) => {
             if (mutation.attributeName === "class") {
-              this.isDark = appEl.classList.contains("dark-theme");
+              this.isDark = appEl.classList.contains("ion-palette-dark");
               if (map) {
                 map.setOptions({ styles: this.isDark ? darkStyle : [] });
               }
