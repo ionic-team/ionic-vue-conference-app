@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <ion-header translucent="true">
+    <ion-header :translucent="true">
       <ion-toolbar>
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
@@ -17,7 +17,6 @@
           </ion-button>
         </ion-buttons>
       </ion-toolbar>
-
     </ion-header>
     <ion-content :fullscreen="true">
       <ion-header collapse="condense">
@@ -25,7 +24,12 @@
           <ion-title size="large">Schedule</ion-title>
         </ion-toolbar>
         <ion-toolbar>
-          <ion-searchbar v-model="queryText" :debounce="500" @ionInput="updateSearchTerm($event)" placeholder="Search"></ion-searchbar>
+          <ion-searchbar
+            v-model="queryText"
+            :debounce="500"
+            @ionInput="updateSearchTerm($event)"
+            placeholder="Search"
+          ></ion-searchbar>
         </ion-toolbar>
       </ion-header>
       <ion-list v-show="allGroupedComputed?.length > 0">
@@ -34,12 +38,18 @@
             <ion-label>{{ dateFormat(group.startTime, "h:mm a") }}</ion-label>
           </ion-item-divider>
 
-          <ion-item-sliding v-for="session in group.sessions" :key="session.id" :data-track="session.tracks[0] | lowercase">
+          <ion-item-sliding
+            v-for="session in group.sessions"
+            :key="session.id"
+            :data-track="session.tracks[0].toLowerCase()"
+          >
             <ion-item button @click="goToSessionDetail(session)">
               <ion-label :style="getLabelStyle(session.tracks[0])">
                 <h3>{{ session.tracks[0] }} - {{ session.name }}</h3>
                 <p>
-                  {{ dateFormat(session.dateTimeStart, "h:mm a") }} &mdash; {{ dateFormat(session.dateTimeEnd, "h:mm a") }}: {{ session.location }}
+                  {{ dateFormat(session.dateTimeStart, "h:mm a") }} &mdash;
+                  {{ dateFormat(session.dateTimeEnd, "h:mm a") }}:
+                  {{ session.location }}
                 </p>
               </ion-label>
             </ion-item>
@@ -48,18 +58,22 @@
                 color="favorite"
                 @click="addFavorite($event, session)"
                 v-if="segment === 'all'"
-              >Favorite</ion-item-option>
+                >Favorite</ion-item-option
+              >
               <ion-item-option
                 color="danger"
                 @click="removeFavorite($event, session, 'Remove Favorite')"
                 v-if="segment === 'favorites'"
-              >Remove</ion-item-option>
+                >Remove</ion-item-option
+              >
             </ion-item-options>
           </ion-item-sliding>
         </ion-item-group>
       </ion-list>
 
-      <ion-list-header v-show="allGroupedComputed?.length === 0">No Sessions Found</ion-list-header>
+      <ion-list-header v-show="allGroupedComputed?.length === 0"
+        >No Sessions Found</ion-list-header
+      >
       <ion-fab slot="fixed" vertical="bottom" horizontal="end" ref="fab">
         <ion-fab-button ref="fabButton">
           <ion-icon :icon="shareSocial"></ion-icon>
@@ -83,13 +97,12 @@
   </ion-page>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
 
 <script setup lang="ts">
 import { ref, onMounted, watch, ComputedRef } from "vue";
 import { dateFormat } from "@/filters/dateFormat";
-import { useStore } from 'vuex';
+import { useStore } from "vuex";
 import SessionListFilter from "./SessionListFilter.vue";
 
 import {
@@ -122,20 +135,20 @@ import {
   loadingController,
   menuController,
   IonRouterOutlet,
-} from '@ionic/vue';
+} from "@ionic/vue";
 import {
   shareSocial,
   logoVenmo,
   logoGoogle,
   logoTwitter,
   logoFacebook,
-  options
+  options,
 } from "ionicons/icons";
-import { lowercase } from '../filters/lowercase';
-import { useIonRouter } from '@ionic/vue';
-import { computed } from 'vue';
+import { useIonRouter } from "@ionic/vue";
+import { computed } from "vue";
 
 type GroupedSession = {
+  id: string;
   startTime: string;
   sessions: Session[];
 };
@@ -153,7 +166,7 @@ type Session = {
 
 const segment = ref("all");
 const queryText = ref("");
-const fab = ref(null);
+const fab = ref<HTMLIonFabElement | null>(null);
 const fabButton = ref(null);
 const fabList = ref(null);
 const store = useStore();
@@ -164,31 +177,35 @@ const allGroupedComputed = computed(() => {
 });
 
 const groupedByStartTime = (sessions: Session[]): GroupedSession[] => {
-  const sortedSessions = [...sessions].sort((a, b) =>
-    new Date(a.dateTimeStart).getTime() - new Date(b.dateTimeStart).getTime()
+  const sortedSessions = [...sessions].sort(
+    (a, b) =>
+      new Date(a.dateTimeStart).getTime() - new Date(b.dateTimeStart).getTime()
   );
 
-  const groups: GroupedSession[] = sortedSessions.reduce((acc: GroupedSession[], curr: Session) => {
-    const sessionDate = new Date(curr.dateTimeStart);
-    sessionDate.setMinutes(0, 0, 0);
-    const startTime = sessionDate.toISOString();
+  const groups: GroupedSession[] = sortedSessions.reduce(
+    (acc: GroupedSession[], curr: Session) => {
+      const sessionDate = new Date(curr.dateTimeStart);
+      sessionDate.setMinutes(0, 0, 0);
+      const startTime = sessionDate.toISOString();
 
-    const existingGroup = acc.find(group => group.startTime === startTime);
+      const existingGroup = acc.find((group) => group.startTime === startTime);
 
-    if (existingGroup) {
-      existingGroup.sessions.push(curr);
-    } else {
-      acc.push({ startTime, sessions: [curr] });
-    }
+      if (existingGroup) {
+        existingGroup.sessions.push(curr);
+      } else {
+        acc.push({ startTime, sessions: [curr] } as any);
+      }
 
-    return acc;
-  }, []);
+      return acc;
+    },
+    []
+  );
 
   return groups;
 };
 
 const allGrouped = computed(() => {
-  if (segment.value === 'all') {
+  if (segment.value === "all") {
     return groupedByStartTime(store.getters.allFiltered);
   } else {
     return groupedByStartTime(store.getters.favoritesFiltered);
@@ -201,20 +218,20 @@ watch(allGrouped, (newValue) => {
 
 // Simulate dispatching the action
 const addTrackFilter = (trackName: string) => {
-  store.dispatch('addTrackFilter', trackName);
+  store.dispatch("addTrackFilter", trackName);
 };
 
 // Simulate dispatching the action
 const removeTrackFilter = (trackName: string) => {
-  store.dispatch('removeTrackFilter', trackName);
+  store.dispatch("removeTrackFilter", trackName);
 };
 
 const getLabelStyle = (track: any) => {
-    let colorVar = track === 'Ionic' ? 'primary' : track.toLowerCase();
-    return {
-        borderLeft: `2px solid var(--ion-color-${colorVar})`,
-        paddingLeft: '10px'
-    };
+  let colorVar = track === "Ionic" ? "primary" : track.toLowerCase();
+  return {
+    borderLeft: `2px solid var(--ion-color-${colorVar})`,
+    paddingLeft: "10px",
+  };
 };
 
 const addFavorite = async (event: any, session: any) => {
@@ -282,11 +299,10 @@ const presentFilter = async () => {
     },
   });
 
-  modal.componentProps.onFiltersSelected = async (selectedTrackNames: any) => {
+  modal.componentProps!.onFiltersSelected = async (selectedTrackNames: any) => {
     if (selectedTrackNames.length === 0) {
       allGroupedRef.value = [];
-    }
-    else {
+    } else {
       await store.dispatch("loadSessionData");
       await store.dispatch("loadSpeakerData");
       await store.dispatch("fetchTracks");
@@ -298,11 +314,14 @@ const presentFilter = async () => {
         (track: any) => !selectedTrackNames.includes(track)
       );
 
-      addedTrackFilters.forEach((track: any) => store.dispatch('addTrackFilter', track));
-      removedTrackFilters.forEach((track: any) => store.dispatch('removeTrackFilter', track));
+      addedTrackFilters.forEach((track: any) =>
+        store.dispatch("addTrackFilter", track)
+      );
+      removedTrackFilters.forEach((track: any) =>
+        store.dispatch("removeTrackFilter", track)
+      );
     }
-};
-
+  };
 
   await modal.present();
 };
@@ -319,7 +338,7 @@ const openSocial = async (network: any) => {
   if (fab.value) {
     const loading = await loadingController.create({
       message: `Posting to ${network}`,
-      duration: Math.random() * 1000 + 500 as number,
+      duration: (Math.random() * 1000 + 500) as number,
     });
     await loading.present();
     await loading.onWillDismiss();
@@ -345,7 +364,6 @@ onMounted(() => {
     }
   );
 });
-
 </script>
 
 <style scoped>
