@@ -1,12 +1,18 @@
 <template>
   <ion-menu content-id="main-content">
-    <ion-content class="ion-padding">
+    <ion-content>
       <ion-list lines="none">
         <ion-list-header>
           Navigate
         </ion-list-header>
         <ion-menu-toggle :auto-hide="false" v-for="p in appPages" :key="p.title">
-          <ion-item button @click="navigate(p.url)">
+          <ion-item
+            button
+            :detail="false"
+            router-direction="root"
+            :router-link="p.url"
+            :class="{ 'selected': isSelected(p.url) }"
+          >
             <ion-icon slot="start" :icon="p.icon"></ion-icon>
             <ion-label>
               {{p.title}}
@@ -19,7 +25,13 @@
           Account
         </ion-list-header>
         <ion-menu-toggle :auto-hide="false">
-          <ion-item button @click="navigate('/account')">
+          <ion-item
+            button
+            :detail="false"
+            router-direction="root"
+            router-link="/account"
+            :class="{ 'selected': isSelected('/account') }"
+          >
             <ion-icon slot="start" :icon="ionIcons.person"></ion-icon>
             <ion-label>
               Account
@@ -27,7 +39,13 @@
           </ion-item>
         </ion-menu-toggle>
         <ion-menu-toggle :auto-hide="false">
-          <ion-item button @click="navigate('/support')">
+          <ion-item
+            button
+            :detail="false"
+            router-direction="root"
+            router-link="/support"
+            :class="{ 'selected': isSelected('/support') }"
+          >
             <ion-icon slot="start" :icon="ionIcons.help"></ion-icon>
             <ion-label>
               Support
@@ -35,7 +53,7 @@
           </ion-item>
         </ion-menu-toggle>
         <ion-menu-toggle :auto-hide="false">
-          <ion-item button @click="logout()">
+          <ion-item button :detail="false" @click="logout()">
             <ion-icon slot="start" :icon="ionIcons.logOut"></ion-icon>
             <ion-label>
               Logout
@@ -48,7 +66,13 @@
           Account
         </ion-list-header>
         <ion-menu-toggle :auto-hide="false">
-          <ion-item button @click="navigate('/login')">
+          <ion-item
+            button
+            :detail="false"
+            router-direction="root"
+            router-link="/login"
+            :class="{ 'selected': isSelected('/login') }"
+          >
             <ion-icon slot="start" :icon="ionIcons.logIn"></ion-icon>
             <ion-label>
               Login
@@ -56,7 +80,13 @@
           </ion-item>
         </ion-menu-toggle>
         <ion-menu-toggle :auto-hide="false">
-          <ion-item button @click="navigate('/support')">
+          <ion-item
+            button
+            :detail="false"
+            router-direction="root"
+            router-link="/support"
+            :class="{ 'selected': isSelected('/support') }"
+          >
             <ion-icon slot="start" :icon="ionIcons.help"></ion-icon>
             <ion-label>
               Support
@@ -64,7 +94,13 @@
           </ion-item>
         </ion-menu-toggle>
         <ion-menu-toggle :auto-hide="false">
-          <ion-item button @click="navigate('/signup')">
+          <ion-item
+            button
+            :detail="false"
+            router-direction="root"
+            router-link="/signup"
+            :class="{ 'selected': isSelected('/signup') }"
+          >
             <ion-icon slot="start" :icon="ionIcons.personAdd"></ion-icon>
             <ion-label>
               Signup
@@ -83,7 +119,7 @@
           Tutorial
         </ion-list-header>
         <ion-menu-toggle :auto-hide="false">
-          <ion-item button @click="openTutorial()">
+          <ion-item button :detail="false" @click="openTutorial()">
             <ion-icon slot="start" :icon="ionIcons.hammer"></ion-icon>
             <ion-label>Show Tutorial</ion-label>
           </ion-item>
@@ -96,6 +132,9 @@
 <script lang="ts">
 import { computed, defineComponent, getCurrentInstance, onMounted, ref, watch } from 'vue';
 import { useStore } from '@/store';
+import { useRoute } from 'vue-router';
+import router from '@/router';
+import { Storage } from '@ionic/storage';
 
 import {
   IonContent,
@@ -115,13 +154,12 @@ import {
 } from '@ionic/vue';
 import * as ionIcons from "ionicons/icons";
 import {
-  calendar,
-  people,
-  map,
-  informationCircle
+  calendarOutline,
+  peopleOutline,
+  mapOutline,
+  informationCircleOutline
 } from "ionicons/icons";
-import router from '@/router';
-import { Storage } from '@ionic/storage';
+
 export default defineComponent({
   name: 'Menu',
   components: {
@@ -147,9 +185,14 @@ export default defineComponent({
   setup(props) {
     const instance = getCurrentInstance();
     const store = useStore();
+    const route = useRoute();
     const localDark = ref(false);
     const loggedIn = ref(false);
     const storage = new Storage();
+
+    const isSelected = (path: string) => {
+      return route.path.startsWith(path);
+    };
 
     watch(localDark, (newVal) => {
       updateDarkMode(newVal);
@@ -171,10 +214,6 @@ export default defineComponent({
       await router.push({ name: 'tutorial' });
     }
 
-    const navigate = (url: string) => {
-      router.push(url);
-    }
-
     const logout = () => {
     }
 
@@ -183,48 +222,132 @@ export default defineComponent({
     });
 
     return {
-    localDark,
-    isDarkMode,
-    setLocalDarkMode,
-    openTutorial,
-    navigate,
-    logout,
-    loggedIn,
-    updateDarkMode
-  };
-
+      localDark,
+      isDarkMode,
+      setLocalDarkMode,
+      openTutorial,
+      logout,
+      loggedIn,
+      updateDarkMode,
+      isSelected
+    };
   },
   data() {
     return {
       ionIcons,
-      calendar,
-      people,
-      map,
-      informationCircle,
+      calendarOutline,
+      peopleOutline,
+      mapOutline,
+      informationCircleOutline,
       appPages: [
         {
           title: 'Schedule',
           url: '/tabs/schedule',
           name: 'tabs.schedule',
-          icon: calendar
+          icon: calendarOutline
         },
         {
           title: 'Speakers',
           url: '/tabs/speakers',
-          icon: people
+          icon: peopleOutline
         },
         {
           title: 'Map',
           url: '/tabs/map',
-          icon: map
+          icon: mapOutline
         },
         {
           title: 'About',
           url: '/tabs/about',
-          icon: informationCircle
+          icon: informationCircleOutline
         }
       ]
     };
   }
 });
 </script>
+
+<style scoped>
+ion-menu ion-content {
+  --padding-top: 20px;
+  --padding-bottom: 20px;
+  --background: var(--ion-item-background, var(--ion-background-color, #fff));
+}
+
+/* Remove background transitions for switching themes */
+ion-menu ion-item {
+  --transition: none;
+}
+
+ion-item.selected {
+  --color: var(--ion-color-primary);
+}
+
+/*
+ * Material Design Menu
+*/
+ion-menu.md ion-list {
+  padding: 20px 0;
+}
+
+ion-menu.md ion-list-header {
+  padding-left: 18px;
+  padding-right: 18px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: min(0.875rem, 32px);
+  font-weight: 450;
+}
+
+ion-menu.md ion-item {
+  --padding-start: 18px;
+  margin-right: 10px;
+  border-radius: 0 50px 50px 0;
+  font-weight: 500;
+}
+
+ion-menu.md ion-item.selected {
+  --background: rgba(var(--ion-color-primary-rgb), 0.14);
+}
+
+ion-menu.md ion-item.selected ion-icon {
+  color: var(--ion-color-primary);
+}
+
+ion-menu.md ion-list-header,
+ion-menu.md ion-item ion-icon {
+  color: var(--ion-color-step-650, #5f6368);
+}
+
+ion-menu.md ion-list:not(:last-of-type) {
+  border-bottom: 1px solid var(--ion-color-step-150, #d7d8da);
+}
+
+/*
+ * iOS Menu
+*/
+ion-menu.ios ion-list-header {
+  padding-left: 16px;
+  padding-right: 16px;
+  margin-bottom: 8px;
+  font-size: clamp(22px, 1.375rem, 40px);
+}
+
+ion-menu.ios ion-list {
+  padding: 20px 0 0;
+}
+
+ion-menu.ios ion-item {
+  --padding-start: 16px;
+  --min-height: 50px;
+}
+
+ion-menu.ios ion-item ion-icon {
+  font-size: 24px;
+  color: #73849a;
+}
+
+ion-menu.ios ion-item.selected ion-icon {
+  color: var(--ion-color-primary);
+}
+</style>
