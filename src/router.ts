@@ -10,6 +10,13 @@ const privateRoute: RouteRecordRaw['beforeEnter'] = function(to, from, next) {
   }
 };
 
+const ensureSessionData: RouteRecordRaw['beforeEnter'] = async function(to, from, next) {
+  if (store.state.sessions.sessions.length === 0) {
+    await store.dispatch("loadSessionData");
+  }
+  next();
+};
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/tutorial',
@@ -54,9 +61,9 @@ const routes: Array<RouteRecordRaw> = [
       {
         name: 'session-detail',
         path: 'schedule/session/:sessionId',
-        component: () => import('@/views/SessionDetail.vue')
+        component: () => import('@/views/SessionDetail.vue'),
+        beforeEnter: ensureSessionData
       },
-
       {
         path: 'speakers',
         name: 'speakers',
@@ -70,7 +77,8 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'speakers/session/:sessionId',
         name: 'speaker-session-detail',
-        component: () => import('@/views/SessionDetail.vue')
+        component: () => import('@/views/SessionDetail.vue'),
+        beforeEnter: ensureSessionData
       },
       {
         path: 'map',
