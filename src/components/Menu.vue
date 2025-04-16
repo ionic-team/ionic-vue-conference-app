@@ -3,7 +3,7 @@
     <ion-content>
       <ion-list lines="none">
         <ion-list-header>
-          Navigate
+          Conference
         </ion-list-header>
         <ion-menu-toggle :auto-hide="false" v-for="p in appPages" :key="p.title">
           <ion-item
