@@ -96,6 +96,12 @@ const sessionStore: Module<SessionState, {}> = {
         })
         .then(data => {
           commit('updateSchedule', data.schedule);
+
+          // Create a map of speaker names to IDs
+          const speakerNameToId = new Map(
+            data.speakers.map((s: any) => [s.name, parseInt(s.id)])
+          );
+
           const sessions = data.schedule[0].groups.flatMap((group: any) =>
             group.sessions.map((session: any) => ({
               id: parseInt(session.id),
@@ -104,7 +110,7 @@ const sessionStore: Module<SessionState, {}> = {
               name: session.name,
               location: session.location,
               description: session.description || '',
-              speakerIds: [],
+              speakerIds: (session.speakerNames || []).map((name: string) => speakerNameToId.get(name)),
               tracks: session.tracks,
               selectedTrackFilters: []
             }))
@@ -160,7 +166,7 @@ const sessionStore: Module<SessionState, {}> = {
     },
     setSelectedTrackFilters({ commit }, trackFilters) {
       commit('updateSelectedTrackFilters', trackFilters);
-    },
+    }
   },
   getters: {
     conferenceStart(state) {

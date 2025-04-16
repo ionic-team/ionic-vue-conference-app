@@ -18,7 +18,10 @@
       </ion-header>
 
       <div class="speaker-background">
-        <img :src="speaker?.profilePic || '/assets/placeholder.jpg'" :alt="speaker?.name || 'Speaker profile'" />
+        <img
+          :src="speaker?.profilePic"
+          :alt="speaker?.name"
+        />
         <h2>{{ speaker?.name || 'Loading...' }}</h2>
       </div>
 
@@ -153,7 +156,7 @@ ion-chip[color="instagram"] {
 </style>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, onBeforeMount, ref, watch } from 'vue';
 import { Speaker } from '@/store/modules/speakers';
 import {
   IonPage,
@@ -197,8 +200,32 @@ declare global {
 const store = useStore();
 const route = useRoute();
 
-const speaker = computed(() => {
-  return store.state.speakers.speakers.find((s: Speaker) => s.id === parseInt(route.params.speakerId.toString()));
+const currentSpeaker = ref<Speaker | null>(null);
+
+// Ensure data is loaded before mounting
+onBeforeMount(async () => {
+  if (store.state.speakers.speakers.length === 0) {
+    await store.dispatch('loadSpeakerData');
+  }
+  // Set the initial speaker data
+  const speakerId = route.params.speakerId;
+  if (speakerId) {
+    currentSpeaker.value = store.state.speakers.speakers.find(
+      (s: Speaker) => s.id === parseInt(speakerId.toString())
+    ) || null;
+  }
+});
+
+// Use currentSpeaker instead of the computed property
+const speaker = computed(() => currentSpeaker.value);
+
+// Watch for route changes to update the speaker data
+watch(() => route.params.speakerId, (newId) => {
+  if (newId) {
+    currentSpeaker.value = store.state.speakers.speakers.find(
+      (s: Speaker) => s.id === parseInt(newId.toString())
+    ) || null;
+  }
 });
 
 const openContact = async () => {
