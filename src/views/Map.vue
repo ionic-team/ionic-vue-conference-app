@@ -9,36 +9,29 @@
       </ion-toolbar>
     </ion-header>
 
-    <ion-content class="map-page">
+    <ion-content>
       <div ref="mapCanvas" class="map-canvas"></div>
     </ion-content>
   </ion-page>
 </template>
 
 <style scoped>
-.map-page {
-  position: relative;
-  height: 100%;
-  width: 100%;
-}
-
 .map-canvas {
   position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
+
   width: 100%;
-  background-color: #f4f4f4;
+
+  height: 100%;
+
+  transition: opacity 150ms ease-in;
+
+  background-color: transparent;
+
   opacity: 0;
-  transition: opacity 250ms ease-in;
 }
 
 .show-map {
   opacity: 1;
-}
-
-:deep(.leaflet-popup-content) {
-  margin: 13px 24px 13px 20px !important;
 }
 </style>
 
