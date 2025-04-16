@@ -1,30 +1,36 @@
 <template>
   <ion-page>
-    <ion-header>
+    <ion-header :translucent="true">
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-button @click="dismiss">Cancel</ion-button>
+          <ion-button v-if="isIos" @click="dismiss">Cancel</ion-button>
+          <ion-button v-else @click="selectAll(false)">Reset</ion-button>
         </ion-buttons>
-        <ion-title>
-          Filter Sessions
-        </ion-title>
+
+        <ion-title>Filter Sessions</ion-title>
+
         <ion-buttons slot="end">
           <ion-button @click="applyFilters" strong>Done</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
 
-    <ion-content class="outer-content">
-      <ion-list>
+    <ion-content>
+      <ion-list :lines="isIos ? 'inset' : 'full'">
         <ion-list-header>Tracks</ion-list-header>
-        <ion-item v-for="track in tracks" :key="track.name">
-          <ion-icon slot="start" :icon="track.icon" color="primary"></ion-icon>
-          <ion-toggle @ionChange="track.isChecked = !track.isChecked" :checked="track.isChecked" color="success">
+
+        <ion-item v-for="track in tracks" :key="track.name" :data-track="track.name.toLowerCase()">
+          <ion-icon v-if="isIos" slot="start" :icon="track.icon" color="medium"></ion-icon>
+
+          <ion-checkbox
+            v-model="track.isChecked"
+          >
             {{ track.name }}
-          </ion-toggle>
+          </ion-checkbox>
         </ion-item>
       </ion-list>
     </ion-content>
+
     <ion-footer :translucent="true">
       <ion-toolbar>
         <ion-buttons slot="start">
@@ -39,6 +45,35 @@
 </template>
 
 <style scoped>
+/*
+ * Material Design
+ */
+.md ion-toolbar ion-button {
+  letter-spacing: 0;
+  text-transform: capitalize;
+}
+
+.md ion-checkbox {
+  --checkbox-background-checked: transparent;
+  --border-color: transparent;
+  --border-color-checked: transparent;
+  --checkmark-color: var(--ion-color-primary);
+}
+
+.md ion-list {
+  background: inherit;
+}
+
+/*
+ * iOS
+ */
+.ios ion-list-header {
+  margin-top: 10px;
+}
+
+.ios ion-checkbox {
+  color: var(--ion-color-primary);
+}
 </style>
 
 <script lang="ts" setup>
@@ -55,12 +90,39 @@ import {
   IonItem,
   IonTitle,
   IonListHeader,
-  IonToggle,
+  IonCheckbox,
   IonFooter,
   modalController
 } from '@ionic/vue';
-import * as ionIcons from "ionicons/icons";
+import { getMode } from '@ionic/core/components';
+import {
+  logoIonic,
+  logoAngular,
+  peopleCircle,
+  hammer,
+  build,
+  colorPalette,
+  construct,
+  restaurant,
+  documents,
+  compass
+} from 'ionicons/icons';
 import store from '@/store';
+
+const isIos = getMode() === 'ios';
+
+const iconMap: { [key: string]: string } = {
+  'Ionic': logoIonic,
+  'Angular': logoAngular,
+  'Communication': peopleCircle,
+  'Tooling': hammer,
+  'Services': build,
+  'Design': colorPalette,
+  'Workshop': construct,
+  'Food': restaurant,
+  'Documentation': documents,
+  'Navigation': compass
+};
 
 const props = defineProps({
   excludedTracks: {
@@ -73,19 +135,18 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits();
 const tracks = ref<{ name: string; icon: string; isChecked: boolean }[]>([]);
 const selectedTrackNames = ref<string[]>(props.allTracks.map((track: any) => track.name));
 const isFirstLoad = store.state.sessions.isFirstLoad;
 
 onMounted(() => {
   const availableTracks = props.allTracks.length ? props.allTracks : [];
-  const selectedTrackFilters = store.state.sessions.selectedTrackFilters;
+  const trackFilters = store.state.sessions.trackFilters;
 
   tracks.value = availableTracks.map((track: any) => ({
     name: track.name,
-    icon: (ionIcons as any)[track.icon],
-    isChecked: isFirstLoad ? true : selectedTrackFilters.includes(track.name),
+    icon: iconMap[track.name] || '',
+    isChecked: isFirstLoad ? true : trackFilters.includes(track.name),
   }));
 
   if(isFirstLoad) store.commit('setFirstLoad', false);
@@ -98,14 +159,10 @@ const applyFilters = () => {
     .filter((t) => t.isChecked)
     .map((t) => t.name);
 
-  store.dispatch('setSelectedTrackFilters', newSelectedTrackNames);
-
-  emit('filtersSelected', newSelectedTrackNames);
-  dismiss();
+  modalController.dismiss(newSelectedTrackNames);
 };
 
 const selectAll = (check: boolean) => {
   tracks.value.forEach((track) => (track.isChecked = check));
 };
-
 </script>

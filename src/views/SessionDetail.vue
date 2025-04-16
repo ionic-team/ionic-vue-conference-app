@@ -31,9 +31,9 @@
         </ion-grid>
         <p>{{ session.description }}</p>
         <ion-text color="medium">
-          {{ dateFormat(session.dateTimeStart, "h:mm a") }} &mdash; {{ dateFormat(session.dateTimeEnd, "h:mm a") }}
+          {{session.timeStart}} &mdash; {{session.timeEnd}}
           <br>
-          {{ session.location }}
+          {{session.location}}
         </ion-text>
       </div>
 
@@ -101,7 +101,6 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "@/store";
-import { dateFormat } from "@/filters/dateFormat";
 import {
   IonPage,
   IonHeader,
@@ -173,7 +172,6 @@ export default {
       session,
       favorites,
       sessionClick,
-      dateFormat,
     };
   },
 };

@@ -60,7 +60,7 @@
       <ion-list v-show="allGroupedComputed?.length > 0">
         <ion-item-group v-for="group in allGroupedComputed" :key="group.id" :hidden="group.hide">
           <ion-item-divider sticky>
-            <ion-label>{{ dateFormat(group.startTime, "h:mm a") }}</ion-label>
+            <ion-label>{{ group.startTime }}</ion-label>
           </ion-item-divider>
 
           <ion-item-sliding
@@ -74,8 +74,7 @@
               <ion-label>
                 <h3>{{ session.name }}</h3>
                 <p>
-                  {{ dateFormat(session.dateTimeStart, "h:mm a") }} &mdash;
-                  {{ dateFormat(session.dateTimeEnd, "h:mm a") }}:
+                  {{ session.timeStart }} &mdash; {{ session.timeEnd }}:
                   {{ session.location }}
                 </p>
               </ion-label>
@@ -206,7 +205,6 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from "vue";
-import { dateFormat } from "@/filters/dateFormat";
 import { useStore } from "vuex";
 import SessionListFilter from "./SessionListFilter.vue";
 import { getMode } from '@ionic/core/components';
@@ -262,8 +260,8 @@ type GroupedSession = {
 
 type Session = {
   id: number;
-  dateTimeStart: string;
-  dateTimeEnd: string;
+  timeStart: string;
+  timeEnd: string;
   name: string;
   location: string;
   description: string;
@@ -291,30 +289,36 @@ const slidingItem = ref(null);
 
 const groupedByStartTime = (sessions: Session[]): GroupedSession[] => {
   const sortedSessions = [...sessions].sort(
-    (a, b) =>
-      new Date(a.dateTimeStart).getTime() - new Date(b.dateTimeStart).getTime()
+    (a, b) => {
+      const timeA = new Date(`1970-01-01 ${a.timeStart}`).getTime();
+      const timeB = new Date(`1970-01-01 ${b.timeStart}`).getTime();
+      return timeA - timeB;
+    }
   );
 
-  const groups: GroupedSession[] = sortedSessions.reduce(
-    (acc: GroupedSession[], curr: Session) => {
-      const sessionDate = new Date(curr.dateTimeStart);
-      sessionDate.setMinutes(0, 0, 0);
-      const startTime = sessionDate.toISOString();
+  const groups: { [key: string]: Session[] } = {};
 
-      const existingGroup = acc.find((group) => group.startTime === startTime);
+  // Group sessions by hour blocks but use first session's time as heading
+  sortedSessions.forEach(session => {
+    const startTime = new Date(`1970-01-01 ${session.timeStart}`);
+    const hour = startTime.getHours();
 
-      if (existingGroup) {
-        existingGroup.sessions.push(curr);
-      } else {
-        acc.push({ startTime, sessions: [curr] } as any);
-      }
+    // Create a key for the hour block (e.g., "8" for 8:00-8:59)
+    const hourKey = hour.toString();
 
-      return acc;
-    },
-    []
-  );
+    if (!groups[hourKey]) {
+      // Use the first session's actual start time as the group heading
+      groups[hourKey] = [];
+    }
+    groups[hourKey].push(session);
+  });
 
-  return groups;
+  // Convert groups object to array format, using first session's time as display time
+  return Object.entries(groups).map(([_, sessions]) => ({
+    startTime: sessions[0].timeStart,
+    sessions,
+    id: sessions[0].timeStart
+  }));
 };
 
 const allGrouped = computed(() => {
@@ -412,29 +416,11 @@ const presentFilter = async () => {
     },
   });
 
-  modal.componentProps!.onFiltersSelected = async (selectedTrackNames: any) => {
-    if (selectedTrackNames.length === 0) {
-      allGroupedRef.value = [];
-    } else {
-      await store.dispatch("loadSessionData");
-      await store.dispatch("loadSpeakerData");
-      await store.dispatch("fetchTracks");
-      const previousTrackFilters = store.state.sessions.trackFilters;
-      const addedTrackFilters = selectedTrackNames.filter(
-        (track: any) => !previousTrackFilters.includes(track)
-      );
-      const removedTrackFilters = previousTrackFilters.filter(
-        (track: any) => !selectedTrackNames.includes(track)
-      );
-
-      addedTrackFilters.forEach((track: any) =>
-        store.dispatch("addTrackFilter", track)
-      );
-      removedTrackFilters.forEach((track: any) =>
-        store.dispatch("removeTrackFilter", track)
-      );
+  modal.onDidDismiss().then(({ data }) => {
+    if (data) {
+      store.dispatch('updateTrackFilters', data);
     }
-  };
+  });
 
   await modal.present();
 };
