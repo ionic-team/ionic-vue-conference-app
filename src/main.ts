@@ -38,6 +38,9 @@ import '@ionic/core/css/ionic.bundle.css';
 // import "@ionic/vue/css/palettes/dark.system.css";
 import "@ionic/vue/css/palettes/dark.class.css";
 
+/* Leaflet CSS */
+import 'leaflet/dist/leaflet.css';
+
 import { register } from 'swiper/element/bundle';
 
 register();

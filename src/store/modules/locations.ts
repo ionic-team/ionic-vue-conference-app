@@ -2,41 +2,57 @@ import { Module } from 'vuex';
 
 export interface Location {
   id: number;
-  name?: string;
+  name: string;
   lat: number;
   lng: number;
+  center?: boolean;
 }
 
 export interface LocationState {
-  mapCenterId: number
-  locations: Location[]
+  locations: Location[];
 }
 
-const locationStore: Module<LocationState, {}> = {
+const locationsModule: Module<LocationState, any> = {
+  namespaced: true,
   state: {
-    mapCenterId: 1,
     locations: []
   },
   mutations: {
-    updateLocations(state, locations: Location[]) {
+    setLocations(state, locations: Location[]) {
       state.locations = locations;
-    },
-  },
-  actions: {
-    async loadLocationData({ commit }) {
-      const response = await fetch('/data/locations.json');
-      const data = await response.json();
-      commit('updateLocations', data);
     }
   },
-  getters: {
-    mapCenter(state) {
-      return state.locations.find(l => l.id === state.mapCenterId)
-    },
-    allLocations(state) {
-      return state.locations.filter(l => l.id !== state.mapCenterId)
+  actions: {
+    async loadLocations({ commit }) {
+      try {
+        const response = await fetch('/data/data.json');
+        const data = await response.json();
+
+        if (data.map && Array.isArray(data.map)) {
+          // Add IDs to locations
+          const locations = data.map.map((location: any, index: number) => ({
+            ...location,
+            id: index + 1
+          }));
+          commit('setLocations', locations);
+        } else {
+          throw new Error('Invalid data format: map array not found');
+        }
+      } catch (error) {
+        console.error('Error loading locations:', error);
+        // Set default locations if data cannot be loaded
+        commit('setLocations', [
+          {
+            id: 1,
+            name: 'Monona Terrace Convention Center',
+            lat: 43.071584,
+            lng: -89.38012,
+            center: true
+          }
+        ]);
+      }
     }
   }
 };
 
-export default locationStore;
+export default locationsModule;

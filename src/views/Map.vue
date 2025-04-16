@@ -9,149 +9,143 @@
       </ion-toolbar>
     </ion-header>
 
-    <ion-content>
+    <ion-content class="map-page">
       <div ref="mapCanvas" class="map-canvas"></div>
     </ion-content>
   </ion-page>
 </template>
 
 <style scoped>
+.map-page {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
 .map-canvas {
   position: absolute;
-  width: 100%;
+  top: 0;
+  left: 0;
   height: 100%;
-  transition: opacity 150ms ease-in;
-  background-color: transparent;
+  width: 100%;
+  background-color: #f4f4f4;
   opacity: 0;
+  transition: opacity 250ms ease-in;
 }
 
 .show-map {
   opacity: 1;
 }
+
+:deep(.leaflet-popup-content) {
+  margin: 13px 24px 13px 20px !important;
+}
 </style>
 
 <script lang="ts">
+import { defineComponent, computed, onMounted, onActivated, ref, watch } from 'vue';
+import { useStore } from '@/store';
 import {
   IonPage,
   IonHeader,
-  IonMenuButton,
   IonToolbar,
-  IonContent,
   IonButtons,
+  IonMenuButton,
   IonTitle,
+  IonContent,
 } from "@ionic/vue";
+import L from 'leaflet';
+import { Location } from '@/store/modules/locations';
 
-declare const google: any;
-
-export default {
-  name: "Map",
+export default defineComponent({
+  name: 'MapView',
   components: {
     IonPage,
     IonHeader,
-    IonMenuButton,
     IonToolbar,
-    IonContent,
     IonButtons,
+    IonMenuButton,
     IonTitle,
+    IonContent,
   },
-  data() {
-    return {
-      isDark: false,
-      map: null,
-    };
-  },
-  async mounted() {
-    const appEl = document.querySelector("ion-app")!;
-    const darkStyle: never[] = [];
+  setup() {
+    const store = useStore();
+    const mapCanvas = ref<HTMLElement | null>(null);
+    const map = ref<L.Map | null>(null);
+    const markers = ref<L.Marker[]>([]);
 
-    try {
-      await this.loadGoogleMapsAPI("YOUR_API_KEY_HERE");
-    } catch (error) {
-      // Handle the Google Maps API error here (e.g., log it or display a message).
-      console.error("Error loading Google Maps API:", error);
-    }
+    const locations = computed(() => store.state.locations.locations);
+    const mapCenter = computed(() => {
+      return store.state.locations.locations.find(
+        (location: Location) => location.center
+      );
+    });
 
-    let map: { setOptions: (arg0: { styles: any[] }) => void };
+    const initializeMap = () => {
 
-    fetch("/data/locations.json")
-      .then((response) => response.json())
-      .then((locations) => {
-        const mapCenter = locations.find(
-          (location: { id: number }) => location.id === 1
-        );
-
-        const mapData = locations.slice(1); // Exclude the first item (Map Center)
-
-        map = new google.maps.Map(this.$refs.mapCanvas, {
-          center: {
-            lat: mapCenter.lat,
-            lng: mapCenter.lng,
-          },
-          zoom: 16,
-          styles: this.isDark ? darkStyle : [],
-        });
-
-        mapData.forEach((markerData: { name: any; lat: any; lng: any }) => {
-          const infoWindow = new google.maps.InfoWindow({
-            content: `<h5>${markerData.name}</h5>`,
-          });
-
-          const marker = new google.maps.Marker({
-            position: {
-              lat: markerData.lat,
-              lng: markerData.lng,
-            },
-            map,
-            title: markerData.name,
-          });
-
-          marker.addListener("click", () => {
-            infoWindow.open(map, marker);
-          });
-        });
-
-        google.maps.event.addListenerOnce(map, "idle", () => {
-          (this.$refs.mapCanvas as HTMLElement).classList.add("show-map");
-        });
-
-        const observer = new MutationObserver((mutations) => {
-          mutations.forEach((mutation) => {
-            if (mutation.attributeName === "class") {
-              this.isDark = appEl.classList.contains("ion-palette-dark");
-              if (map) {
-                map.setOptions({ styles: this.isDark ? darkStyle : [] });
-              }
-            }
-          });
-        });
-        observer.observe(appEl, {
-          attributes: true,
-        });
-      });
-  },
-  methods: {
-    async loadGoogleMapsAPI(apiKey: string) {
-      if (typeof google !== "undefined" && typeof google.maps !== "undefined") {
-        return; // API already loaded
+      if (!mapCanvas.value || !mapCenter.value) {
+        return;
       }
 
-      return new Promise<void>((resolve, reject) => {
-        (window as any).initMap = () => {
-          resolve();
-        };
+      // Remove existing map if it exists
+      if (map.value) {
+        map.value.remove();
+        markers.value.forEach(marker => marker.remove());
+        markers.value = [];
+      }
 
-        const script = document.createElement("script");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&v=3.54&callback=initMap`;
-        script.async = true;
-        script.defer = true;
+      // Initialize map
+      const mapInstance = L.map(mapCanvas.value);
+      mapInstance.setView([mapCenter.value.lat, mapCenter.value.lng], 16);
+      map.value = mapInstance;
 
-        script.onerror = () => {
-          reject(new Error("Failed to load Google Maps API"));
-        };
-
-        document.body.appendChild(script);
+      // Add tile layer
+      const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
       });
-    },
-  },
-};
+      tileLayer.addTo(mapInstance);
+
+      // Add markers for all locations
+      locations.value.forEach((location: Location) => {
+        const marker = L.marker([location.lat, location.lng])
+          .addTo(mapInstance)
+          .bindPopup(`${location.name}`);
+        markers.value.push(marker);
+      });
+
+      // Show map
+      mapCanvas.value.classList.add("show-map");
+
+      // Force a resize after a short delay to ensure proper rendering
+      setTimeout(() => {
+        mapInstance.invalidateSize();
+      }, 100);
+    };
+
+    onMounted(async () => {
+      if (store.state.locations.locations.length === 0) {
+        await store.dispatch('locations/loadLocations');
+      }
+      initializeMap();
+    });
+
+    onActivated(() => {
+      if (map.value) {
+        map.value.invalidateSize();
+      } else if (store.state.locations.locations.length > 0) {
+        initializeMap();
+      }
+    });
+
+    watch(() => locations.value, (newLocations) => {
+      if (map.value) {
+        initializeMap();
+      }
+    });
+
+    return {
+      mapCanvas
+    };
+  }
+});
 </script>
