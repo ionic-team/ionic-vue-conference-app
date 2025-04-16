@@ -230,6 +230,7 @@ import {
   IonText,
   IonSelect,
   IonSelectOption,
+  popoverController,
 } from '@ionic/vue';
 import {
   ellipsisHorizontal,
