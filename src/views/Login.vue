@@ -9,68 +9,55 @@
       </ion-toolbar>
     </ion-header>
 
-    <ion-content class="ion-padding">
+    <ion-content>
       <div class="login-logo">
-        <img src="./../../public/assets/img/appicon.svg" alt="Ionic logo" />
+        <img src="/assets/img/appicon.svg" alt="Ionic logo" />
       </div>
 
-      <form novalidate @submit.prevent="onLogin">
-        <ion-list>
-          <ion-item>
-            <ion-input
-              label="Username"
-              labelPlacement="stacked"
-              v-model="username"
-              name="username"
-              type="text"
-              :spellcheck="false"
-              autocapitalize="off"
-              required
-            ></ion-input>
-          </ion-item>
+      <div class="login-form">
+        <form @submit.prevent="onLogin" novalidate>
+          <ion-input
+            label="Username"
+            labelPlacement="stacked"
+            fill="solid"
+            v-model="login.username"
+            name="username"
+            type="text"
+            :spellcheck="false"
+            autocapitalize="off"
+            :error-text="submitted && !login.username ? 'Username is required' : ''"
+            required
+          ></ion-input>
 
-          <ion-item>
-            <ion-input
-              labelPlacement="stacked"
-              label="Password"
-              v-model="password"
-              name="password"
-              type="password"
-              required
-            ></ion-input>
-          </ion-item>
-        </ion-list>
+          <ion-input
+            label="Password"
+            labelPlacement="stacked"
+            fill="solid"
+            v-model="login.password"
+            name="password"
+            type="password"
+            :error-text="submitted && !login.password ? 'Password is required' : ''"
+            required
+          ></ion-input>
 
-        <ion-row responsive-sm class="ion-padding">
-          <ion-col>
-            <ion-button :disabled="!canSubmit" type="submit" expand="block"
-              >Login</ion-button
-            >
-          </ion-col>
-          <ion-col>
-            <ion-button
-              :disabled="!canSubmit"
-              @click="onSignup"
-              color="light"
-              expand="block"
-              >Signup</ion-button
-            >
-          </ion-col>
-        </ion-row>
-      </form>
-      <ion-toast
-        :is-open="showToast"
-        :message="toastMessage"
-        :duration="2000"
-      ></ion-toast>
+          <ion-row>
+            <ion-col>
+              <ion-button type="submit" expand="block">Login</ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button @click="onSignup" color="light" expand="block">Signup</ion-button>
+            </ion-col>
+          </ion-row>
+        </form>
+      </div>
     </ion-content>
   </ion-page>
 </template>
 
 <style scoped>
 .login-logo {
-  padding: 20px 0;
   min-height: 200px;
+  padding: 20px 0;
   text-align: center;
 }
 
@@ -78,13 +65,18 @@
   max-width: 150px;
 }
 
-.list {
-  margin-bottom: 0;
+.login-form {
+  padding: 16px;
+}
+
+ion-input {
+  margin-bottom: 10px;
 }
 </style>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import {
   IonPage,
   IonHeader,
@@ -93,41 +85,32 @@ import {
   IonMenuButton,
   IonButton,
   IonContent,
-  IonList,
-  IonItem,
   IonTitle,
   IonRow,
   IonCol,
   IonInput,
-  IonToast,
-} from "@ionic/vue";
+} from '@ionic/vue';
 
-const username = ref("");
-const password = ref("");
+interface UserOptions {
+  username: string;
+  password: string;
+}
+
+const router = useRouter();
+const login = ref<UserOptions>({ username: '', password: '' });
 const submitted = ref(false);
-
-const usernameValid = true;
-const passwordValid = true;
-
-const showToast = ref(false);
-const toastMessage = ref("");
-
-const canSubmit = computed(
-  () => username.value.trim() !== "" && password.value.trim() !== ""
-);
 
 const onLogin = () => {
   submitted.value = true;
-  if (usernameValid && passwordValid) {
+
+  if (login.value.username && login.value.password) {
+    // TODO: Implement user service login
+    // userService.login(login.value.username);
+    router.push('/tabs/schedule');
   }
 };
 
 const onSignup = () => {
-  toastMessage.value = "Successfully logged in!";
-
-  showToast.value = true;
-
-  username.value = "";
-  password.value = "";
+  router.push('/signup');
 };
 </script>
