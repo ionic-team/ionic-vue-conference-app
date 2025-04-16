@@ -157,19 +157,19 @@ ion-toolbar ion-menu-button {
 }
 
 .about-header .madison {
-  background-image: url("../../public/assets/img/about/madison.jpg");
+  background-image: url("/assets/img/about/madison.jpg");
 }
 
 .about-header .austin {
-  background-image: url("../../public/assets/img/about/austin.jpg");
+  background-image: url("/assets/img/about/austin.jpg");
 }
 
 .about-header .chicago {
-  background-image: url("../../public/assets/img/about/chicago.jpg");
+  background-image: url("/assets/img/about/chicago.jpg");
 }
 
 .about-header .seattle {
-  background-image: url("../../public/assets/img/about/seattle.jpg");
+  background-image: url("/assets/img/about/seattle.jpg");
 }
 
 .about-info {

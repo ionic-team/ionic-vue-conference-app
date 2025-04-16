@@ -10,7 +10,7 @@
     <ion-content class="ion-padding">
       <Swiper :slides-per-view="1" @swiper="onSwiper" @slideChange="onSlideChange">
         <SwiperSlide class="slide">
-          <img src="./../../public/assets/img/ica-slidebox-img-1.png" class="slide-image" />
+          <img src="/assets/img/ica-slidebox-img-1.png" class="slide-image" />
           <h2 class="slide-title">
             Welcome to
             <b>ICA</b>
@@ -22,7 +22,7 @@
         </SwiperSlide>
 
         <SwiperSlide class="slide">
-          <img src="./../../public/assets/img/ica-slidebox-img-1.png" class="slide-image" />
+          <img src="/assets/img/ica-slidebox-img-1.png" class="slide-image" />
           <h2 class="slide-title">What is Ionic?</h2>
           <p>
             <b>Ionic Framework</b> is an open source SDK that enables developers to build high-quality mobile apps with web technologies
@@ -31,7 +31,7 @@
         </SwiperSlide>
 
         <SwiperSlide class="slide">
-          <img src="./../../public/assets/img/ica-slidebox-img-3.png" class="slide-image" />
+          <img src="/assets/img/ica-slidebox-img-3.png" class="slide-image" />
           <h2 class="slide-title">What is Ionic Pro?</h2>
           <p>
             <b>Ionic Pro</b> is a powerful set of services and features built on top of Ionic Framework that brings a totally new
@@ -40,7 +40,7 @@
         </SwiperSlide>
 
         <SwiperSlide class="slide">
-          <img src="./../../public/assets/img/ica-slidebox-img-4.png" class="slide-image" />
+          <img src="/assets/img/ica-slidebox-img-4.png" class="slide-image" />
           <h2 class="slide-title">Ready to Play?</h2>
 
           <ion-button fill="clear" @click="navigateToSchedule">
