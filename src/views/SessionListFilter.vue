@@ -136,7 +136,6 @@ const props = defineProps({
 });
 
 const tracks = ref<{ name: string; icon: string; isChecked: boolean }[]>([]);
-const selectedTrackNames = ref<string[]>(props.allTracks.map((track: any) => track.name));
 const isFirstLoad = store.state.sessions.isFirstLoad;
 
 onMounted(() => {

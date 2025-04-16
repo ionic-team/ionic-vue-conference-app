@@ -26,7 +26,6 @@ export default defineComponent({
   },
   setup() {
     let dark: Ref<boolean> = ref(false);
-    let globalStorage;
     async function initializeStorage() {
       const storage = new Storage();
       await storage.create();
@@ -40,7 +39,7 @@ export default defineComponent({
     };
 
     onMounted(async () => {
-      globalStorage = await initializeStorage();
+      await initializeStorage();
       store.dispatch("loadSessionData");
       store.dispatch("loadSpeakerData");
       await store.dispatch("fetchTracks");

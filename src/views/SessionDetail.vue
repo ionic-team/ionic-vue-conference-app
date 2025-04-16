@@ -166,7 +166,6 @@ import {
   IonItem,
   alertController,
   IonBackButton,
-  IonTitle,
   IonText,
 } from '@ionic/vue';
 import {

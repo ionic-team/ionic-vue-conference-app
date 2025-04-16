@@ -62,7 +62,6 @@ import {
   IonContent,
   IonTitle,
   IonInput,
-  IonGrid,
   IonRow,
   IonCol,
 } from '@ionic/vue';

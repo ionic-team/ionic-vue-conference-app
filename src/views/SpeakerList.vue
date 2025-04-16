@@ -80,7 +80,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, computed } from "vue";
+import { onMounted, computed } from "vue";
 import { Speaker } from "@/store/modules/speakers";
 import { Session } from "@/store/modules/sessions";
 import { useStore } from "@/store";

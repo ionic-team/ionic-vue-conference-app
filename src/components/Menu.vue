@@ -130,7 +130,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, getCurrentInstance, onMounted, ref, watch } from 'vue';
+import { computed, defineComponent, onMounted, ref, watch } from 'vue';
 import { useStore } from '@/store';
 import { useRoute } from 'vue-router';
 import router from '@/router';
@@ -182,8 +182,7 @@ export default defineComponent({
     darkMode: Boolean,
   },
   emits: ['dark-mode-changed'],
-  setup(props) {
-    const instance = getCurrentInstance();
+  setup(props, { emit }) {
     const store = useStore();
     const route = useRoute();
     const localDark = ref(false);
@@ -199,7 +198,7 @@ export default defineComponent({
     });
 
     const updateDarkMode = (newDarkValue: boolean) => {
-      instance?.emit('dark-mode-changed', newDarkValue);
+      emit('dark-mode-changed', newDarkValue);
     }
 
     const isDarkMode = computed(() => store.getters.isDarkMode);
