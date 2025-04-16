@@ -434,15 +434,12 @@ const updateSearchTerm = (e: any) => {
 };
 
 const openSocial = async (network: any) => {
-  if (fab.value) {
-    const loading = await loadingController.create({
-      message: `Posting to ${network}`,
-      duration: (Math.random() * 1000 + 500) as number,
-    });
-    await loading.present();
-    await loading.onWillDismiss();
-    fab.value.close();
-  }
+  const loading = await loadingController.create({
+    message: `Posting to ${network}`,
+    duration: (Math.random() * 1000 + 500) as number,
+  });
+  await loading.present();
+  await loading.onWillDismiss();
 };
 
 const checkAndLoadData = async () => {

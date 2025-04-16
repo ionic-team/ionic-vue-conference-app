@@ -17,5 +17,8 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom'
+  },
+  define: {
+    __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'false'
   }
 })
