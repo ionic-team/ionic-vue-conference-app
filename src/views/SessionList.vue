@@ -142,64 +142,54 @@
     --background-activated: var(--ion-color-step-250, #d9d9d9);
   }
 
-  /* Ionic track */
   ion-item-sliding[data-track="ionic"] ion-label {
     padding-left: 10px;
-    border-left: 2px solid var(--ion-color-primary);
+    border-left: 2px solid var(--ion-color-ionic);
   }
 
-  /* Angular track */
-  ion-item-sliding[data-track="angular"] ion-label {
+  ion-item-sliding[data-track="vue"] ion-label {
     padding-left: 10px;
-    border-left: 2px solid #ac282b;
+    border-left: 2px solid var(--ion-color-vue);
   }
 
-  /* Communication track */
   ion-item-sliding[data-track="communication"] ion-label {
     padding-left: 10px;
-    border-left: 2px solid #8e8d93;
+    border-left: 2px solid var(--ion-color-communication);
   }
 
-  /* Tooling track */
   ion-item-sliding[data-track="tooling"] ion-label {
     padding-left: 10px;
-    border-left: 2px solid #fe4c52;
+    border-left: 2px solid var(--ion-color-tooling);
   }
 
-  /* Services track */
   ion-item-sliding[data-track="services"] ion-label {
     padding-left: 10px;
-    border-left: 2px solid #fd8b2d;
+    border-left: 2px solid var(--ion-color-services);
   }
 
-  /* Design track */
   ion-item-sliding[data-track="design"] ion-label {
     padding-left: 10px;
-    border-left: 2px solid #fed035;
+    border-left: 2px solid var(--ion-color-design);
   }
 
-  /* Workshop track */
   ion-item-sliding[data-track="workshop"] ion-label {
     padding-left: 10px;
-    border-left: 2px solid #69bb7b;
+    border-left: 2px solid var(--ion-color-workshop);
   }
 
-  /* Food track */
   ion-item-sliding[data-track="food"] ion-label {
     padding-left: 10px;
-    border-left: 2px solid #3bc7c4;
+    border-left: 2px solid var(--ion-color-food);
   }
 
-  /* Documentation track */
   ion-item-sliding[data-track="documentation"] ion-label {
     padding-left: 10px;
-    border-left: 2px solid #b16be3;
+    border-left: 2px solid var(--ion-color-documentation);
   }
 
-  /* Navigation track */
   ion-item-sliding[data-track="navigation"] ion-label {
     padding-left: 10px;
-    border-left: 2px solid #6600cc;
+    border-left: 2px solid var(--ion-color-navigation);
   }
 </style>
 

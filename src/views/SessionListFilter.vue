@@ -97,7 +97,7 @@ import {
 import { getMode } from '@ionic/core/components';
 import {
   logoIonic,
-  logoAngular,
+  logoVue,
   peopleCircle,
   hammer,
   build,
@@ -113,7 +113,7 @@ const isIos = getMode() === 'ios';
 
 const iconMap: { [key: string]: string } = {
   'Ionic': logoIonic,
-  'Angular': logoAngular,
+  'Vue': logoVue,
   'Communication': peopleCircle,
   'Tooling': hammer,
   'Services': build,

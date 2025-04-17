@@ -65,8 +65,8 @@
   color: var(--ion-color-primary);
 }
 
-.session-track-angular {
-  color: var(--ion-color-angular);
+.session-track-vue {
+  color: var(--ion-color-vue);
 }
 
 .session-track-communication {
