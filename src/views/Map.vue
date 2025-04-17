@@ -49,6 +49,16 @@ import {
 } from "@ionic/vue";
 import L from 'leaflet';
 import { Location } from '@/store/modules/locations';
+import 'leaflet/dist/leaflet.css';
+import markerIconUrl from 'leaflet/dist/images/marker-icon.png';
+import markerIconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
+import markerShadowUrl from 'leaflet/dist/images/marker-shadow.png';
+
+// Fix for marker icons in Vite
+L.Icon.Default.prototype.options.iconUrl = markerIconUrl;
+L.Icon.Default.prototype.options.iconRetinaUrl = markerIconRetinaUrl;
+L.Icon.Default.prototype.options.shadowUrl = markerShadowUrl;
+L.Icon.Default.imagePath = '';
 
 export default defineComponent({
   name: 'MapView',
