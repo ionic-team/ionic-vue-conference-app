@@ -208,6 +208,7 @@ import { ref, onMounted, watch, computed } from "vue";
 import { useStore } from "vuex";
 import SessionListFilter from "./SessionListFilter.vue";
 import { getMode } from '@ionic/core/components';
+import { Session } from '@/store/modules/sessions';
 
 import {
   IonPage,
@@ -258,18 +259,6 @@ type GroupedSession = {
   hide?: boolean;
 };
 
-type Session = {
-  id: number;
-  timeStart: string;
-  timeEnd: string;
-  name: string;
-  location: string;
-  description: string;
-  speakerIds: number[];
-  tracks: string[];
-  hide?: boolean;
-};
-
 const showSearchbar = ref(false);
 const isIos = computed(() => {
   return getMode() === 'ios';
@@ -298,26 +287,20 @@ const groupedByStartTime = (sessions: Session[]): GroupedSession[] => {
 
   const groups: { [key: string]: Session[] } = {};
 
-  // Group sessions by hour blocks but use first session's time as heading
+  // Group sessions by their group time
   sortedSessions.forEach(session => {
-    const startTime = new Date(`1970-01-01 ${session.timeStart}`);
-    const hour = startTime.getHours();
-
-    // Create a key for the hour block (e.g., "8" for 8:00-8:59)
-    const hourKey = hour.toString();
-
-    if (!groups[hourKey]) {
-      // Use the first session's actual start time as the group heading
-      groups[hourKey] = [];
+    const groupTime = session.groupTime;
+    if (!groups[groupTime]) {
+      groups[groupTime] = [];
     }
-    groups[hourKey].push(session);
+    groups[groupTime].push(session);
   });
 
-  // Convert groups object to array format, using first session's time as display time
-  return Object.entries(groups).map(([_, sessions]) => ({
-    startTime: sessions[0].timeStart,
+  // Convert groups object to array format, using the group time as the heading
+  return Object.entries(groups).map(([groupTime, sessions]) => ({
+    startTime: groupTime,
     sessions,
-    id: sessions[0].timeStart
+    id: groupTime
   }));
 };
 

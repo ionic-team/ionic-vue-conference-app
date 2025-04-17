@@ -11,6 +11,8 @@ export interface Session {
   speakerIds: number[];
   tracks: string[];
   selectedTrackFilters: string[];
+  groupTime: string;
+  hide?: boolean;
 }
 
 export interface SessionState {
@@ -112,7 +114,8 @@ const sessionStore: Module<SessionState, {}> = {
               description: session.description || '',
               speakerIds: (session.speakerNames || []).map((name: string) => speakerNameToId.get(name)),
               tracks: session.tracks,
-              selectedTrackFilters: []
+              selectedTrackFilters: [],
+              groupTime: group.time
             }))
           );
           commit('updateSessions', sessions);
