@@ -135,6 +135,7 @@ import { useStore } from '@/store';
 import { useRoute } from 'vue-router';
 import router from '@/router';
 import { Storage } from '@ionic/storage';
+import { menuController } from '@ionic/vue';
 
 import {
   IonContent,
@@ -209,8 +210,10 @@ export default defineComponent({
     }
 
     const openTutorial = async () => {
+      await storage.create();
       await storage.set('ion_did_tutorial', false);
-      await router.push({ name: 'tutorial' });
+      await menuController.enable(false);
+      await router.push('/tutorial');
     }
 
     const logout = () => {

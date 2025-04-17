@@ -41,10 +41,6 @@ import "@ionic/vue/css/palettes/dark.class.css";
 /* Leaflet CSS */
 import 'leaflet/dist/leaflet.css';
 
-import { register } from 'swiper/element/bundle';
-
-register();
-
 const app = createApp(App)
 .use(IonicVue)
 .use(router)
