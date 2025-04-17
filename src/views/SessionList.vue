@@ -1,5 +1,5 @@
 <template>
-  <ion-page>
+  <ion-page ref="page">
     <ion-header :translucent="true">
       <ion-toolbar>
         <ion-buttons v-if="!showSearchbar" slot="start">
@@ -265,6 +265,8 @@ const allGroupedComputed = computed(() => {
 });
 
 const slidingItem = ref(null);
+const page = ref<InstanceType<typeof IonPage> | null>(null);
+const presentingElement = ref<HTMLElement | null>(null);
 
 const groupedByStartTime = (sessions: Session[]): GroupedSession[] => {
   const sortedSessions = [...sessions].sort(
@@ -380,9 +382,11 @@ const goToSessionDetail = (session: any) => {
 };
 
 const presentFilter = async () => {
+  if (!presentingElement.value) return;
+
   const modal = await modalController.create({
     component: SessionListFilter,
-    presentingElement: IonRouterOutlet.nativeEl,
+    presentingElement: presentingElement.value,
     componentProps: {
       excludedTracks: store.state.sessions.trackFilters,
       allTracks: store.getters.allTracksFilter,
@@ -426,6 +430,9 @@ const checkAndLoadData = async () => {
 onMounted(() => {
   menuController.enable(true);
   checkAndLoadData();
+  if (page.value) {
+    presentingElement.value = page.value.$el;
+  }
   watch(
     () => store.getters.allFiltered,
     (newAllFiltered) => {
