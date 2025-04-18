@@ -1,7 +1,9 @@
 {
   "name": "ionic-conference-app-vue",
-  "version": "0.1.0",
-  "private": true,
+  "version": "0.0.0",
+  "description": "Ionic Conference App",
+  "author": "Ionic Team <hi@ionicframework.com>",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -20,9 +22,10 @@
     "@ionic/storage": "^4.0.0",
     "@ionic/vue": "^8.0.0",
     "@ionic/vue-router": "^8.0.0",
+    "@types/leaflet": "^1.9.17",
     "date-fns": "^2.30.0",
     "ionicons": "^7.0.0",
-    "swiper": "^10.3.0",
+    "leaflet": "^1.9.4",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0",
     "vuex": "^4.1.0"
@@ -41,6 +44,5 @@
     "vite": "^4.3.9",
     "vitest": "^0.32.2",
     "vue-tsc": "^1.0.24"
-  },
-  "description": "An Ionic project"
+  }
 }

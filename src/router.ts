@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
 import store from './store';
+import { IonicVue } from '@ionic/vue';
+import { App } from 'vue';
 
 const privateRoute: RouteRecordRaw['beforeEnter'] = function(to, from, next) {
   if (!store.state.user.isAuthenticated) {
@@ -8,6 +10,20 @@ const privateRoute: RouteRecordRaw['beforeEnter'] = function(to, from, next) {
   } else {
     next();
   }
+};
+
+const ensureSessionData: RouteRecordRaw['beforeEnter'] = async function(to, from, next) {
+  if (store.state.sessions.sessions.length === 0) {
+    await store.dispatch("loadSessionData");
+  }
+  next();
+};
+
+const ensureSpeakerData: RouteRecordRaw['beforeEnter'] = async function(to, from, next) {
+  if (store.state.speakers.speakers.length === 0) {
+    await store.dispatch("loadSpeakerData");
+  }
+  next();
 };
 
 const routes: Array<RouteRecordRaw> = [
@@ -54,9 +70,9 @@ const routes: Array<RouteRecordRaw> = [
       {
         name: 'session-detail',
         path: 'schedule/session/:sessionId',
-        component: () => import('@/views/SessionDetail.vue')
+        component: () => import('@/views/SessionDetail.vue'),
+        beforeEnter: ensureSessionData
       },
-
       {
         path: 'speakers',
         name: 'speakers',
@@ -65,12 +81,14 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'speakers/speaker/:speakerId',
         name: 'speaker-detail',
-        component: () => import('@/views/SpeakerDetail.vue')
+        component: () => import('@/views/SpeakerDetail.vue'),
+        beforeEnter: ensureSpeakerData
       },
       {
         path: 'speakers/session/:sessionId',
         name: 'speaker-session-detail',
-        component: () => import('@/views/SessionDetail.vue')
+        component: () => import('@/views/SessionDetail.vue'),
+        beforeEnter: ensureSessionData
       },
       {
         path: 'map',
@@ -88,9 +106,16 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  // @ts-ignore
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(),
   routes
 });
+
+export function configureRouter(app: App) {
+  app.use(router);
+  app.use(IonicVue, {
+    maxPageCacheSize: 10
+  });
+  return router;
+}
 
 export default router;

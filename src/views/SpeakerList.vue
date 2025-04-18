@@ -1,11 +1,11 @@
 <template>
   <ion-page>
-    <ion-header :translucent="true">
+    <ion-header>
       <ion-toolbar>
-        <ion-title>Speakers</ion-title>
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
+        <ion-title>Speakers</ion-title>
       </ion-toolbar>
     </ion-header>
 
@@ -15,110 +15,82 @@
           <ion-title size="large">Speakers</ion-title>
         </ion-toolbar>
       </ion-header>
-      <ion-list>
-        <ion-grid fixed>
-          <ion-row align-items-stretch>
-            <ion-col
-              size="12"
-              size-md="6"
-              v-for="speaker in speakers"
-              :key="speaker.id"
-            >
-              <ion-card class="speaker-card">
-                <ion-card-header>
+
+      <ion-grid fixed>
+        <ion-row>
+          <ion-col
+            v-for="speaker in speakers"
+            :key="speaker.id"
+            size="12"
+            size-md="6"
+          >
+            <ion-card class="speaker-card">
+              <ion-card-header>
+                <ion-item
+                  :detail="false"
+                  lines="none"
+                  class="speaker-item"
+                  button
+                  @click="navigateToSpeaker(speaker.id)"
+                >
+                  <ion-avatar slot="start">
+                    <img
+                      :src="speaker.profilePic"
+                      :alt="speaker.name + ' profile picture'"
+                    />
+                  </ion-avatar>
+                  <ion-label>
+                    <h2>{{ speaker.name }}</h2>
+                    <p>{{ speaker.title }}</p>
+                  </ion-label>
+                </ion-item>
+              </ion-card-header>
+
+              <ion-card-content>
+                <ion-list lines="none">
                   <ion-item
+                    v-for="session in sessionsBySpeaker(speaker.id)"
+                    :key="session.id"
                     :detail="false"
-                    lines="none"
                     button
-                    @click="goToSpeakerDetail(speaker)"
+                    @click="navigateToSession(session.id)"
                   >
-                    <ion-avatar slot="start">
-                      <img
-                        :src="speaker.profilePic"
-                        alt="Speaker profile pic"
-                      />
-                    </ion-avatar>
                     <ion-label>
-                      <h2>{{ speaker.name }}</h2>
-                      <p>{{ speaker.title }}</p>
+                      <h3>{{ session.name }}</h3>
                     </ion-label>
                   </ion-item>
-                </ion-card-header>
 
-                <ion-card-content>
-                  <ion-list lines="none">
-                    <ion-item
-                      v-for="session in sessionsBySpeaker(speaker.id)"
-                      button
-                      @click="goToSessionDetail(session)"
-                      :key="session.id"
-                    >
-                      <h3>{{ session.name }}</h3>
-                    </ion-item>
-
-                    <ion-item button @click="goToSpeakerDetail(speaker)">
+                  <ion-item
+                    :detail="false"
+                    button
+                    @click="navigateToSpeaker(speaker.id)"
+                  >
+                    <ion-label>
                       <h3>About {{ speaker.name }}</h3>
-                    </ion-item>
-                  </ion-list>
-                </ion-card-content>
-
-                <ion-row no-padding justify-content-center>
-                  <ion-col text-left size="4">
-                    <ion-button
-                      fill="clear"
-                      size="small"
-                      color="primary"
-                      @click="gotToOffsite('Tweet')"
-                    >
-                      <ion-icon :icon="logoTwitter" slot="start"></ion-icon
-                      >Tweet
-                    </ion-button>
-                  </ion-col>
-                  <ion-col text-center size="4">
-                    <ion-button
-                      fill="clear"
-                      size="small"
-                      color="primary"
-                      @click="gotToOffsite('Share')"
-                    >
-                      <ion-icon :icon="share" slot="start"></ion-icon>Share
-                    </ion-button>
-                  </ion-col>
-                  <ion-col text-right size="4">
-                    <ion-button
-                      fill="clear"
-                      size="small"
-                      color="primary"
-                      @click="gotToOffsite('Contact')"
-                    >
-                      <ion-icon :icon="chatbubbles" slot="start"></ion-icon
-                      >Contact
-                    </ion-button>
-                  </ion-col>
-                </ion-row>
-              </ion-card>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-list>
+                    </ion-label>
+                  </ion-item>
+                </ion-list>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { onMounted, computed } from "vue";
 import { Speaker } from "@/store/modules/speakers";
 import { Session } from "@/store/modules/sessions";
-import { useRouter } from "vue-router";
 import { useStore } from "@/store";
+import { useRouter } from 'vue-router';
 import {
   IonPage,
   IonHeader,
   IonToolbar,
   IonButtons,
   IonMenuButton,
-  IonButton,
-  IonIcon,
   IonContent,
   IonList,
   IonItem,
@@ -131,40 +103,82 @@ import {
   IonCardContent,
   IonCardHeader,
   IonAvatar,
-  loadingController,
 } from "@ionic/vue";
-import { share, logoTwitter, chatbubbles } from "ionicons/icons";
 
-const store = useStore();
 const router = useRouter();
-const speakers = computed(() => store.state.speakers.speakers.concat().sort());
+const store = useStore();
+const speakers = computed(() =>
+  store.state.speakers.speakers.concat().sort((a, b) => a.name.localeCompare(b.name))
+);
 
 const sessionsBySpeaker = (speakerId: number) => {
-  return store.state.sessions.sessions.filter((s: Session) =>
-    s.speakerIds.includes(speakerId)
+  return store.state.sessions.sessions.filter((session: Session) =>
+    session.speakerIds.includes(speakerId)
   );
 };
 
-const goToSessionDetail = (session: Session) => {
-  router.push({
-    name: "speaker-session-detail",
-    params: { sessionId: session.id.toString() },
-  });
+const navigateToSpeaker = (id: number) => {
+  router.push(`/tabs/speakers/speaker/${id}`);
 };
 
-const goToSpeakerDetail = (speaker: Speaker) => {
-  router.push({
-    name: "speaker-detail",
-    params: { speakerId: speaker.id.toString() },
-  });
+const navigateToSession = (id: number) => {
+  router.push(`/tabs/speakers/session/${id}`);
 };
 
-const gotToOffsite = async (msg: string) => {
-  const loading = await loadingController.create({
-    message: msg,
-    duration: Math.random() * 1000 + 500,
-  });
-  await loading.present();
-  await loading.onWillDismiss();
-};
+onMounted(async () => {
+  // Only load data if it's not already loaded
+  if (store.state.speakers.speakers.length === 0) {
+    await store.dispatch("loadSpeakerData");
+  }
+  if (store.state.sessions.sessions.length === 0) {
+    await store.dispatch("loadSessionData");
+  }
+});
 </script>
+
+<style scoped>
+.speaker-card {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Due to the fact the cards are inside of columns the margins don't overlap
+ * properly so we want to remove the extra margin between cards
+ */
+ion-col:not(:last-of-type) .speaker-card {
+  margin-bottom: 0;
+}
+
+.speaker-card .speaker-item {
+  --min-height: 85px;
+}
+
+.speaker-card .speaker-item h2 {
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.speaker-card .speaker-item p {
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+.speaker-card ion-card-header {
+  padding: 0;
+}
+
+.speaker-card ion-card-content {
+  flex: 1 1 auto;
+  padding: 0;
+}
+
+.ios ion-list {
+  margin-bottom: 10px;
+}
+
+.md ion-list {
+  padding: 0;
+  border-top: 1px solid var(--ion-color-step-150, #d7d8da);
+}
+</style>

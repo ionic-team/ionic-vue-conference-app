@@ -1,16 +1,18 @@
 import { Module } from 'vuex';
-import { parse as parseDate } from 'date-fns';
+import { parse as parseDate, format as formatDate } from 'date-fns';
 
 export interface Session {
   id: number;
-  dateTimeStart: string;
-  dateTimeEnd: string;
+  timeStart: string;
+  timeEnd: string;
   name: string;
   location: string;
   description: string;
   speakerIds: number[];
   tracks: string[];
   selectedTrackFilters: string[];
+  groupTime: string;
+  hide?: boolean;
 }
 
 export interface SessionState {
@@ -21,6 +23,7 @@ export interface SessionState {
   tracks: any[];
   selectedTrackFilters: string[];
   isFirstLoad: boolean;
+  schedule: any[];
 }
 
 export interface SessionGroup {
@@ -36,7 +39,8 @@ const defaultState: SessionState = {
   favoriteSessions: [],
   tracks: [],
   selectedTrackFilters: [],
-  isFirstLoad: true
+  isFirstLoad: true,
+  schedule: []
 }
 
 const sessionStore: Module<SessionState, {}> = {
@@ -44,6 +48,9 @@ const sessionStore: Module<SessionState, {}> = {
   mutations: {
     updateSessions(state, sessions: Session[]) {
       state.sessions = sessions;
+    },
+    updateSchedule(state, schedule: any[]) {
+      state.schedule = schedule;
     },
     setSearchText(state, searchText: string) {
       state.searchText = searchText;
@@ -81,8 +88,8 @@ const sessionStore: Module<SessionState, {}> = {
     },
   },
   actions: {
-    loadSessionData({ commit }) {
-      return fetch('/data/sessions.json')
+    loadSessionData({ commit, state }) {
+      return fetch('/data/data.json')
         .then(response => {
           if (!response.ok) {
             throw Error(`HTTP error! Status: ${response.status}`);
@@ -90,26 +97,54 @@ const sessionStore: Module<SessionState, {}> = {
           return response.json();
         })
         .then(data => {
-          commit('updateSessions', data);
+          commit('updateSchedule', data.schedule);
+
+          // Create a map of speaker names to IDs
+          const speakerNameToId = new Map(
+            data.speakers.map((s: any) => [s.name, parseInt(s.id)])
+          );
+
+          const sessions = data.schedule[0].groups.flatMap((group: any) =>
+            group.sessions.map((session: any) => ({
+              id: parseInt(session.id),
+              timeStart: session.timeStart,
+              timeEnd: session.timeEnd,
+              name: session.name,
+              location: session.location,
+              description: session.description || '',
+              speakerIds: (session.speakerNames || []).map((name: string) => speakerNameToId.get(name)),
+              tracks: session.tracks,
+              selectedTrackFilters: [],
+              groupTime: group.time
+            }))
+          );
+          commit('updateSessions', sessions);
+
+          // If this is the first load, initialize all tracks as selected
+          if (state.isFirstLoad) {
+            const allTracks = [...new Set(sessions.flatMap((s: Session) => s.tracks))];
+            commit('updateTrackFilters', allTracks);
+            commit('setFirstLoad', false);
+          }
         })
         .catch(error => {
           console.error('Error loading session data:', error);
         });
     },
     fetchTracks({ commit }) {
-      return fetch('/data/tracks.json')
-      .then(response => {
-        if (!response.ok) {
-          throw Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        commit('setTracks', data);
-      })
-      .catch(error => {
-        console.error('Error loading session data:', error);
-      });
+      return fetch('/data/data.json')
+        .then(response => {
+          if (!response.ok) {
+            throw Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          commit('setTracks', data.tracks);
+        })
+        .catch(error => {
+          console.error('Error loading tracks data:', error);
+        });
     },
     setSearchText({ commit }, searchText: string) {
       commit('setSearchText', searchText)
@@ -134,17 +169,17 @@ const sessionStore: Module<SessionState, {}> = {
     },
     setSelectedTrackFilters({ commit }, trackFilters) {
       commit('updateSelectedTrackFilters', trackFilters);
-    },
+    }
   },
   getters: {
     conferenceStart(state) {
       const firstSession = state.sessions
         .concat()
         .sort((a, b) => (
-          parseDate(a.dateTimeStart, 'yyyy-MM-dd HH:mm:ss', new Date()).valueOf() -
-          parseDate(b.dateTimeStart, 'yyyy-MM-dd HH:mm:ss', new Date()).valueOf()
+          parseDate(a.timeStart, 'HH:mm:ss', new Date()).valueOf() -
+          parseDate(b.timeStart, 'HH:mm:ss', new Date()).valueOf()
         ))[0];
-      return firstSession ? firstSession.dateTimeStart : null;
+      return firstSession ? firstSession.timeStart : null;
     },
     allTracks(state) {
       return state.sessions
@@ -153,28 +188,43 @@ const sessionStore: Module<SessionState, {}> = {
         .sort();
     },
     allTracksFilter(state) {
-      return state.tracks;
+      return state.tracks
+        ? state.tracks.slice().sort((a, b) => a.name.localeCompare(b.name))
+        : [];
     },
     allFiltered(state) {
-      let searchSessions = searchText(state.searchText);
-      let searchTracks = filterByTrack(state.trackFilters);
+      return state.sessions.filter((session: Session) => {
+        // If no tracks are selected, show no sessions
+        if (state.trackFilters.length === 0) return false;
 
-      return state.sessions
-        .filter(searchSessions)
-        .filter(searchTracks);
+        // Check if session matches track filters
+        const matchesTracks = session.tracks.every(track => state.trackFilters.includes(track));
+
+        // Check if session matches search text
+        const matchesSearch = state.searchText
+          ? session.name.toLowerCase().includes(state.searchText.toLowerCase())
+          : true;
+
+        return matchesTracks && matchesSearch;
+      });
     },
     favoritesFiltered(state) {
-      let searchSessions = searchText(state.searchText);
-      let searchTracks = filterByTrack(state.trackFilters);
+      return state.sessions.filter((session: Session) => {
+        if (!state.favoriteSessions.includes(session.id)) return false;
 
-      function isFavorite(session: Session) {
-        return state.favoriteSessions.indexOf(session.id) !== -1;
-      }
+        // If no tracks are selected, show no sessions
+        if (state.trackFilters.length === 0) return false;
 
-      return state.sessions
-        .filter(isFavorite)
-        .filter(searchSessions)
-        .filter(searchTracks);
+        // Check if session matches track filters
+        const matchesTracks = session.tracks.every(track => state.trackFilters.includes(track));
+
+        // Check if session matches search text
+        const matchesSearch = state.searchText
+          ? session.name.toLowerCase().includes(state.searchText.toLowerCase())
+          : true;
+
+        return matchesTracks && matchesSearch;
+      });
     }
   }
 };

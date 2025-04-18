@@ -10,6 +10,14 @@
 .support-logo img {
   max-width: 150px;
 }
+
+.list {
+  margin-bottom: 0;
+}
+
+.support-form {
+  padding: 16px;
+}
 </style>
 
 <template>
@@ -23,36 +31,37 @@
       </ion-toolbar>
     </ion-header>
 
-    <ion-content class="ion-padding">
+    <ion-content>
       <div class="support-logo">
-        <img src="../../public/assets/img/appicon.svg" alt="Ionic Logo" />
+        <img src="/assets/img/appicon.svg" alt="Ionic Logo" />
       </div>
-      <form novalidate @submit="submitForm">
-        <ion-textarea
-          label="Support Message"
-          labelPlacement="floating"
-          fill="outline"
-          placeholder="Message..."
-          v-model="supportMessage"
-          name="supportQuestion"
-          :rows="6"
-          required
-        ></ion-textarea>
-        <div class="ion-padding-top">
-          <ion-button expand="block" type="submit">Submit</ion-button>
-        </div>
-      </form>
-      <ion-toast
-        :is-open="showToast"
-        :message="toastMessage"
-        :duration="2000"
-      ></ion-toast>
+
+      <div class="support-form">
+        <form @submit.prevent="submit" novalidate>
+          <ion-textarea
+            label="Enter your support message below"
+            labelPlacement="stacked"
+            fill="solid"
+            v-model="supportMessage"
+            name="supportQuestion"
+            rows="6"
+            :error-text="submitted && !supportMessage ? 'Support message is required' : ''"
+            required
+          ></ion-textarea>
+
+          <ion-row>
+            <ion-col>
+              <ion-button expand="block" type="submit">Submit</ion-button>
+            </ion-col>
+          </ion-row>
+        </form>
+      </div>
     </ion-content>
   </ion-page>
 </template>
 
-<script lang="ts" setup>
-import { computed, ref, onMounted } from "vue";
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import {
   IonPage,
   IonHeader,
@@ -61,35 +70,36 @@ import {
   IonMenuButton,
   IonButton,
   IonContent,
-  IonList,
-  IonItem,
   IonTitle,
-  IonLabel,
   IonTextarea,
-  IonToast,
-} from "@ionic/vue";
+  IonRow,
+  IonCol,
+  toastController,
+} from '@ionic/vue';
 
-const supportMessage = ref("");
+const supportMessage = ref('');
 const submitted = ref(false);
 
-const showToast = ref(false);
-const toastMessage = ref("");
+onMounted(async () => {
+  const toast = await toastController.create({
+    message: 'This does not actually send a support request.',
+    duration: 3000,
+  });
+  await toast.present();
+});
 
-const canSubmit = computed(() => supportMessage.value.trim() !== "");
-
-const submitForm = (event: any) => {
-  event.preventDefault();
+const submit = async () => {
   submitted.value = true;
 
-  if (canSubmit) {
-    toastMessage.value = "Successfully sent support message!";
-    showToast.value = true;
-    supportMessage.value = "";
+  if (supportMessage.value) {
+    supportMessage.value = '';
+    submitted.value = false;
+
+    const toast = await toastController.create({
+      message: 'Your support request has been sent.',
+      duration: 3000,
+    });
+    await toast.present();
   }
 };
-
-onMounted(() => {
-  toastMessage.value = "This does not actually send a support request.";
-  showToast.value = true;
-});
 </script>
