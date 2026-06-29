@@ -140,7 +140,7 @@ export default defineComponent({
       }
     });
 
-    watch(() => locations.value, (newLocations) => {
+    watch(() => locations.value, () => {
       if (map.value) {
         initializeMap();
       }

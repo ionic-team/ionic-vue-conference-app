@@ -27,7 +27,7 @@ export default defineComponent({
     Menu,
   },
   setup() {
-    let dark: Ref<boolean> = ref(false);
+    const dark: Ref<boolean> = ref(false);
     const route = useRoute();
     const store = useStore();
 

@@ -44,7 +44,7 @@
             fill="solid"
             v-model="supportMessage"
             name="supportQuestion"
-            rows="6"
+            :rows="6"
             :error-text="submitted && !supportMessage ? 'Support message is required' : ''"
             required
           ></ion-textarea>

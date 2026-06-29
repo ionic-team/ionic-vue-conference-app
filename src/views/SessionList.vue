@@ -229,7 +229,6 @@ import {
   modalController,
   loadingController,
   menuController,
-  IonRouterOutlet,
 } from "@ionic/vue";
 import {
   shareSocial,
@@ -240,7 +239,6 @@ import {
   options,
   search,
 } from "ionicons/icons";
-import { useIonRouter } from "@ionic/vue";
 
 type GroupedSession = {
   id: string;
@@ -258,7 +256,6 @@ const segment = ref("all");
 const queryText = ref("");
 const fab = ref<HTMLIonFabElement | null>(null);
 const store = useStore();
-const ionRouter = useIonRouter();
 const allGroupedRef = ref<GroupedSession[]>([]);
 const allGroupedComputed = computed(() => {
   return allGroupedRef.value;
@@ -308,24 +305,6 @@ watch(allGrouped, (newValue) => {
   allGroupedRef.value = newValue;
 });
 
-// Simulate dispatching the action
-const addTrackFilter = (trackName: string) => {
-  store.dispatch("addTrackFilter", trackName);
-};
-
-// Simulate dispatching the action
-const removeTrackFilter = (trackName: string) => {
-  store.dispatch("removeTrackFilter", trackName);
-};
-
-const getLabelStyle = (track: any) => {
-  let colorVar = track === "Ionic" ? "primary" : track.toLowerCase();
-  return {
-    borderLeft: `2px solid var(--ion-color-${colorVar})`,
-    paddingLeft: "10px",
-  };
-};
-
 const addFavorite = async (event: any, session: any) => {
   if (store.state.sessions.favoriteSessions.indexOf(session.id) !== -1) {
     removeFavorite(event, session, "Favorite already added");
@@ -372,13 +351,6 @@ const removeFavorite = async (event: any, session: any, title: any) => {
     ],
   });
   await alert.present();
-};
-
-const goToSessionDetail = (session: any) => {
-  ionRouter.push({
-    name: "session-detail",
-    params: { sessionId: session.id.toString() },
-  });
 };
 
 const presentFilter = async () => {

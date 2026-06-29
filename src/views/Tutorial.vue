@@ -146,7 +146,6 @@ import {
   useIonRouter,
 } from '@ionic/vue';
 import { arrowForward } from 'ionicons/icons';
-import router from '@/router';
 import { Storage } from '@ionic/storage';
 
 const ionRouter = useIonRouter();
