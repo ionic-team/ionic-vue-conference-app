@@ -5,7 +5,7 @@
         <ion-list-header>
           Conference
         </ion-list-header>
-        <ion-menu-toggle :auto-hide="false" v-for="p in appPages" :key="p.title">
+        <ion-menu-toggle :auto-hide="false" v-for="p in appPages" :key="p.title + '|' + currentPath">
           <ion-item
             button
             :detail="false"
@@ -132,7 +132,6 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, watch } from 'vue';
 import { useStore } from '@/store';
-import { useRoute } from 'vue-router';
 import router from '@/router';
 import { Storage } from '@ionic/storage';
 import { menuController } from '@ionic/vue';
@@ -185,13 +184,13 @@ export default defineComponent({
   emits: ['dark-mode-changed'],
   setup(props, { emit }) {
     const store = useStore();
-    const route = useRoute();
     const localDark = ref(false);
     const loggedIn = ref(false);
     const storage = new Storage();
 
+    const currentPath = computed(() => router.currentRoute.value.path);
     const isSelected = (path: string) => {
-      return route.path.startsWith(path);
+      return currentPath.value.startsWith(path);
     };
 
     watch(localDark, (newVal) => {
@@ -231,7 +230,8 @@ export default defineComponent({
       logout,
       loggedIn,
       updateDarkMode,
-      isSelected
+      isSelected,
+      currentPath
     };
   },
   data() {
