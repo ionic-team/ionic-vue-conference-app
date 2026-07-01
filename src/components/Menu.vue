@@ -24,7 +24,7 @@
         <ion-list-header>
           Account
         </ion-list-header>
-        <ion-menu-toggle :auto-hide="false">
+        <ion-menu-toggle :auto-hide="false" :key="'/account|' + currentPath">
           <ion-item
             button
             :detail="false"
@@ -38,7 +38,7 @@
             </ion-label>
           </ion-item>
         </ion-menu-toggle>
-        <ion-menu-toggle :auto-hide="false">
+        <ion-menu-toggle :auto-hide="false" :key="'/support|' + currentPath">
           <ion-item
             button
             :detail="false"
@@ -65,7 +65,7 @@
         <ion-list-header>
           Account
         </ion-list-header>
-        <ion-menu-toggle :auto-hide="false">
+        <ion-menu-toggle :auto-hide="false" :key="'/login|' + currentPath">
           <ion-item
             button
             :detail="false"
@@ -79,7 +79,7 @@
             </ion-label>
           </ion-item>
         </ion-menu-toggle>
-        <ion-menu-toggle :auto-hide="false">
+        <ion-menu-toggle :auto-hide="false" :key="'/support|' + currentPath">
           <ion-item
             button
             :detail="false"
@@ -93,7 +93,7 @@
             </ion-label>
           </ion-item>
         </ion-menu-toggle>
-        <ion-menu-toggle :auto-hide="false">
+        <ion-menu-toggle :auto-hide="false" :key="'/signup|' + currentPath">
           <ion-item
             button
             :detail="false"
