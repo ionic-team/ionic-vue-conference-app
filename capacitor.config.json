@@ -1,6 +1,5 @@
 {
   "appId": "io.ionic.starter",
   "appName": "heelo",
-  "bundledWebRuntime": false,
   "webDir": "dist"
 }
