@@ -164,7 +164,6 @@ import {
   IonList,
   IonLabel,
   IonItem,
-  alertController,
   IonBackButton,
   IonText,
 } from '@ionic/vue';

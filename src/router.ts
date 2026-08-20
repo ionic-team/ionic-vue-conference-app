@@ -4,26 +4,25 @@ import store from './store';
 import { IonicVue } from '@ionic/vue';
 import { App } from 'vue';
 
-const privateRoute: RouteRecordRaw['beforeEnter'] = function(to, from, next) {
+const privateRoute: RouteRecordRaw['beforeEnter'] = function() {
   if (!store.state.user.isAuthenticated) {
-    next({ name: 'login' });
-  } else {
-    next();
+    return { name: 'login' };
   }
+  return true;
 };
 
-const ensureSessionData: RouteRecordRaw['beforeEnter'] = async function(to, from, next) {
+const ensureSessionData: RouteRecordRaw['beforeEnter'] = async function() {
   if (store.state.sessions.sessions.length === 0) {
     await store.dispatch("loadSessionData");
   }
-  next();
+  return true;
 };
 
-const ensureSpeakerData: RouteRecordRaw['beforeEnter'] = async function(to, from, next) {
+const ensureSpeakerData: RouteRecordRaw['beforeEnter'] = async function() {
   if (store.state.speakers.speakers.length === 0) {
     await store.dispatch("loadSpeakerData");
   }
-  next();
+  return true;
 };
 
 const routes: Array<RouteRecordRaw> = [
@@ -112,9 +111,7 @@ const router = createRouter({
 
 export function configureRouter(app: App) {
   app.use(router);
-  app.use(IonicVue, {
-    maxPageCacheSize: 10
-  });
+  app.use(IonicVue);
   return router;
 }
 

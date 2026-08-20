@@ -1,5 +1,5 @@
 import { Module } from 'vuex';
-import { parse as parseDate, format as formatDate } from 'date-fns';
+import { parse as parseDate } from 'date-fns';
 
 export interface Session {
   id: number;
@@ -228,24 +228,5 @@ const sessionStore: Module<SessionState, {}> = {
     }
   }
 };
-
-function searchText(searchText: string) {
-  if (!searchText) {
-    return () => true;
-  }
-  const lowerSearchText = searchText.toLowerCase();
-  return (session: Session) => session.name.toLowerCase().indexOf(lowerSearchText) !== -1;
-}
-
-function filterByTrack(trackFilters: string[]) {
-  if (trackFilters.length === 0) {
-    return () => true;
-  }
-  return (session: Session) => (
-    session.tracks.some(sessionTrackName => (
-      trackFilters.some(trackName => trackName === sessionTrackName)
-    ))
-  );
-}
 
 export default sessionStore;
