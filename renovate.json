@@ -7,28 +7,28 @@
   "dependencyDashboard": true,
   "packageRules": [
     {
-      "matchPackagePatterns": ["^@ionic/"],
+      "matchPackageNames": ["@ionic/**"],
       "minimumReleaseAge": "0 days",
       "groupName": "ionic"
     },
     {
-      "matchPackagePatterns": ["vue", "@vitejs/plugin-vue"],
+      "matchPackageNames": ["vue", "@vitejs/plugin-vue"],
       "groupName": "vue"
     },
     {
-      "matchPackagePatterns": ["^@capacitor/"],
+      "matchPackageNames": ["@capacitor/**"],
       "groupName": "capacitor"
     },
     {
-      "matchPackagePatterns": ["vite"],
+      "matchPackageNames": ["vite"],
       "groupName": "vite"
     },
     {
-      "matchPackagePatterns": ["vitest", "cypress", "@vue/test-utils"],
+      "matchPackageNames": ["vitest", "cypress", "@vue/test-utils"],
       "groupName": "testing"
     },
     {
-      "matchPackagePatterns": ["eslint", "typescript"],
+      "matchPackageNames": ["eslint", "typescript"],
       "groupName": "dev-tools"
     }
   ]
