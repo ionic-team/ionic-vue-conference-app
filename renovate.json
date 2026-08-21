@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base", ":semanticCommitTypeAll(chore)"],
+  "extends": ["config:recommended", ":semanticCommitTypeAll(chore)"],
   "minimumReleaseAge": "3 days",
   "schedule": ["every weekday before 11am"],
   "semanticCommits": "enabled",
@@ -12,7 +12,7 @@
       "groupName": "ionic"
     },
     {
-      "matchPackageNames": ["vue", "@vitejs/plugin-vue"],
+      "matchPackageNames": ["vue", "vuex"],
       "groupName": "vue"
     },
     {
@@ -20,15 +20,31 @@
       "groupName": "capacitor"
     },
     {
-      "matchPackageNames": ["vite"],
+      "matchPackageNames": ["leaflet", "@types/leaflet"],
+      "groupName": "leaflet"
+    },
+    {
+      "matchPackageNames": ["vite", "@vitejs/**", "terser"],
       "groupName": "vite"
     },
     {
-      "matchPackageNames": ["vitest", "cypress", "@vue/test-utils"],
+      "matchPackageNames": [
+        "vitest*",
+        "cypress*",
+        "@vue/test-utils",
+        "jsdom"
+      ],
       "groupName": "testing"
     },
     {
-      "matchPackageNames": ["eslint", "typescript"],
+      "matchPackageNames": [
+        "eslint",
+        "@eslint/**",
+        "eslint-plugin-*",
+        "@vue/eslint-config-typescript",
+        "typescript",
+        "vue-tsc"
+      ],
       "groupName": "dev-tools"
     }
   ]
