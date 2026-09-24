@@ -1,5 +1,11 @@
 {
   "appId": "io.ionic.starter",
   "appName": "ionic-vue-conference-app",
-  "webDir": "dist"
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": false,
+      "backgroundColor": "#ffffffff"
+    }
+  }
 }
