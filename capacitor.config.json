@@ -1,5 +1,12 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "heelo",
-  "webDir": "dist"
+  "appId": "io.ionic.conference.vue",
+  "appName": "ionic-vue-conference-app",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": false,
+      "backgroundColor": "#ffffffff",
+      "androidScaleType": "CENTER_CROP"
+    }
+  }
 }
