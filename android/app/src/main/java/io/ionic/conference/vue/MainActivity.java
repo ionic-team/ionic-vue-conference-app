@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package io.ionic.conference.vue;
 
 import com.getcapacitor.BridgeActivity;
 
