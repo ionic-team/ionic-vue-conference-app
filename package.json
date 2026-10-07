@@ -40,15 +40,15 @@
     "@vitejs/plugin-vue": "^6.0.7",
     "@vue/eslint-config-typescript": "^14.9.0",
     "@vue/test-utils": "^2.4.11",
-    "cypress": "^15.18.0",
+    "cypress": "^16.0.0",
     "eslint": "^9.39.0",
     "eslint-plugin-vue": "^10.9.2",
     "globals": "^17.7.0",
-    "jsdom": "^29.1.1",
+    "jsdom": "^30.0.0",
     "terser": "^5.16.0",
     "typescript": "^5.9.3",
     "vite": "^8.1.0",
-    "vitest": "^4.1.9",
+    "vitest": "^5.0.0",
     "vue-tsc": "^3.3.5"
   }
 }
