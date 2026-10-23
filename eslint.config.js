@@ -7,7 +7,7 @@ import globals from 'globals';
 export default [
   ...defineConfigWithVueTs(
     {
-      ignores: ['dist', 'node_modules', 'android', 'ios', 'build']
+      ignores: ['dist', 'node_modules', 'android', 'ios', 'build', 'playwright-report', 'test-results', 'blob-report']
     },
     js.configs.recommended,
     pluginVue.configs['flat/essential'],
@@ -15,6 +15,8 @@ export default [
   ),
   // Kept outside defineConfigWithVueTs: it treats `consistent-type-imports` as
   // type-aware and would turn on project-based parsing for every .ts file.
+  // Note: @ionic/eslint-config only targets .ts/.tsx files, so <script> blocks in
+  // .vue files get the Vue and TypeScript rules above but not the Ionic ones.
   ...ionic,
   {
     languageOptions: {
