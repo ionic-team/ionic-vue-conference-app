@@ -28,8 +28,6 @@ export default [
       'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
       'vue/no-deprecated-slot-attribute': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
-      // Ionic's base level; `recommended` makes it an error, which is meant for libraries.
-      '@typescript-eslint/explicit-module-boundary-types': 'warn',
       // Demo views are intentionally single-word ("About", "Menu", "Tabs", ...).
       'vue/multi-word-component-names': 'off',
       'vue/no-reserved-component-names': 'off',
