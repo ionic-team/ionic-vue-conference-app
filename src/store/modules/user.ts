@@ -1,4 +1,4 @@
-import { Module } from 'vuex';
+import type { Module } from 'vuex';
 
 export interface User {
   pictureLocation: string | null;
@@ -11,7 +11,7 @@ const defaultState: User = {
   pictureLocation: null,
   userName: null,
   isAuthenticated: false,
-  hasSeenTutorial: false
+  hasSeenTutorial: false,
 };
 
 const userStore: Module<User, {}> = {
@@ -56,7 +56,7 @@ const userStore: Module<User, {}> = {
     setHasSeenTutorial({ commit }, value: boolean) {
       commit('setHasSeenTutorial', value);
     },
-  }
+  },
 };
 
 export default userStore;

@@ -1,4 +1,4 @@
-import { Module } from 'vuex';
+import type { Module } from 'vuex';
 
 export interface Location {
   id: number;
@@ -15,12 +15,12 @@ export interface LocationState {
 const locationsModule: Module<LocationState, any> = {
   namespaced: true,
   state: {
-    locations: []
+    locations: [],
   },
   mutations: {
     setLocations(state, locations: Location[]) {
       state.locations = locations;
-    }
+    },
   },
   actions: {
     async loadLocations({ commit }) {
@@ -32,7 +32,7 @@ const locationsModule: Module<LocationState, any> = {
           // Add IDs to locations
           const locations = data.map.map((location: any, index: number) => ({
             ...location,
-            id: index + 1
+            id: index + 1,
           }));
           commit('setLocations', locations);
         } else {
@@ -47,12 +47,12 @@ const locationsModule: Module<LocationState, any> = {
             name: 'Monona Terrace Convention Center',
             lat: 43.071584,
             lng: -89.38012,
-            center: true
-          }
+            center: true,
+          },
         ]);
       }
-    }
-  }
+    },
+  },
 };
 
 export default locationsModule;

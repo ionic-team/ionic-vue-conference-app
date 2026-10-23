@@ -2,40 +2,34 @@
   <ion-menu content-id="main-content">
     <ion-content>
       <ion-list lines="none">
-        <ion-list-header>
-          Conference
-        </ion-list-header>
+        <ion-list-header> Conference </ion-list-header>
         <ion-menu-toggle :auto-hide="false" v-for="p in appPages" :key="p.title + '|' + currentPath">
           <ion-item
             button
             :detail="false"
             router-direction="root"
             :router-link="p.url"
-            :class="{ 'selected': isSelected(p.url) }"
+            :class="{ selected: isSelected(p.url) }"
           >
             <ion-icon slot="start" :icon="p.icon"></ion-icon>
             <ion-label>
-              {{p.title}}
+              {{ p.title }}
             </ion-label>
           </ion-item>
         </ion-menu-toggle>
       </ion-list>
       <ion-list v-if="loggedIn" lines="none">
-        <ion-list-header>
-          Account
-        </ion-list-header>
+        <ion-list-header> Account </ion-list-header>
         <ion-menu-toggle :auto-hide="false" :key="'/account|' + currentPath">
           <ion-item
             button
             :detail="false"
             router-direction="root"
             router-link="/account"
-            :class="{ 'selected': isSelected('/account') }"
+            :class="{ selected: isSelected('/account') }"
           >
             <ion-icon slot="start" :icon="ionIcons.person"></ion-icon>
-            <ion-label>
-              Account
-            </ion-label>
+            <ion-label> Account </ion-label>
           </ion-item>
         </ion-menu-toggle>
         <ion-menu-toggle :auto-hide="false" :key="'/support|' + currentPath">
@@ -44,39 +38,31 @@
             :detail="false"
             router-direction="root"
             router-link="/support"
-            :class="{ 'selected': isSelected('/support') }"
+            :class="{ selected: isSelected('/support') }"
           >
             <ion-icon slot="start" :icon="ionIcons.help"></ion-icon>
-            <ion-label>
-              Support
-            </ion-label>
+            <ion-label> Support </ion-label>
           </ion-item>
         </ion-menu-toggle>
         <ion-menu-toggle :auto-hide="false">
           <ion-item button :detail="false" @click="logout()">
             <ion-icon slot="start" :icon="ionIcons.logOut"></ion-icon>
-            <ion-label>
-              Logout
-            </ion-label>
+            <ion-label> Logout </ion-label>
           </ion-item>
         </ion-menu-toggle>
       </ion-list>
       <ion-list v-if="!loggedIn" lines="none">
-        <ion-list-header>
-          Account
-        </ion-list-header>
+        <ion-list-header> Account </ion-list-header>
         <ion-menu-toggle :auto-hide="false" :key="'/login|' + currentPath">
           <ion-item
             button
             :detail="false"
             router-direction="root"
             router-link="/login"
-            :class="{ 'selected': isSelected('/login') }"
+            :class="{ selected: isSelected('/login') }"
           >
             <ion-icon slot="start" :icon="ionIcons.logIn"></ion-icon>
-            <ion-label>
-              Login
-            </ion-label>
+            <ion-label> Login </ion-label>
           </ion-item>
         </ion-menu-toggle>
         <ion-menu-toggle :auto-hide="false" :key="'/support|' + currentPath">
@@ -85,12 +71,10 @@
             :detail="false"
             router-direction="root"
             router-link="/support"
-            :class="{ 'selected': isSelected('/support') }"
+            :class="{ selected: isSelected('/support') }"
           >
             <ion-icon slot="start" :icon="ionIcons.help"></ion-icon>
-            <ion-label>
-              Support
-            </ion-label>
+            <ion-label> Support </ion-label>
           </ion-item>
         </ion-menu-toggle>
         <ion-menu-toggle :auto-hide="false" :key="'/signup|' + currentPath">
@@ -99,25 +83,19 @@
             :detail="false"
             router-direction="root"
             router-link="/signup"
-            :class="{ 'selected': isSelected('/signup') }"
+            :class="{ selected: isSelected('/signup') }"
           >
             <ion-icon slot="start" :icon="ionIcons.personAdd"></ion-icon>
-            <ion-label>
-              Signup
-            </ion-label>
+            <ion-label> Signup </ion-label>
           </ion-item>
         </ion-menu-toggle>
         <ion-item>
           <ion-icon slot="start" :icon="ionIcons.moonOutline"></ion-icon>
-            <ion-toggle v-model="localDark" label-placement="start">
-              Dark Mode
-            </ion-toggle>
-          </ion-item>
+          <ion-toggle v-model="localDark" label-placement="start"> Dark Mode </ion-toggle>
+        </ion-item>
       </ion-list>
       <ion-list lines="none">
-        <ion-list-header>
-          Tutorial
-        </ion-list-header>
+        <ion-list-header> Tutorial </ion-list-header>
         <ion-menu-toggle :auto-hide="false">
           <ion-item button :detail="false" @click="openTutorial()">
             <ion-icon slot="start" :icon="ionIcons.hammer"></ion-icon>
@@ -152,13 +130,8 @@ import {
   IonToolbar,
   IonToggle,
 } from '@ionic/vue';
-import * as ionIcons from "ionicons/icons";
-import {
-  calendarOutline,
-  peopleOutline,
-  mapOutline,
-  informationCircleOutline
-} from "ionicons/icons";
+import * as ionIcons from 'ionicons/icons';
+import { calendarOutline, peopleOutline, mapOutline, informationCircleOutline } from 'ionicons/icons';
 
 export default defineComponent({
   name: 'Menu',
@@ -199,24 +172,23 @@ export default defineComponent({
 
     const updateDarkMode = (newDarkValue: boolean) => {
       emit('dark-mode-changed', newDarkValue);
-    }
+    };
 
     const isDarkMode = computed(() => store.getters.isDarkMode);
 
     const setLocalDarkMode = (newDarkValue: boolean) => {
       localDark.value = newDarkValue;
       updateDarkMode(newDarkValue);
-    }
+    };
 
     const openTutorial = async () => {
       await storage.create();
       await storage.set('ion_did_tutorial', false);
       await menuController.enable(false);
       await router.push('/tutorial');
-    }
+    };
 
-    const logout = () => {
-    }
+    const logout = () => {};
 
     onMounted(async () => {
       await storage.create();
@@ -231,7 +203,7 @@ export default defineComponent({
       loggedIn,
       updateDarkMode,
       isSelected,
-      currentPath
+      currentPath,
     };
   },
   data() {
@@ -246,26 +218,26 @@ export default defineComponent({
           title: 'Schedule',
           url: '/tabs/schedule',
           name: 'tabs.schedule',
-          icon: calendarOutline
+          icon: calendarOutline,
         },
         {
           title: 'Speakers',
           url: '/tabs/speakers',
-          icon: peopleOutline
+          icon: peopleOutline,
         },
         {
           title: 'Map',
           url: '/tabs/map',
-          icon: mapOutline
+          icon: mapOutline,
         },
         {
           title: 'About',
           url: '/tabs/about',
-          icon: informationCircleOutline
-        }
-      ]
+          icon: informationCircleOutline,
+        },
+      ],
     };
-  }
+  },
 });
 </script>
 
