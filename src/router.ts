@@ -1,61 +1,62 @@
-import { createRouter, createWebHistory } from '@ionic/vue-router';
-import { RouteRecordRaw } from 'vue-router';
-import store from './store';
 import { IonicVue } from '@ionic/vue';
-import { App } from 'vue';
+import { createRouter, createWebHistory } from '@ionic/vue-router';
+import type { App } from 'vue';
+import type { RouteRecordRaw } from 'vue-router';
 
-const privateRoute: RouteRecordRaw['beforeEnter'] = function() {
+import store from './store';
+
+const privateRoute: RouteRecordRaw['beforeEnter'] = function () {
   if (!store.state.user.isAuthenticated) {
     return { name: 'login' };
   }
   return true;
 };
 
-const ensureSessionData: RouteRecordRaw['beforeEnter'] = async function() {
+const ensureSessionData: RouteRecordRaw['beforeEnter'] = async function () {
   if (store.state.sessions.sessions.length === 0) {
-    await store.dispatch("loadSessionData");
+    await store.dispatch('loadSessionData');
   }
   return true;
 };
 
-const ensureSpeakerData: RouteRecordRaw['beforeEnter'] = async function() {
+const ensureSpeakerData: RouteRecordRaw['beforeEnter'] = async function () {
   if (store.state.speakers.speakers.length === 0) {
-    await store.dispatch("loadSpeakerData");
+    await store.dispatch('loadSpeakerData');
   }
   return true;
 };
 
-const routes: Array<RouteRecordRaw> = [
+const routes: RouteRecordRaw[] = [
   {
     path: '/tutorial',
     name: 'tutorial',
-    component: () => import('@/views/Tutorial.vue')
+    component: () => import('@/views/Tutorial.vue'),
   },
   {
     path: '/account',
     name: 'account',
     component: () => import('@/views/Account.vue'),
-    beforeEnter: privateRoute
+    beforeEnter: privateRoute,
   },
   {
     path: '/support',
     name: 'support',
-    component: () => import('@/views/Support.vue')
+    component: () => import('@/views/Support.vue'),
   },
   {
     path: '/login',
     name: 'login',
-    component: () => import('@/views/Login.vue')
+    component: () => import('@/views/Login.vue'),
   },
   {
     path: '/signup',
     name: 'signup',
-    component: () => import('@/views/Signup.vue')
+    component: () => import('@/views/Signup.vue'),
   },
   {
     path: '/tutorial',
     name: 'Tutorial',
-    component: () => import('@/views/Tutorial.vue')
+    component: () => import('@/views/Tutorial.vue'),
   },
   {
     path: '/tabs',
@@ -64,49 +65,49 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'schedule',
         name: 'schedule',
-        component: () => import('@/views/SessionList.vue')
+        component: () => import('@/views/SessionList.vue'),
       },
       {
         name: 'session-detail',
         path: 'schedule/session/:sessionId',
         component: () => import('@/views/SessionDetail.vue'),
-        beforeEnter: ensureSessionData
+        beforeEnter: ensureSessionData,
       },
       {
         path: 'speakers',
         name: 'speakers',
-        component: () => import('@/views/SpeakerList.vue')
+        component: () => import('@/views/SpeakerList.vue'),
       },
       {
         path: 'speakers/speaker/:speakerId',
         name: 'speaker-detail',
         component: () => import('@/views/SpeakerDetail.vue'),
-        beforeEnter: ensureSpeakerData
+        beforeEnter: ensureSpeakerData,
       },
       {
         path: 'speakers/session/:sessionId',
         name: 'speaker-session-detail',
         component: () => import('@/views/SessionDetail.vue'),
-        beforeEnter: ensureSessionData
+        beforeEnter: ensureSessionData,
       },
       {
         path: 'map',
         name: 'map',
-        component: () => import('@/views/Map.vue')
+        component: () => import('@/views/Map.vue'),
       },
       {
         path: 'about',
         name: 'about',
-        component: () => import('@/views/About.vue')
-      }
-    ]
+        component: () => import('@/views/About.vue'),
+      },
+    ],
   },
-  { path: '/', redirect: 'tutorial' }
+  { path: '/', redirect: 'tutorial' },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
 });
 
 export function configureRouter(app: App) {

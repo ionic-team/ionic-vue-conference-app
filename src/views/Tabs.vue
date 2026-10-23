@@ -29,21 +29,8 @@
 </template>
 
 <script lang="ts">
-import {
-  IonPage,
-  IonTabs,
-  IonRouterOutlet,
-  IonTabBar,
-  IonTabButton,
-  IonLabel,
-  IonIcon
-} from '@ionic/vue';
-import {
-  calendar,
-  people,
-  location,
-  informationCircle
-} from 'ionicons/icons';
+import { IonPage, IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonLabel, IonIcon } from '@ionic/vue';
+import { calendar, people, location, informationCircle } from 'ionicons/icons';
 
 export default {
   components: {
@@ -53,7 +40,7 @@ export default {
     IonTabBar,
     IonTabButton,
     IonLabel,
-    IonIcon
+    IonIcon,
   },
   data() {
     return {

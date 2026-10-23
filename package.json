@@ -11,7 +11,10 @@
     "preview": "vite preview",
     "test:e2e": "cypress run",
     "test:unit": "vitest",
-    "lint": "eslint"
+    "lint": "npm run eslint && npm run prettier -- --check",
+    "lint:fix": "npm run eslint -- --fix && npm run prettier -- --write",
+    "eslint": "eslint",
+    "prettier": "prettier \"**/*.{ts,vue}\""
   },
   "dependencies": {
     "@capacitor/android": "^8.0.0",
@@ -35,20 +38,24 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^8.0.0",
-    "@eslint/js": "^9.39.0",
+    "@eslint/js": "^10.0.1",
+    "@ionic/eslint-config": "^0.5.0",
+    "@ionic/prettier-config": "^4.0.0",
     "@vitejs/plugin-legacy": "^8.1.0",
     "@vitejs/plugin-vue": "^6.0.7",
     "@vue/eslint-config-typescript": "^14.9.0",
     "@vue/test-utils": "^2.4.11",
     "cypress": "^16.0.0",
-    "eslint": "^9.39.0",
-    "eslint-plugin-vue": "^10.9.2",
-    "globals": "^17.7.0",
+    "eslint": "^10.13.0",
+    "eslint-plugin-vue": "^10.11.1",
+    "globals": "^17.13.0",
     "jsdom": "^30.0.0",
+    "prettier": "^3.9.10",
     "terser": "^5.16.0",
     "typescript": "^5.9.3",
     "vite": "^8.1.0",
     "vitest": "^5.0.0",
     "vue-tsc": "^3.3.5"
-  }
+  },
+  "prettier": "@ionic/prettier-config"
 }

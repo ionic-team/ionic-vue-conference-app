@@ -1,4 +1,3 @@
-
 export const loadLocalStore = () => {
   try {
     const serializedState = localStorage.getItem('state');
@@ -9,7 +8,7 @@ export const loadLocalStore = () => {
   } catch {
     return undefined;
   }
-}
+};
 
 export const saveToLocalStore = (state: any) => {
   try {
@@ -18,4 +17,4 @@ export const saveToLocalStore = (state: any) => {
   } catch {
     //ignore errors
   }
-}
+};

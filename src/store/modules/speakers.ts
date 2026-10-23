@@ -1,5 +1,6 @@
-import { Module } from 'vuex';
-import { Session } from './sessions';
+import type { Module } from 'vuex';
+
+import type { Session } from './sessions';
 
 export interface Speaker {
   id: number;
@@ -22,7 +23,7 @@ export interface SpeakerState {
 
 const speakerStore: Module<SpeakerState, {}> = {
   state: {
-    speakers: []
+    speakers: [],
   },
   mutations: {
     updateSpeakers(state, speakers: Speaker[]) {
@@ -33,30 +34,34 @@ const speakerStore: Module<SpeakerState, {}> = {
     allSpeakers: (state): Speaker[] => state.speakers,
 
     // Get a specific speaker by ID
-    getSpeakerById: (state) => (id: number): Speaker | undefined => {
-      return state.speakers.find(speaker => speaker.id === id);
-    },
+    getSpeakerById:
+      (state) =>
+      (id: number): Speaker | undefined => {
+        return state.speakers.find((speaker) => speaker.id === id);
+      },
 
     // Get multiple speakers by their IDs
-    getSpeakersByIds: (state) => (ids: number[]): Speaker[] => {
-      return state.speakers.filter(speaker => ids.includes(speaker.id));
-    },
+    getSpeakersByIds:
+      (state) =>
+      (ids: number[]): Speaker[] => {
+        return state.speakers.filter((speaker) => ids.includes(speaker.id));
+      },
 
     // Get speakers sorted by name
     getSpeakersSortedByName: (state): Speaker[] => {
       return [...state.speakers].sort((a, b) => a.name.localeCompare(b.name));
-    }
+    },
   },
   actions: {
     loadSpeakerData({ commit }) {
       return fetch('/data/data.json')
-        .then(response => {
+        .then((response) => {
           if (!response.ok) {
             throw Error(`HTTP error! Status: ${response.status}`);
           }
           return response.json();
         })
-        .then(data => {
+        .then((data) => {
           const speakers = data.speakers.map((speaker: any): Speaker => ({
             id: parseInt(speaker.id),
             name: speaker.name || '',
@@ -69,17 +74,17 @@ const speakerStore: Module<SpeakerState, {}> = {
             location: speaker.location || '',
             email: speaker.email || '',
             phone: speaker.phone || '',
-            sessions: speaker.sessions || []
+            sessions: speaker.sessions || [],
           }));
           commit('updateSpeakers', speakers);
           return speakers;
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Error loading speaker data:', error);
           throw error;
         });
-    }
-  }
+    },
+  },
 };
 
 export default speakerStore;
