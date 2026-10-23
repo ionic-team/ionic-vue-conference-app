@@ -14,6 +14,8 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+    // Playwright e2e specs live in tests/e2e.
+    include: ['tests/unit/**/*.spec.ts'],
   },
   define: {
     __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'false',
