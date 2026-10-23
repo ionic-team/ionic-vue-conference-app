@@ -18,10 +18,7 @@
       </ion-header>
 
       <div class="speaker-background">
-        <img
-          :src="speaker?.profilePic"
-          :alt="speaker?.name"
-        />
+        <img :src="speaker?.profilePic" :alt="speaker?.name" />
         <h2>{{ speaker?.name || 'Loading...' }}</h2>
       </div>
 
@@ -120,7 +117,9 @@ ion-toolbar ion-menu-button {
 }
 
 .md .speaker-background {
-  box-shadow: rgb(0 0 0 / 20%) 0 3px 1px -2px, rgb(0 0 0 / 14%) 0 2px 2px 0,
+  box-shadow:
+    rgb(0 0 0 / 20%) 0 3px 1px -2px,
+    rgb(0 0 0 / 14%) 0 2px 2px 0,
     rgb(0 0 0 / 12%) 0 1px 5px 0;
 }
 
@@ -144,12 +143,12 @@ ion-toolbar ion-menu-button {
   background: var(--ion-color-step-150, #d7d8da);
 }
 
-ion-chip[color="twitter"] {
+ion-chip[color='twitter'] {
   --background: #1da1f2;
   --color: white;
 }
 
-ion-chip[color="instagram"] {
+ion-chip[color='instagram'] {
   --background: #e1306c;
   --color: white;
 }
@@ -169,7 +168,7 @@ import {
   IonBackButton,
   IonChip,
   IonLabel,
-  actionSheetController
+  actionSheetController,
 } from '@ionic/vue';
 import {
   logoTwitter,
@@ -180,8 +179,8 @@ import {
   shareOutline,
   shareSharp,
   mailOutline,
-  phonePortraitOutline
-} from "ionicons/icons";
+  phonePortraitOutline,
+} from 'ionicons/icons';
 import { useRoute } from 'vue-router';
 import { useStore } from '@/store';
 
@@ -210,9 +209,8 @@ onBeforeMount(async () => {
   // Set the initial speaker data
   const speakerId = route.params.speakerId;
   if (speakerId) {
-    currentSpeaker.value = store.state.speakers.speakers.find(
-      (s: Speaker) => s.id === parseInt(speakerId.toString())
-    ) || null;
+    currentSpeaker.value =
+      store.state.speakers.speakers.find((s: Speaker) => s.id === parseInt(speakerId.toString())) || null;
   }
 });
 
@@ -220,13 +218,15 @@ onBeforeMount(async () => {
 const speaker = computed(() => currentSpeaker.value);
 
 // Watch for route changes to update the speaker data
-watch(() => route.params.speakerId, (newId) => {
-  if (newId) {
-    currentSpeaker.value = store.state.speakers.speakers.find(
-      (s: Speaker) => s.id === parseInt(newId.toString())
-    ) || null;
-  }
-});
+watch(
+  () => route.params.speakerId,
+  (newId) => {
+    if (newId) {
+      currentSpeaker.value =
+        store.state.speakers.speakers.find((s: Speaker) => s.id === parseInt(newId.toString())) || null;
+    }
+  },
+);
 
 const openContact = async () => {
   if (!speaker.value) return;
@@ -241,7 +241,7 @@ const openContact = async () => {
           if (speaker.value?.email) {
             window.open('mailto:' + speaker.value.email);
           }
-        }
+        },
       },
       {
         text: `Call ( ${speaker.value.phone} )`,
@@ -250,13 +250,13 @@ const openContact = async () => {
           if (speaker.value?.phone) {
             window.open('tel:' + speaker.value.phone);
           }
-        }
+        },
       },
       {
         text: 'Cancel',
-        role: 'cancel'
-      }
-    ]
+        role: 'cancel',
+      },
+    ],
   });
 
   await actionSheet.present();
@@ -278,16 +278,16 @@ const openSpeakerShare = async () => {
               window.cordova.plugins.clipboard.copy(twitterUrl);
             }
           }
-        }
+        },
       },
       {
-        text: 'Share via ...'
+        text: 'Share via ...',
       },
       {
         text: 'Cancel',
-        role: 'cancel'
-      }
-    ]
+        role: 'cancel',
+      },
+    ],
   });
 
   await actionSheet.present();

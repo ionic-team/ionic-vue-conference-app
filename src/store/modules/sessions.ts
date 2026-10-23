@@ -1,5 +1,5 @@
-import { Module } from 'vuex';
 import { parse as parseDate } from 'date-fns';
+import type { Module } from 'vuex';
 
 export interface Session {
   id: number;
@@ -27,9 +27,9 @@ export interface SessionState {
 }
 
 export interface SessionGroup {
-  startTime: string,
-  sessions: Session[],
-  isFirstLoad: true,
+  startTime: string;
+  sessions: Session[];
+  isFirstLoad: true;
 }
 
 const defaultState: SessionState = {
@@ -40,8 +40,8 @@ const defaultState: SessionState = {
   tracks: [],
   selectedTrackFilters: [],
   isFirstLoad: true,
-  schedule: []
-}
+  schedule: [],
+};
 
 const sessionStore: Module<SessionState, {}> = {
   state: defaultState,
@@ -57,11 +57,11 @@ const sessionStore: Module<SessionState, {}> = {
     },
     addTrackFilter(state, trackName: string) {
       if (!state.trackFilters.includes(trackName)) {
-        state.trackFilters.push(trackName)
+        state.trackFilters.push(trackName);
       }
     },
     removeTrackFilter(state, trackName: string) {
-      state.trackFilters = state.trackFilters.filter(tn => tn !== trackName);
+      state.trackFilters = state.trackFilters.filter((tn) => tn !== trackName);
     },
     updateTrackFilters(state, trackNames: string[]) {
       state.trackFilters = trackNames;
@@ -75,7 +75,7 @@ const sessionStore: Module<SessionState, {}> = {
       }
     },
     removeFavorite(state, sessionId: number) {
-      state.favoriteSessions = state.favoriteSessions.filter(fsId => fsId !== sessionId);
+      state.favoriteSessions = state.favoriteSessions.filter((fsId) => fsId !== sessionId);
     },
     updateFavoriteFilter(state, sessionIds: number[]) {
       state.favoriteSessions = sessionIds;
@@ -90,19 +90,17 @@ const sessionStore: Module<SessionState, {}> = {
   actions: {
     loadSessionData({ commit, state }) {
       return fetch('/data/data.json')
-        .then(response => {
+        .then((response) => {
           if (!response.ok) {
             throw Error(`HTTP error! Status: ${response.status}`);
           }
           return response.json();
         })
-        .then(data => {
+        .then((data) => {
           commit('updateSchedule', data.schedule);
 
           // Create a map of speaker names to IDs
-          const speakerNameToId = new Map(
-            data.speakers.map((s: any) => [s.name, parseInt(s.id)])
-          );
+          const speakerNameToId = new Map(data.speakers.map((s: any) => [s.name, parseInt(s.id)]));
 
           const sessions = data.schedule[0].groups.flatMap((group: any) =>
             group.sessions.map((session: any) => ({
@@ -115,8 +113,8 @@ const sessionStore: Module<SessionState, {}> = {
               speakerIds: (session.speakerNames || []).map((name: string) => speakerNameToId.get(name)),
               tracks: session.tracks,
               selectedTrackFilters: [],
-              groupTime: group.time
-            }))
+              groupTime: group.time,
+            })),
           );
           commit('updateSessions', sessions);
 
@@ -127,27 +125,27 @@ const sessionStore: Module<SessionState, {}> = {
             commit('setFirstLoad', false);
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Error loading session data:', error);
         });
     },
     fetchTracks({ commit }) {
       return fetch('/data/data.json')
-        .then(response => {
+        .then((response) => {
           if (!response.ok) {
             throw Error(`HTTP error! Status: ${response.status}`);
           }
           return response.json();
         })
-        .then(data => {
+        .then((data) => {
           commit('setTracks', data.tracks);
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Error loading tracks data:', error);
         });
     },
     setSearchText({ commit }, searchText: string) {
-      commit('setSearchText', searchText)
+      commit('setSearchText', searchText);
     },
     addTrackFilter({ commit }, trackName: string) {
       commit('addTrackFilter', trackName);
@@ -169,28 +167,27 @@ const sessionStore: Module<SessionState, {}> = {
     },
     setSelectedTrackFilters({ commit }, trackFilters) {
       commit('updateSelectedTrackFilters', trackFilters);
-    }
+    },
   },
   getters: {
     conferenceStart(state) {
       const firstSession = state.sessions
         .concat()
-        .sort((a, b) => (
-          parseDate(a.timeStart, 'HH:mm:ss', new Date()).valueOf() -
-          parseDate(b.timeStart, 'HH:mm:ss', new Date()).valueOf()
-        ))[0];
+        .sort(
+          (a, b) =>
+            parseDate(a.timeStart, 'HH:mm:ss', new Date()).valueOf() -
+            parseDate(b.timeStart, 'HH:mm:ss', new Date()).valueOf(),
+        )[0];
       return firstSession ? firstSession.timeStart : null;
     },
     allTracks(state) {
       return state.sessions
-        .reduce((all, session) => all.concat(session.tracks), <string[]>[])
+        .reduce((all, session) => all.concat(session.tracks), [] as string[])
         .filter((trackName, index, array) => array.indexOf(trackName) === index)
         .sort();
     },
     allTracksFilter(state) {
-      return state.tracks
-        ? state.tracks.slice().sort((a, b) => a.name.localeCompare(b.name))
-        : [];
+      return state.tracks ? state.tracks.slice().sort((a, b) => a.name.localeCompare(b.name)) : [];
     },
     allFiltered(state) {
       return state.sessions.filter((session: Session) => {
@@ -198,7 +195,7 @@ const sessionStore: Module<SessionState, {}> = {
         if (state.trackFilters.length === 0) return false;
 
         // Check if session matches track filters
-        const matchesTracks = session.tracks.every(track => state.trackFilters.includes(track));
+        const matchesTracks = session.tracks.every((track) => state.trackFilters.includes(track));
 
         // Check if session matches search text
         const matchesSearch = state.searchText
@@ -216,7 +213,7 @@ const sessionStore: Module<SessionState, {}> = {
         if (state.trackFilters.length === 0) return false;
 
         // Check if session matches track filters
-        const matchesTracks = session.tracks.every(track => state.trackFilters.includes(track));
+        const matchesTracks = session.tracks.every((track) => state.trackFilters.includes(track));
 
         // Check if session matches search text
         const matchesSearch = state.searchText
@@ -225,8 +222,8 @@ const sessionStore: Module<SessionState, {}> = {
 
         return matchesTracks && matchesSearch;
       });
-    }
-  }
+    },
+  },
 };
 
 export default sessionStore;

@@ -1,6 +1,7 @@
 import { Preferences } from '@capacitor/preferences';
 import { flushPromises, mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import Menu from './Menu.vue';
 
 const { push, slot } = vi.hoisted(() => ({

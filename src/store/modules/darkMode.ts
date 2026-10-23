@@ -1,4 +1,4 @@
-import { Module } from 'vuex';
+import type { Module } from 'vuex';
 
 export interface DarkModeState {
   darkMode: boolean;
