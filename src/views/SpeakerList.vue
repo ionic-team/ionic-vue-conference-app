@@ -18,12 +18,7 @@
 
       <ion-grid fixed>
         <ion-row>
-          <ion-col
-            v-for="speaker in speakers"
-            :key="speaker.id"
-            size="12"
-            size-md="6"
-          >
+          <ion-col v-for="speaker in speakers" :key="speaker.id" size="12" size-md="6">
             <ion-card class="speaker-card">
               <ion-card-header>
                 <ion-item
@@ -34,10 +29,7 @@
                   @click="navigateToSpeaker(speaker.id)"
                 >
                   <ion-avatar slot="start">
-                    <img
-                      :src="speaker.profilePic"
-                      :alt="speaker.name + ' profile picture'"
-                    />
+                    <img :src="speaker.profilePic" :alt="speaker.name + ' profile picture'" />
                   </ion-avatar>
                   <ion-label>
                     <h2>{{ speaker.name }}</h2>
@@ -60,11 +52,7 @@
                     </ion-label>
                   </ion-item>
 
-                  <ion-item
-                    :detail="false"
-                    button
-                    @click="navigateToSpeaker(speaker.id)"
-                  >
+                  <ion-item :detail="false" button @click="navigateToSpeaker(speaker.id)">
                     <ion-label>
                       <h3>About {{ speaker.name }}</h3>
                     </ion-label>
@@ -80,9 +68,9 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, computed } from "vue";
-import { Session } from "@/store/modules/sessions";
-import { useStore } from "@/store";
+import { onMounted, computed } from 'vue';
+import { Session } from '@/store/modules/sessions';
+import { useStore } from '@/store';
 import { useRouter } from 'vue-router';
 import {
   IonPage,
@@ -102,18 +90,14 @@ import {
   IonCardContent,
   IonCardHeader,
   IonAvatar,
-} from "@ionic/vue";
+} from '@ionic/vue';
 
 const router = useRouter();
 const store = useStore();
-const speakers = computed(() =>
-  store.state.speakers.speakers.concat().sort((a, b) => a.name.localeCompare(b.name))
-);
+const speakers = computed(() => store.state.speakers.speakers.concat().sort((a, b) => a.name.localeCompare(b.name)));
 
 const sessionsBySpeaker = (speakerId: number) => {
-  return store.state.sessions.sessions.filter((session: Session) =>
-    session.speakerIds.includes(speakerId)
-  );
+  return store.state.sessions.sessions.filter((session: Session) => session.speakerIds.includes(speakerId));
 };
 
 const navigateToSpeaker = (id: number) => {
@@ -127,10 +111,10 @@ const navigateToSession = (id: number) => {
 onMounted(async () => {
   // Only load data if it's not already loaded
   if (store.state.speakers.speakers.length === 0) {
-    await store.dispatch("loadSpeakerData");
+    await store.dispatch('loadSpeakerData');
   }
   if (store.state.sessions.sessions.length === 0) {
-    await store.dispatch("loadSessionData");
+    await store.dispatch('loadSessionData');
   }
 });
 </script>

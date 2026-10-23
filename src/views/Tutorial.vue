@@ -10,54 +10,34 @@
     <ion-content :fullscreen="true">
       <div class="slider">
         <section>
-          <img
-            src="/assets/img/ica-slidebox-img-1.png"
-            alt=""
-            class="slide-image"
-          />
-          <h2 class="slide-title">
-            Welcome to <b>ICA</b>
-          </h2>
+          <img src="/assets/img/ica-slidebox-img-1.png" alt="" class="slide-image" />
+          <h2 class="slide-title">Welcome to <b>ICA</b></h2>
           <p>
-            The <b>ionic conference app</b> is a practical preview of the ionic
-            framework in action, and a demonstration of proper code use.
+            The <b>ionic conference app</b> is a practical preview of the ionic framework in action, and a demonstration
+            of proper code use.
           </p>
         </section>
 
         <section>
-          <img
-            src="/assets/img/ica-slidebox-img-2.png"
-            alt=""
-            class="slide-image"
-          />
+          <img src="/assets/img/ica-slidebox-img-2.png" alt="" class="slide-image" />
           <h2 class="slide-title">What is Ionic?</h2>
           <p>
-            <b>Ionic Framework</b> is an open source SDK that enables developers
-            to build high quality mobile apps with web technologies like HTML,
-            CSS, and JavaScript.
+            <b>Ionic Framework</b> is an open source SDK that enables developers to build high quality mobile apps with
+            web technologies like HTML, CSS, and JavaScript.
           </p>
         </section>
 
         <section>
-          <img
-            src="/assets/img/ica-slidebox-img-3.png"
-            alt=""
-            class="slide-image"
-          />
+          <img src="/assets/img/ica-slidebox-img-3.png" alt="" class="slide-image" />
           <h2 class="slide-title">What is Ionic Appflow?</h2>
           <p>
-            <b>Ionic Appflow</b> is a powerful set of services and features built
-            on top of Ionic Framework that brings a totally new level of app
-            development agility to mobile dev teams.
+            <b>Ionic Appflow</b> is a powerful set of services and features built on top of Ionic Framework that brings
+            a totally new level of app development agility to mobile dev teams.
           </p>
         </section>
 
         <section>
-          <img
-            src="/assets/img/ica-slidebox-img-4.png"
-            alt=""
-            class="slide-image"
-          />
+          <img src="/assets/img/ica-slidebox-img-4.png" alt="" class="slide-image" />
           <h2 class="slide-title">Ready to Play?</h2>
           <ion-button fill="clear" @click="navigateToSchedule">
             Continue

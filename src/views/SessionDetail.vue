@@ -20,11 +20,9 @@
     <ion-content>
       <div class="ion-padding" v-if="session">
         <h1>{{ session.name }}</h1>
-        <span
-          v-for="track in session.tracks"
-          :key="track"
-          :class="'session-track-' + track.toLowerCase()"
-        >{{ track }}</span>
+        <span v-for="track in session.tracks" :key="track" :class="'session-track-' + track.toLowerCase()">{{
+          track
+        }}</span>
         <p>{{ session.description }}</p>
         <ion-text color="medium">
           {{ session.timeStart }} &ndash; {{ session.timeEnd }}
@@ -45,12 +43,7 @@
         </ion-item>
         <ion-item button>
           <ion-label color="primary">Download Video</ion-label>
-          <ion-icon
-            slot="end"
-            color="primary"
-            size="small"
-            :icon="cloudDownload"
-          ></ion-icon>
+          <ion-icon slot="end" color="primary" size="small" :icon="cloudDownload"></ion-icon>
         </ion-item>
         <ion-item button>
           <ion-label color="primary">Leave Feedback</ion-label>
@@ -150,9 +143,9 @@ h1 {
 </style>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
-import { useRoute } from "vue-router";
-import { useStore } from "@/store";
+import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { useStore } from '@/store';
 import {
   IonPage,
   IonHeader,
@@ -167,17 +160,12 @@ import {
   IonBackButton,
   IonText,
 } from '@ionic/vue';
-import {
-  star,
-  starOutline,
-  share,
-  cloudDownload
-} from "ionicons/icons";
+import { star, starOutline, share, cloudDownload } from 'ionicons/icons';
 import { Session } from '@/store/modules/sessions';
 
 const route = useRoute();
 const store = useStore();
-const defaultHref = "/tabs/schedule";
+const defaultHref = '/tabs/schedule';
 
 const session = ref<Session>();
 const isFavorite = computed(() => {
@@ -189,20 +177,18 @@ const toggleFavorite = () => {
   if (!session.value) return;
 
   if (isFavorite.value) {
-    store.dispatch("removeFavorite", session.value.id);
+    store.dispatch('removeFavorite', session.value.id);
   } else {
-    store.dispatch("addFavorite", session.value.id);
+    store.dispatch('addFavorite', session.value.id);
   }
 };
 
 onMounted(async () => {
   // Check if sessions are loaded, if not load them
   if (store.state.sessions.sessions.length === 0) {
-    await store.dispatch("loadSessionData");
+    await store.dispatch('loadSessionData');
   }
 
-  session.value = store.state.sessions.sessions.find(
-    (s) => s.id === parseInt(route.params.sessionId.toString())
-  );
+  session.value = store.state.sessions.sessions.find((s) => s.id === parseInt(route.params.sessionId.toString()));
 });
 </script>

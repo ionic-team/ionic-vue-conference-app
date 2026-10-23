@@ -8,12 +8,12 @@
   </ion-app>
 </template>
 
-<style src='./theme/variables.css'></style>
+<style src="./theme/variables.css"></style>
 
 <script lang="ts">
 import { IonApp, IonSplitPane, IonRouterOutlet } from '@ionic/vue';
 import { Ref, defineComponent, onMounted, ref, computed } from 'vue';
-import Menu from "./components/Menu.vue";
+import Menu from './components/Menu.vue';
 import { useStore } from '@/store';
 import { useRoute } from 'vue-router';
 
@@ -40,9 +40,9 @@ export default defineComponent({
     };
 
     onMounted(async () => {
-      store.dispatch("loadSessionData");
-      store.dispatch("loadSpeakerData");
-      await store.dispatch("fetchTracks");
+      store.dispatch('loadSessionData');
+      store.dispatch('loadSpeakerData');
+      await store.dispatch('fetchTracks');
     });
 
     return {

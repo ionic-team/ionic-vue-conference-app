@@ -1,10 +1,10 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import { SplashScreen } from '@capacitor/splash-screen';
+import { IonicVue } from '@ionic/vue';
+import { createApp } from 'vue';
+
+import App from './App.vue';
 import router from './router';
 import store from './store';
-
-import { IonicVue } from '@ionic/vue';
-import { SplashScreen } from '@capacitor/splash-screen';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/vue/css/core.css';
@@ -37,17 +37,14 @@ import '@ionic/core/css/ionic.bundle.css';
 
 // import "@ionic/vue/css/palettes/dark.always.css";
 // import "@ionic/vue/css/palettes/dark.system.css";
-import "@ionic/vue/css/palettes/dark.class.css";
+import '@ionic/vue/css/palettes/dark.class.css';
 
 /* Leaflet CSS */
 import 'leaflet/dist/leaflet.css';
 
-const app = createApp(App)
-.use(IonicVue)
-.use(router)
-.use(store);
+const app = createApp(App).use(IonicVue).use(router).use(store);
 
 router.isReady().then(() => {
-app.mount('#app');
-SplashScreen.hide();
+  app.mount('#app');
+  SplashScreen.hide();
 });
