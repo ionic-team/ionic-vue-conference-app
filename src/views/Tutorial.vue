@@ -146,23 +146,21 @@ import {
   useIonRouter,
 } from '@ionic/vue';
 import { arrowForward } from 'ionicons/icons';
-import { Storage } from '@ionic/storage';
+import { Preferences } from '@capacitor/preferences';
 
 const ionRouter = useIonRouter();
 const ionDidTutorial = ref(false);
-const storage = new Storage();
 
 const navigateToSchedule = async () => {
   ionDidTutorial.value = false;
-  await storage.set('ion_did_tutorial', true);
+  await Preferences.set({ key: 'ion_did_tutorial', value: 'true' });
   await menuController.enable(true);
   ionRouter.navigate('/tabs/schedule', 'root', 'replace');
 };
 
 const checkTutorialStatus = async () => {
-  await storage.create();
-  const result = await storage.get('ion_did_tutorial');
-  if (result === true) {
+  const { value } = await Preferences.get({ key: 'ion_did_tutorial' });
+  if (value === 'true') {
     ionRouter.navigate('/tabs/schedule', 'root', 'replace');
   } else {
     ionDidTutorial.value = true;
