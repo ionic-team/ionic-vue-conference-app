@@ -130,10 +130,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
 import { useStore } from '@/store';
 import router from '@/router';
-import { Storage } from '@ionic/storage';
+import { Preferences } from '@capacitor/preferences';
 import { menuController } from '@ionic/vue';
 
 import {
@@ -186,7 +186,6 @@ export default defineComponent({
     const store = useStore();
     const localDark = ref(false);
     const loggedIn = ref(false);
-    const storage = new Storage();
 
     const currentPath = computed(() => router.currentRoute.value.path);
     const isSelected = (path: string) => {
@@ -209,18 +208,13 @@ export default defineComponent({
     }
 
     const openTutorial = async () => {
-      await storage.create();
-      await storage.set('ion_did_tutorial', false);
+      await Preferences.set({ key: 'ion_did_tutorial', value: 'false' });
       await menuController.enable(false);
       await router.push('/tutorial');
     }
 
     const logout = () => {
     }
-
-    onMounted(async () => {
-      await storage.create();
-    });
 
     return {
       localDark,
