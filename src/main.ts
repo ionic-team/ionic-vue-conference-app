@@ -35,8 +35,8 @@ import '@ionic/core/css/ionic.bundle.css';
  * https://ionicframework.com/docs/theming/dark-mode
  */
 
-// import "@ionic/vue/css/palettes/dark.always.css";
-// import "@ionic/vue/css/palettes/dark.system.css";
+// import '@ionic/vue/css/palettes/dark.always.css';
+// import '@ionic/vue/css/palettes/dark.system.css';
 import '@ionic/vue/css/palettes/dark.class.css';
 
 /* Leaflet CSS */
