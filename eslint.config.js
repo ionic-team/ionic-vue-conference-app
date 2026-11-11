@@ -7,11 +7,11 @@ import globals from 'globals';
 export default [
   ...defineConfigWithVueTs(
     {
-      ignores: ['dist', 'node_modules', 'android', 'ios', 'build']
+      ignores: ['dist', 'node_modules', 'android', 'ios', 'build'],
     },
     js.configs.recommended,
     pluginVue.configs['flat/essential'],
-    vueTsConfigs.recommended
+    vueTsConfigs.recommended,
   ),
   // Kept outside defineConfigWithVueTs: it treats `consistent-type-imports` as
   // type-aware and would turn on project-based parsing for every .ts file.
@@ -20,8 +20,8 @@ export default [
     languageOptions: {
       globals: {
         ...globals.node,
-        ...globals.browser
-      }
+        ...globals.browser,
+      },
     },
     rules: {
       'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
@@ -36,7 +36,7 @@ export default [
       // Menu.vue registers a few Ionic components it doesn't currently use.
       'vue/no-unused-components': 'off',
       // Vuex modules type RootState as `{}`; keep the generic as-is.
-      '@typescript-eslint/no-empty-object-type': 'off'
-    }
-  }
+      '@typescript-eslint/no-empty-object-type': 'off',
+    },
+  },
 ];
