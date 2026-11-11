@@ -125,9 +125,9 @@ ion-fab-button {
 }
 
 /*
-   * Material Design uses the ripple for activated
-   * so only style the iOS activated background
-   */
+ * Material Design uses the ripple for activated
+ * so only style the iOS activated background
+ */
 .ios ion-fab-button {
   --background-activated: var(--ion-color-step-250, #d9d9d9);
 }
