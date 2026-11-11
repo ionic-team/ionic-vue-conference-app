@@ -25,7 +25,9 @@
             type="text"
             :spellcheck="false"
             autocapitalize="off"
-            :error-text="submitted && !login.username ? 'Username is required' : ''"
+            error-text="Username is required"
+            :class="{ 'ion-touched': touched.username || submitted, 'ion-invalid': !login.username }"
+            @ionBlur="touched.username = true"
             required
           ></ion-input>
 
@@ -36,7 +38,9 @@
             v-model="login.password"
             name="password"
             type="password"
-            :error-text="submitted && !login.password ? 'Password is required' : ''"
+            error-text="Password is required"
+            :class="{ 'ion-touched': touched.password || submitted, 'ion-invalid': !login.password }"
+            @ionBlur="touched.password = true"
             required
           ></ion-input>
 
@@ -91,21 +95,25 @@ import {
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+import { useStore } from '@/store';
+
 interface UserOptions {
   username: string;
   password: string;
 }
 
 const router = useRouter();
+const store = useStore();
 const login = ref<UserOptions>({ username: '', password: '' });
 const submitted = ref(false);
+// Like the Angular app, a required field shows its error once it has been touched (or submitted).
+const touched = ref({ username: false, password: false });
 
-const onLogin = () => {
+const onLogin = async () => {
   submitted.value = true;
 
   if (login.value.username && login.value.password) {
-    // TODO: Implement user service login
-    // userService.login(login.value.username);
+    await store.dispatch('logIn', login.value.username);
     router.push('/tabs/schedule');
   }
 };

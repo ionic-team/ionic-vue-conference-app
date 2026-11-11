@@ -2,8 +2,8 @@ import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
 import {
+  button,
   DATA_TIMEOUT,
-  endToolbarButtons,
   openSchedule,
   segmentButton,
   sessionItem,
@@ -16,9 +16,6 @@ import {
 // The outgoing schedule can still be visible mid-transition, so scope to the session's own page.
 const sessionPage = (page: Page, name: string) =>
   tabPage(page).filter({ has: page.getByRole('heading', { name, level: 1 }) });
-
-// The favorite star is the first icon-only button in the session's toolbar.
-const favoriteButton = (page: Page, name: string) => endToolbarButtons(sessionPage(page, name)).first();
 
 const openSession = async (page: Page, name: string): Promise<void> => {
   await sessionLink(page, name).click();
@@ -63,7 +60,8 @@ test.describe('Session detail', () => {
 
   test('favoriting a session adds it to Favorites', async ({ page }) => {
     await openSession(page, 'Ionic Tooling');
-    await favoriteButton(page, 'Ionic Tooling').click();
+    await button(sessionPage(page, 'Ionic Tooling'), 'Favorite').click();
+    await expect(button(sessionPage(page, 'Ionic Tooling'), 'Remove favorite')).toBeVisible();
     await goBackToSchedule(page);
 
     await segmentButton(page, 'Favorites').click();
@@ -73,13 +71,14 @@ test.describe('Session detail', () => {
 
   test('unfavoriting a session removes it from Favorites', async ({ page }) => {
     await openSession(page, 'Ionic Tooling');
-    await favoriteButton(page, 'Ionic Tooling').click();
+    await button(sessionPage(page, 'Ionic Tooling'), 'Favorite').click();
     await goBackToSchedule(page);
     await segmentButton(page, 'Favorites').click();
     await expect(sessionItem(page, 'Ionic Tooling')).toBeVisible();
 
     await openSession(page, 'Ionic Tooling');
-    await favoriteButton(page, 'Ionic Tooling').click();
+    await button(sessionPage(page, 'Ionic Tooling'), 'Remove favorite').click();
+    await expect(button(sessionPage(page, 'Ionic Tooling'), 'Favorite')).toBeVisible();
     await goBackToSchedule(page);
 
     await expect(visible(page.getByText('No Sessions Found'))).toBeVisible();

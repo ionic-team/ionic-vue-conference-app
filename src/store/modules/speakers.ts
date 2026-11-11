@@ -22,9 +22,9 @@ export interface SpeakerState {
 }
 
 const speakerStore: Module<SpeakerState, {}> = {
-  state: {
+  state: () => ({
     speakers: [],
-  },
+  }),
   mutations: {
     updateSpeakers(state, speakers: Speaker[]) {
       state.speakers = speakers;

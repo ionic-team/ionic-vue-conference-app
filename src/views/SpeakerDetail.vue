@@ -7,10 +7,10 @@
             <ion-back-button defaultHref="/tabs/speakers"></ion-back-button>
           </ion-buttons>
           <ion-buttons slot="end">
-            <ion-button @click="openContact">
+            <ion-button aria-label="Contact" @click="openContact">
               <ion-icon :ios="callOutline" :md="callSharp" slot="icon-only"></ion-icon>
             </ion-button>
-            <ion-button @click="openSpeakerShare">
+            <ion-button aria-label="Share" @click="openSpeakerShare">
               <ion-icon :ios="shareOutline" :md="shareSharp" slot="icon-only"></ion-icon>
             </ion-button>
           </ion-buttons>

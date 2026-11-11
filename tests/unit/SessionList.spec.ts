@@ -85,6 +85,14 @@ afterEach(() => {
 });
 
 describe('SessionList', () => {
+  it('labels the icon-only toolbar and share buttons', async () => {
+    const wrapper = await mountSessionList();
+
+    const labels = wrapper.findAll('ion-button, ion-fab-button').map((button) => button.attributes('aria-label'));
+
+    expect(labels).toEqual(['Search', 'Filter', 'Share', 'Vimeo', 'Instagram', 'Twitter', 'Facebook']);
+  });
+
   it('loads the sessions and groups them by time, earliest first within a group', async () => {
     const wrapper = await mountSessionList();
 

@@ -27,10 +27,9 @@ export const segmentButton = (page: Page, name: 'All' | 'Favorites'): Locator =>
 /* The visible pages inside the tabs (an outgoing page can still be visible mid-transition). */
 export const tabPage = (page: Page): Locator => visible(page.locator('ion-tabs ion-router-outlet > .ion-page'));
 
-// The toolbar's icon-only buttons have no accessible name, so find them by position.
-// On the schedule (Material Design) they are: search, filter. On a session: favorite, share.
-export const endToolbarButtons = (scope: Page | Locator): Locator =>
-  visible(scope.locator('ion-header ion-buttons[slot="end"] ion-button'));
+/** A button found by its exact accessible name, e.g. the toolbar's icon-only "Search" or "Favorite". */
+export const button = (scope: Page | Locator, name: string): Locator =>
+  visible(scope.getByRole('button', { name, exact: true }));
 
 /* Skips the tutorial and waits for the schedule's sessions to load. */
 export const openSchedule = async (page: Page): Promise<void> => {
@@ -41,9 +40,19 @@ export const openSchedule = async (page: Page): Promise<void> => {
 };
 
 export const openMenu = async (page: Page): Promise<Locator> => {
-  await visible(page.getByRole('button', { name: 'menu' })).click();
   const menu = page.getByRole('navigation', { name: 'menu' });
-  await expect(menu).toBeVisible();
+  // Let the menu finish closing if a menu item was just tapped.
+  await expect(menu).toBeHidden();
+  // Right after a navigation the outgoing page's menu button can still be visible and then
+  // disappear mid-click, so retry until the menu is open. Every menu button opens the same menu.
+  await expect(async () => {
+    if (!(await menu.isVisible())) {
+      await visible(page.getByRole('button', { name: 'menu', exact: true }))
+        .first()
+        .click({ timeout: 1000 });
+    }
+    await expect(menu).toBeVisible({ timeout: 1000 });
+  }).toPass();
   return menu;
 };
 
