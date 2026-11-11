@@ -23,10 +23,10 @@
         ></ion-searchbar>
 
         <ion-buttons slot="end">
-          <ion-button v-if="!isIos && !showSearchbar" @click="showSearchbar = true">
+          <ion-button v-if="!isIos && !showSearchbar" aria-label="Search" @click="showSearchbar = true">
             <ion-icon slot="icon-only" :icon="search"></ion-icon>
           </ion-button>
-          <ion-button v-if="!showSearchbar" @click="presentFilter">
+          <ion-button v-if="!showSearchbar" aria-label="Filter" @click="presentFilter">
             <span v-if="isIos">Filter</span>
             <span v-else>
               <ion-icon slot="icon-only" :icon="options"></ion-icon>
@@ -94,20 +94,20 @@
       <ion-list-header v-show="allGroupedComputed?.length === 0"> No Sessions Found </ion-list-header>
 
       <ion-fab slot="fixed" vertical="bottom" horizontal="end" ref="fab">
-        <ion-fab-button>
+        <ion-fab-button aria-label="Share">
           <ion-icon :icon="shareSocial"></ion-icon>
         </ion-fab-button>
         <ion-fab-list side="top">
-          <ion-fab-button color="vimeo" @click="openSocial('Vimeo')">
+          <ion-fab-button color="vimeo" aria-label="Vimeo" @click="openSocial('Vimeo')">
             <ion-icon :icon="logoVimeo"></ion-icon>
           </ion-fab-button>
-          <ion-fab-button color="instagram" @click="openSocial('Instagram')">
+          <ion-fab-button color="instagram" aria-label="Instagram" @click="openSocial('Instagram')">
             <ion-icon :icon="logoInstagram"></ion-icon>
           </ion-fab-button>
-          <ion-fab-button color="twitter" @click="openSocial('Twitter')">
+          <ion-fab-button color="twitter" aria-label="Twitter" @click="openSocial('Twitter')">
             <ion-icon :icon="logoTwitter"></ion-icon>
           </ion-fab-button>
-          <ion-fab-button color="facebook" @click="openSocial('Facebook')">
+          <ion-fab-button color="facebook" aria-label="Facebook" @click="openSocial('Facebook')">
             <ion-icon :icon="logoFacebook"></ion-icon>
           </ion-fab-button>
         </ion-fab-list>

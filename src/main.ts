@@ -4,7 +4,7 @@ import { createApp } from 'vue';
 
 import App from './App.vue';
 import router from './router';
-import store from './store';
+import store, { loadUserData } from './store';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/vue/css/core.css';
@@ -44,7 +44,8 @@ import 'leaflet/dist/leaflet.css';
 
 const app = createApp(App).use(IonicVue).use(router).use(store);
 
-router.isReady().then(() => {
+// Restore the saved login before mounting so the menu shows the right account links.
+Promise.all([router.isReady(), loadUserData()]).then(() => {
   app.mount('#app');
   SplashScreen.hide();
 });

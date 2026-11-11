@@ -18,6 +18,12 @@ vi.mock('@ionic/vue', async () => {
 
 const toastMessages = () => toastCreate.mock.calls.map(([options]) => options.message);
 
+// Ionic shows the textarea's error text when it has both of these classes.
+const showsError = (wrapper: ReturnType<typeof mount>) => {
+  const classes = wrapper.find('textarea').classes();
+  return classes.includes('ion-touched') && classes.includes('ion-invalid');
+};
+
 const mountSupport = async () => {
   const wrapper = mount(Support);
   await flushPromises();
@@ -50,12 +56,34 @@ describe('Support', () => {
     expect((wrapper.find('textarea').element as HTMLTextAreaElement).value).toBe('');
   });
 
-  it('does not send an empty message', async () => {
+  it('does not send an empty message and shows the required error', async () => {
     const wrapper = await mountSupport();
+    expect(showsError(wrapper)).toBe(false);
 
     await wrapper.find('form').trigger('submit');
     await flushPromises();
 
     expect(toastMessages()).not.toContain('Your support request has been sent.');
+    expect(showsError(wrapper)).toBe(true);
+    expect(wrapper.find('textarea').attributes('error-text')).toBe('Support message is required');
+  });
+
+  it('shows the required error once the message is touched', async () => {
+    const wrapper = await mountSupport();
+
+    await wrapper.find('textarea').trigger('blur');
+
+    expect(showsError(wrapper)).toBe(true);
+  });
+
+  it('does not show the required error after a message is sent', async () => {
+    const wrapper = await mountSupport();
+    await wrapper.find('textarea').setValue('The schedule is great!');
+    await wrapper.find('textarea').trigger('blur');
+
+    await wrapper.find('form').trigger('submit');
+    await flushPromises();
+
+    expect(showsError(wrapper)).toBe(false);
   });
 });

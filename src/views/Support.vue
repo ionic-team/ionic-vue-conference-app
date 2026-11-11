@@ -45,7 +45,9 @@
             v-model="supportMessage"
             name="supportQuestion"
             :rows="6"
-            :error-text="submitted && !supportMessage ? 'Support message is required' : ''"
+            error-text="Support message is required"
+            :class="{ 'ion-touched': touched || submitted, 'ion-invalid': !supportMessage }"
+            @ionBlur="touched = true"
             required
           ></ion-textarea>
 
@@ -79,6 +81,8 @@ import { ref, onMounted } from 'vue';
 
 const supportMessage = ref('');
 const submitted = ref(false);
+// Like the Angular app, the required message shows its error once touched (or submitted).
+const touched = ref(false);
 
 onMounted(async () => {
   const toast = await toastController.create({
@@ -94,6 +98,7 @@ const submit = async () => {
   if (supportMessage.value) {
     supportMessage.value = '';
     submitted.value = false;
+    touched.value = false;
 
     const toast = await toastController.create({
       message: 'Your support request has been sent.',

@@ -7,7 +7,7 @@
             <ion-menu-button></ion-menu-button>
           </ion-buttons>
           <ion-buttons slot="end">
-            <ion-button id="popover-button">
+            <ion-button id="popover-button" aria-label="More options">
               <ion-icon slot="icon-only" :ios="ellipsisHorizontal" :md="ellipsisVertical"></ion-icon>
             </ion-button>
           </ion-buttons>

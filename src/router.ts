@@ -3,9 +3,11 @@ import { createRouter, createWebHistory } from '@ionic/vue-router';
 import type { App } from 'vue';
 import type { RouteRecordRaw, Router } from 'vue-router';
 
-import store from './store';
+import store, { loadUserData } from './store';
 
-const privateRoute: RouteRecordRaw['beforeEnter'] = function () {
+const privateRoute: RouteRecordRaw['beforeEnter'] = async function () {
+  // On a reload the saved login may not be restored yet.
+  await loadUserData();
   if (!store.state.user.isAuthenticated) {
     return { name: 'login' };
   }

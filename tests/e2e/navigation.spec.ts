@@ -1,7 +1,7 @@
 import type { Locator, Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
-import { DATA_TIMEOUT, endToolbarButtons, openMenu, openSchedule, visible, visibleTitle } from './helpers';
+import { button, DATA_TIMEOUT, openMenu, openSchedule, visible, visibleTitle } from './helpers';
 
 // The About page has no toolbar title; its content starts with an "About" heading instead.
 const expectAboutPage = async (page: Page): Promise<void> => {
@@ -12,8 +12,7 @@ const expectAboutPage = async (page: Page): Promise<void> => {
 const openAboutOptions = async (page: Page): Promise<Locator> => {
   await page.getByRole('tab', { name: 'About' }).click();
   await expectAboutPage(page);
-  // More options is the only button at the end of the About page's toolbar.
-  await endToolbarButtons(page).click();
+  await button(page, 'More options').click();
   const popover = visible(page.locator('ion-popover')).filter({ hasText: 'Learn Ionic' });
   await expect(popover).toBeVisible();
   return popover;
@@ -154,6 +153,20 @@ test.describe('Navigation', () => {
     await expect(page.getByText('Support message is required')).toBeHidden();
   });
 
+  test('the Support form requires a message', async ({ page }) => {
+    const menu = await openMenu(page);
+    await menu.getByRole('link', { name: 'Support' }).click();
+    await expect(visibleTitle(page)).toHaveText('Support');
+
+    await visible(page.getByRole('button', { name: 'Submit' })).click();
+
+    await expect(visible(page.getByText('Support message is required'))).toBeVisible();
+    await expect(page.getByText('Your support request has been sent.')).toHaveCount(0);
+
+    await visible(page.getByRole('textbox', { name: 'Enter your support message below' })).fill('Hello');
+    await expect(visible(page.getByText('Support message is required'))).toHaveCount(0);
+  });
+
   test('the Support page leaves without asking when the message is empty', async ({ page }) => {
     const menu = await openMenu(page);
     await menu.getByRole('link', { name: 'Support' }).click();
@@ -171,6 +184,31 @@ test.describe('Navigation', () => {
     await expect(html).not.toHaveClass(/ion-palette-dark/);
 
     const menu = await openMenu(page);
+    const toggle = menu.getByRole('switch', { name: 'Dark Mode' });
+    await toggle.click();
+
+    await expect(toggle).toBeChecked();
+    await expect(html).toHaveClass(/ion-palette-dark/);
+
+    await toggle.click();
+
+    await expect(toggle).not.toBeChecked();
+    await expect(html).not.toHaveClass(/ion-palette-dark/);
+  });
+
+  test('the dark mode toggle is in the menu while logged in', async ({ page }) => {
+    await (await openMenu(page)).getByRole('link', { name: 'Login' }).click();
+    await expect(page).toHaveURL(/\/login$/);
+    await visible(page.getByRole('textbox', { name: 'Username' })).fill('ionitron');
+    await visible(page.getByRole('textbox', { name: 'Password' })).fill('secret');
+    await visible(page.getByRole('button', { name: 'Login' })).click();
+    await expect(page).toHaveURL(/\/tabs\/schedule$/);
+
+    const html = page.locator('html');
+    await expect(html).not.toHaveClass(/ion-palette-dark/);
+
+    const menu = await openMenu(page);
+    await expect(menu.getByRole('button', { name: 'Logout' })).toBeVisible();
     const toggle = menu.getByRole('switch', { name: 'Dark Mode' });
     await toggle.click();
 

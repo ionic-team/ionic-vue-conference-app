@@ -5,9 +5,9 @@ export interface DarkModeState {
 }
 
 const darkModeStore: Module<DarkModeState, {}> = {
-  state: {
+  state: () => ({
     darkMode: false,
-  },
+  }),
   mutations: {
     setDarkMode(state, darkMode: boolean) {
       state.darkMode = darkMode;

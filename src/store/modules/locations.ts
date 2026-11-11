@@ -14,9 +14,9 @@ export interface LocationState {
 
 const locationsModule: Module<LocationState, any> = {
   namespaced: true,
-  state: {
+  state: () => ({
     locations: [],
-  },
+  }),
   mutations: {
     setLocations(state, locations: Location[]) {
       state.locations = locations;
