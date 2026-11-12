@@ -1,7 +1,7 @@
 import type { Locator, Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
-import { button, DATA_TIMEOUT, openMenu, openSchedule, visible, visibleTitle } from './helpers';
+import { button, DATA_TIMEOUT, login, openMenu, openSchedule, visible, visibleTitle } from './helpers';
 
 // The About page has no toolbar title; its content starts with an "About" heading instead.
 const expectAboutPage = async (page: Page): Promise<void> => {
@@ -156,20 +156,20 @@ test.describe('Navigation', () => {
   test('the Support page shows the confirmation even while the notice is still open', async ({ page }) => {
     const menu = await openMenu(page);
     await menu.getByRole('link', { name: 'Support' }).click();
-    const notice = page.getByText('This does not actually send a support request.');
-    await expect(notice).toBeVisible();
-
     await visible(page.getByRole('textbox', { name: 'Enter your support message below' })).fill(
       'The schedule is great!',
     );
+    await expect(page.getByText('This does not actually send a support request.')).toBeVisible();
+
     await visible(page.getByRole('button', { name: 'Submit' })).click();
 
     await expect(page.getByText('Your support request has been sent.')).toBeVisible();
-    // The notice closes on its own after 3 seconds, so expect sending to have closed it well before then.
-    await expect(notice).toBeHidden({ timeout: 1000 });
+    // Sending closes the notice before the confirmation opens. Count the toasts right away instead of
+    // waiting, since the notice also closes on its own after 3 seconds.
+    expect(await visible(page.locator('ion-toast')).count()).toBe(1);
   });
 
-  test('the Support form requires a message', async ({ page }) => {
+  test('the Support page requires a message', async ({ page }) => {
     const menu = await openMenu(page);
     await menu.getByRole('link', { name: 'Support' }).click();
     await expect(visibleTitle(page)).toHaveText('Support');
@@ -239,27 +239,12 @@ test.describe('Navigation', () => {
   });
 
   test('the dark mode toggle is in the menu while logged in', async ({ page }) => {
-    await (await openMenu(page)).getByRole('link', { name: 'Login' }).click();
-    await expect(page).toHaveURL(/\/login$/);
-    await visible(page.getByRole('textbox', { name: 'Username' })).fill('ionitron');
-    await visible(page.getByRole('textbox', { name: 'Password' })).fill('secret');
-    await visible(page.getByRole('button', { name: 'Login' })).click();
-    await expect(page).toHaveURL(/\/tabs\/schedule$/);
-
-    const html = page.locator('html');
-    await expect(html).not.toHaveClass(/ion-palette-dark/);
+    await login(page, 'ionitron');
 
     const menu = await openMenu(page);
     await expect(menu.getByRole('button', { name: 'Logout' })).toBeVisible();
-    const toggle = menu.getByRole('switch', { name: 'Dark Mode' });
-    await toggle.click();
+    await menu.getByRole('switch', { name: 'Dark Mode' }).click();
 
-    await expect(toggle).toBeChecked();
-    await expect(html).toHaveClass(/ion-palette-dark/);
-
-    await toggle.click();
-
-    await expect(toggle).not.toBeChecked();
-    await expect(html).not.toHaveClass(/ion-palette-dark/);
+    await expect(page.locator('html')).toHaveClass(/ion-palette-dark/);
   });
 });

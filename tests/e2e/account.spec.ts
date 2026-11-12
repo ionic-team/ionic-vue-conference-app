@@ -1,26 +1,16 @@
 import type { Locator, Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
-import { DATA_TIMEOUT, openMenu, openSchedule, visible, visibleTitle } from './helpers';
-
-const fillCredentials = async (page: Page, username: string, password: string): Promise<void> => {
-  await visible(page.getByRole('textbox', { name: 'Username' })).fill(username);
-  await visible(page.getByRole('textbox', { name: 'Password' })).fill(password);
-};
-
-const openLogin = async (page: Page): Promise<void> => {
-  const menu = await openMenu(page);
-  await menu.getByRole('link', { name: 'Login' }).click();
-  await expect(page).toHaveURL(/\/login$/);
-  await expect(visibleTitle(page)).toHaveText('Login');
-};
-
-const login = async (page: Page, username: string): Promise<void> => {
-  await openLogin(page);
-  await fillCredentials(page, username, 'secret');
-  await visible(page.getByRole('button', { name: 'Login' })).click();
-  await expect(page).toHaveURL(/\/tabs\/schedule$/);
-};
+import {
+  DATA_TIMEOUT,
+  fillCredentials,
+  login,
+  openLogin,
+  openMenu,
+  openSchedule,
+  visible,
+  visibleTitle,
+} from './helpers';
 
 const closeMenu = async (page: Page, menu: Locator): Promise<void> => {
   await page.keyboard.press('Escape');
@@ -69,10 +59,6 @@ test.describe('Account', () => {
     await expectLoggedOut(page);
   });
 
-  test('logging in with a username and password opens the schedule', async ({ page }) => {
-    await login(page, 'ionitron');
-  });
-
   test('logging in marks the user logged in', async ({ page }) => {
     await login(page, 'ionitron');
 
@@ -95,7 +81,7 @@ test.describe('Account', () => {
     await expectLoggedOut(page);
   });
 
-  test('a required field shows its message once it has been touched', async ({ page }) => {
+  test('the Login page shows a required message once a field is touched', async ({ page }) => {
     await openLogin(page);
     const username = visible(page.getByRole('textbox', { name: 'Username' }));
     await expect(visible(page.getByText('Username is required'))).toHaveCount(0);
@@ -169,7 +155,7 @@ test.describe('Account', () => {
     await expect(accountUsername(page)).toHaveText('capacitor', { timeout: DATA_TIMEOUT });
   });
 
-  test('cancelling the username change keeps the username', async ({ page }) => {
+  test('the Account page keeps the username when the change is cancelled', async ({ page }) => {
     await login(page, 'ionitron');
     await openAccount(page);
 
@@ -194,7 +180,7 @@ test.describe('Account', () => {
     await expectLoggedOut(page);
   });
 
-  test('logging out from the Account page opens the login page', async ({ page }) => {
+  test('logging out from the Account page opens the Login page', async ({ page }) => {
     await login(page, 'ionitron');
     await openAccount(page);
 
@@ -205,7 +191,7 @@ test.describe('Account', () => {
     await expectLoggedOut(page);
   });
 
-  test('stays logged in after a reload', async ({ page }) => {
+  test('logging in survives a reload', async ({ page }) => {
     await login(page, 'ionitron');
 
     await reload(page);
