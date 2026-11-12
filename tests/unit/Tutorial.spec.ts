@@ -15,14 +15,14 @@ vi.mock('/assets/img/ica-slidebox-img-2.png', () => ({ default: '' }));
 vi.mock('/assets/img/ica-slidebox-img-3.png', () => ({ default: '' }));
 vi.mock('/assets/img/ica-slidebox-img-4.png', () => ({ default: '' }));
 
-vi.mock('@ionic/vue', () => ({
+vi.mock('@ionic/vue', async () => ({
+  ...(await import('./ionicStubs')).ionTags('IonButton'),
   IonPage: slot,
   IonHeader: slot,
   IonToolbar: slot,
   IonButtons: slot,
   IonContent: slot,
   IonIcon: slot,
-  IonButton: slot,
   menuController: { enable: vi.fn().mockResolvedValue(undefined) },
   useIonRouter: () => ({ navigate }),
 }));
@@ -55,7 +55,11 @@ describe('Tutorial', () => {
     const wrapper = mount(Tutorial);
     await flushPromises();
 
-    await (wrapper.vm as any).navigateToSchedule();
+    await wrapper
+      .findAll('ion-button')
+      .find((button) => button.text() === 'Skip')!
+      .trigger('click');
+    await flushPromises();
 
     expect((await Preferences.get({ key: 'ion_did_tutorial' })).value).toBe('true');
     expect(navigate).toHaveBeenCalledWith('/tabs/schedule', 'root', 'replace');
