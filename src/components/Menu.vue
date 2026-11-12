@@ -108,13 +108,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from 'vue';
-import { useStore } from '@/store';
-import router from '@/router';
 import { Preferences } from '@capacitor/preferences';
-import { menuController } from '@ionic/vue';
-
 import {
+  menuController,
   IonContent,
   IonMenuButton,
   IonButtons,
@@ -132,6 +128,10 @@ import {
 } from '@ionic/vue';
 import * as ionIcons from 'ionicons/icons';
 import { calendarOutline, peopleOutline, mapOutline, informationCircleOutline } from 'ionicons/icons';
+import { computed, defineComponent, ref, watch } from 'vue';
+
+import router from '@/router';
+import { useStore } from '@/store';
 
 export default defineComponent({
   name: 'Menu',

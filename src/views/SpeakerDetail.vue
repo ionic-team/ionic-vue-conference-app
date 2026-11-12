@@ -155,8 +155,6 @@ ion-chip[color='instagram'] {
 </style>
 
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref, watch } from 'vue';
-import { Speaker } from '@/store/modules/speakers';
 import {
   IonPage,
   IonHeader,
@@ -181,8 +179,11 @@ import {
   mailOutline,
   phonePortraitOutline,
 } from 'ionicons/icons';
+import { computed, onBeforeMount, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+
 import { useStore } from '@/store';
+import type { Speaker } from '@/store/modules/speakers';
 
 declare global {
   interface Window {

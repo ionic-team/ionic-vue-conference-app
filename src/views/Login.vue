@@ -75,8 +75,6 @@ ion-input {
 </style>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
 import {
   IonPage,
   IonHeader,
@@ -90,6 +88,8 @@ import {
   IonCol,
   IonInput,
 } from '@ionic/vue';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 interface UserOptions {
   username: string;

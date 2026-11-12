@@ -113,7 +113,7 @@ p b {
 </style>
 
 <script setup lang="ts">
-import { onMounted, ref, onActivated } from 'vue';
+import { Preferences } from '@capacitor/preferences';
 import {
   IonPage,
   IonHeader,
@@ -126,7 +126,7 @@ import {
   useIonRouter,
 } from '@ionic/vue';
 import { arrowForward } from 'ionicons/icons';
-import { Preferences } from '@capacitor/preferences';
+import { onMounted, ref, onActivated } from 'vue';
 
 const ionRouter = useIonRouter();
 const ionDidTutorial = ref(false);

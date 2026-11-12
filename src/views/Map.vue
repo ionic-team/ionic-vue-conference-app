@@ -36,15 +36,16 @@
 </style>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, onActivated, ref, watch } from 'vue';
-import { useStore } from '@/store';
 import { IonPage, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonContent } from '@ionic/vue';
 import L from 'leaflet';
-import { Location } from '@/store/modules/locations';
-import 'leaflet/dist/leaflet.css';
-import markerIconUrl from 'leaflet/dist/images/marker-icon.png';
 import markerIconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIconUrl from 'leaflet/dist/images/marker-icon.png';
 import markerShadowUrl from 'leaflet/dist/images/marker-shadow.png';
+import { defineComponent, computed, onMounted, onActivated, ref, watch } from 'vue';
+
+import { useStore } from '@/store';
+import type { Location } from '@/store/modules/locations';
+import 'leaflet/dist/leaflet.css';
 
 // Fix for marker icons in Vite
 L.Icon.Default.prototype.options.iconUrl = markerIconUrl;

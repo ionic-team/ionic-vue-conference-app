@@ -68,10 +68,6 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, computed } from 'vue';
-import { Session } from '@/store/modules/sessions';
-import { useStore } from '@/store';
-import { useRouter } from 'vue-router';
 import {
   IonPage,
   IonHeader,
@@ -91,6 +87,11 @@ import {
   IonCardHeader,
   IonAvatar,
 } from '@ionic/vue';
+import { onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
+
+import { useStore } from '@/store';
+import type { Session } from '@/store/modules/sessions';
 
 const router = useRouter();
 const store = useStore();
