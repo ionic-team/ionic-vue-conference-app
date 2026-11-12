@@ -50,6 +50,17 @@ test.describe('Session detail', () => {
     await expect(button(detail, 'Share')).toBeVisible();
   });
 
+  test('the share button opens the share options', async ({ page }) => {
+    await openSession(page, 'Ionic Tooling');
+
+    await button(sessionPage(page, 'Ionic Tooling'), 'Share').click();
+
+    const sheet = page.getByRole('dialog', { name: 'Share Ionic Tooling' });
+    await expect(sheet.getByRole('button')).toHaveText(['Copy Link', 'Share via ...', 'Cancel']);
+    await sheet.getByRole('button', { name: 'Cancel' }).click();
+    await expect(sheet).toHaveCount(0);
+  });
+
   test('opens a session from a direct link', async ({ page }) => {
     await page.goto('/tabs/schedule/session/7');
 
