@@ -27,7 +27,7 @@ export const segmentButton = (page: Page, name: 'All' | 'Favorites'): Locator =>
 /* The visible pages inside the tabs (an outgoing page can still be visible mid-transition). */
 export const tabPage = (page: Page): Locator => visible(page.locator('ion-tabs ion-router-outlet > .ion-page'));
 
-/** A button found by its exact accessible name, e.g. the toolbar's icon-only "Search" or "Favorite". */
+/** A button found by its exact accessible name, e.g. the toolbar's icon-only "Search" or "Add favorite". */
 export const button = (scope: Page | Locator, name: string): Locator =>
   visible(scope.getByRole('button', { name, exact: true }));
 
