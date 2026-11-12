@@ -75,7 +75,7 @@
 </style>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+import { getMode } from '@ionic/core/components';
 import {
   IonPage,
   IonHeader,
@@ -92,7 +92,6 @@ import {
   IonFooter,
   modalController,
 } from '@ionic/vue';
-import { getMode } from '@ionic/core/components';
 import {
   logoIonic,
   logoVue,
@@ -105,6 +104,8 @@ import {
   documents,
   compass,
 } from 'ionicons/icons';
+import { ref, onMounted } from 'vue';
+
 import store from '@/store';
 
 const isIos = getMode() === 'ios';

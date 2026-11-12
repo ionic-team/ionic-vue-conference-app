@@ -143,9 +143,6 @@ h1 {
 </style>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
-import { useStore } from '@/store';
 import {
   IonPage,
   IonHeader,
@@ -161,7 +158,11 @@ import {
   IonText,
 } from '@ionic/vue';
 import { star, starOutline, share, cloudDownload } from 'ionicons/icons';
-import { Session } from '@/store/modules/sessions';
+import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+
+import { useStore } from '@/store';
+import type { Session } from '@/store/modules/sessions';
 
 const route = useRoute();
 const store = useStore();

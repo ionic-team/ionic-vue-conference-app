@@ -184,12 +184,7 @@ ion-item-sliding[data-track='navigation'] ion-label {
 </style>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, computed } from 'vue';
-import { useStore } from 'vuex';
-import SessionListFilter from './SessionListFilter.vue';
 import { getMode } from '@ionic/core/components';
-import { Session } from '@/store/modules/sessions';
-
 import {
   IonPage,
   IonHeader,
@@ -221,6 +216,12 @@ import {
   menuController,
 } from '@ionic/vue';
 import { shareSocial, logoVimeo, logoInstagram, logoTwitter, logoFacebook, options, search } from 'ionicons/icons';
+import { ref, onMounted, watch, computed } from 'vue';
+import { useStore } from 'vuex';
+
+import SessionListFilter from './SessionListFilter.vue';
+
+import type { Session } from '@/store/modules/sessions';
 
 type GroupedSession = {
   id: string;
