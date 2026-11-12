@@ -42,7 +42,7 @@ export default {
     IonLabel,
     IonIcon,
   },
-  data() {
+  data(): { calendar: string; people: string; location: string; informationCircle: string } {
     return {
       calendar,
       people,
