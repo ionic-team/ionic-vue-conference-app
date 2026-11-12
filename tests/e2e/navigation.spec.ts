@@ -153,6 +153,22 @@ test.describe('Navigation', () => {
     await expect(page.getByText('Support message is required')).toBeHidden();
   });
 
+  test('the Support page shows the confirmation even while the notice is still open', async ({ page }) => {
+    const menu = await openMenu(page);
+    await menu.getByRole('link', { name: 'Support' }).click();
+    const notice = page.getByText('This does not actually send a support request.');
+    await expect(notice).toBeVisible();
+
+    await visible(page.getByRole('textbox', { name: 'Enter your support message below' })).fill(
+      'The schedule is great!',
+    );
+    await visible(page.getByRole('button', { name: 'Submit' })).click();
+
+    await expect(page.getByText('Your support request has been sent.')).toBeVisible();
+    // The notice closes on its own after 3 seconds, so expect sending to have closed it well before then.
+    await expect(notice).toBeHidden({ timeout: 1000 });
+  });
+
   test('the Support form requires a message', async ({ page }) => {
     const menu = await openMenu(page);
     await menu.getByRole('link', { name: 'Support' }).click();

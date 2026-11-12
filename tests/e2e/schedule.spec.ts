@@ -220,6 +220,12 @@ test.describe('Schedule', () => {
     await expect(visible(page.getByText('No Sessions Found'))).toBeVisible();
   });
 
+  test('the icon-only buttons have accessible names', async ({ page }) => {
+    await expect(button(page, 'Search')).toBeVisible();
+    await expect(button(page, 'Filter')).toBeVisible();
+    await expect(button(page, 'Share')).toBeVisible();
+  });
+
   test('the share button opens the social share buttons', async ({ page }) => {
     const networks = ['Vimeo', 'Instagram', 'Twitter', 'Facebook'];
     for (const name of networks) {
