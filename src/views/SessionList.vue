@@ -18,7 +18,7 @@
           show-cancel-button="always"
           v-model="queryText"
           @ionInput="updateSearchTerm"
-          @ionCancel="showSearchbar = false"
+          @ionCancel="cancelSearch"
           placeholder="Search"
         ></ion-searchbar>
 
@@ -361,6 +361,13 @@ const updateSegment = (e: any) => {
 
 const updateSearchTerm = (e: any) => {
   store.dispatch('setSearchText', e.detail.value);
+};
+
+// Cancelling hides the searchbar before it reports its cleared value, so clear the search here.
+const cancelSearch = (): void => {
+  showSearchbar.value = false;
+  queryText.value = '';
+  store.dispatch('setSearchText', '');
 };
 
 const openSocial = async (network: any) => {

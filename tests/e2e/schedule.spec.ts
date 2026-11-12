@@ -53,6 +53,19 @@ test.describe('Schedule', () => {
     await expect(sessionLink(page, 'Breakfast')).toBeVisible();
   });
 
+  test('cancelling the search hides the searchbar and shows every session again', async ({ page }) => {
+    await button(page, 'Search').click();
+    const searchbar = visible(page.locator('ion-searchbar'));
+    await visible(page.getByRole('searchbox')).fill('VUE');
+    const headings = visible(page.locator('ion-item-sliding')).getByRole('heading');
+    await expect(headings).toHaveCount(2);
+
+    await searchbar.getByRole('button', { name: 'cancel' }).click();
+
+    await expect(searchbar).toHaveCount(0);
+    await expect(headings).toHaveCount(20);
+  });
+
   test('shows the empty state when no session matches the search', async ({ page }) => {
     await button(page, 'Search').click();
     await visible(page.getByRole('searchbox')).fill('no such session');
