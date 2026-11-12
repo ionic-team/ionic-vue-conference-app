@@ -2,7 +2,7 @@ import { Preferences } from '@capacitor/preferences';
 import { flushPromises, mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import Tutorial from './Tutorial.vue';
+import Tutorial from '@/views/Tutorial.vue';
 
 const { navigate, slot } = vi.hoisted(() => ({
   navigate: vi.fn(),
