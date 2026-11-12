@@ -37,7 +37,7 @@ export function useStore(): Store<StoreState> {
 
 let userDataLoaded: Promise<unknown> | undefined;
 
-/** Restores the saved login once; later calls wait for that same load. */
+/* Restores the saved login once; later calls wait for that same load. */
 export function loadUserData(): Promise<unknown> {
   userDataLoaded ??= store.dispatch('loadUserData');
   return userDataLoaded;
