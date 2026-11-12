@@ -15,8 +15,6 @@ export default [
   ),
   // Kept outside defineConfigWithVueTs: it treats `consistent-type-imports` as
   // type-aware and would turn on project-based parsing for every .ts file.
-  // Note: @ionic/eslint-config only targets .ts/.tsx files, so <script> blocks in
-  // .vue files get the Vue and TypeScript rules above but not the Ionic ones.
   ...ionic,
   // @ionic/eslint-config only targets TypeScript files, so apply its own rules to the
   // <script> blocks in .vue files too. The Vue config above already sets their parser.
