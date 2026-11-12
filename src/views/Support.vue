@@ -75,9 +75,11 @@ import {
   IonTextarea,
   IonRow,
   IonCol,
+  alertController,
   toastController,
 } from '@ionic/vue';
 import { ref, onMounted } from 'vue';
+import { onBeforeRouteLeave } from 'vue-router';
 
 const supportMessage = ref('');
 const submitted = ref(false);
@@ -90,6 +92,25 @@ onMounted(async () => {
     duration: 3000,
   });
   await toast.present();
+});
+
+// Leaving with an unsent message asks first, so it is not lost by accident.
+onBeforeRouteLeave(async () => {
+  if (!supportMessage.value.trim()) {
+    return true;
+  }
+
+  const alert = await alertController.create({
+    header: 'Leave this page?',
+    message: 'Are you sure you want to leave this page? Your support message will not be submitted.',
+    buttons: [
+      { text: 'Stay', role: 'cancel' },
+      { text: 'Leave', role: 'confirm' },
+    ],
+  });
+  await alert.present();
+  const { role } = await alert.onDidDismiss();
+  return role !== 'cancel';
 });
 
 const submit = async () => {
