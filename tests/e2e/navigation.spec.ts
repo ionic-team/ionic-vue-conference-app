@@ -1,11 +1,22 @@
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
-import { DATA_TIMEOUT, openMenu, openSchedule, visible, visibleTitle } from './helpers';
+import { DATA_TIMEOUT, endToolbarButtons, openMenu, openSchedule, visible, visibleTitle } from './helpers';
 
 // The About page has no toolbar title; its content starts with an "About" heading instead.
 const expectAboutPage = async (page: Page): Promise<void> => {
   await expect(visible(page.getByRole('heading', { name: 'About', level: 3 }))).toBeVisible();
+};
+
+/* Opens the About page's More options popover. */
+const openAboutOptions = async (page: Page): Promise<Locator> => {
+  await page.getByRole('tab', { name: 'About' }).click();
+  await expectAboutPage(page);
+  // More options is the only button at the end of the About page's toolbar.
+  await endToolbarButtons(page).click();
+  const popover = visible(page.locator('ion-popover')).filter({ hasText: 'Learn Ionic' });
+  await expect(popover).toBeVisible();
+  return popover;
 };
 
 test.beforeEach(async ({ page }) => {
@@ -88,6 +99,47 @@ test.describe('Navigation', () => {
     await expect(about).toContainText('ica2047');
   });
 
+  test('the About page More options open the Ionic links in a new tab', async ({ page, context }) => {
+    // The links open external sites; answer them locally so the test stays off the network.
+    await context.route(/^https:\/\/(showcase\.)?(ionicframework|github)\.com\//, (route) =>
+      route.fulfill({ body: '' }),
+    );
+    const links = [
+      { name: 'Learn Ionic', url: 'https://ionicframework.com/getting-started' },
+      { name: 'Documentation', url: 'https://ionicframework.com/docs/' },
+      { name: 'Showcase', url: 'https://showcase.ionicframework.com/' },
+      { name: 'GitHub Repo', url: 'https://github.com/ionic-team/ionic' },
+    ];
+
+    for (const { name, url } of links) {
+      const popover = await openAboutOptions(page);
+      const popup = page.waitForEvent('popup');
+      await popover.getByRole('button', { name }).click();
+
+      const tab = await popup;
+      await expect(tab).toHaveURL(url);
+      await tab.close();
+      await expect(popover).toBeHidden();
+      await expect(page).toHaveURL(/\/tabs\/about$/);
+    }
+  });
+
+  test('the About page More options open the Support page', async ({ page }) => {
+    const popover = await openAboutOptions(page);
+    await popover.getByRole('button', { name: 'Support' }).click();
+
+    await expect(page).toHaveURL(/\/support$/);
+    await expect(popover).toBeHidden();
+    await expect(visibleTitle(page)).toHaveText('Support');
+  });
+
+  test('the Support page says that messages are not actually sent', async ({ page }) => {
+    const menu = await openMenu(page);
+    await menu.getByRole('link', { name: 'Support' }).click();
+
+    await expect(page.getByText('This does not actually send a support request.')).toBeVisible();
+  });
+
   test('the Support form confirms when a message is sent', async ({ page }) => {
     const menu = await openMenu(page);
     await menu.getByRole('link', { name: 'Support' }).click();
@@ -99,6 +151,7 @@ test.describe('Navigation', () => {
 
     await expect(page.getByText('Your support request has been sent.')).toBeVisible();
     await expect(message).toHaveValue('');
+    await expect(page.getByText('Support message is required')).toBeHidden();
   });
 
   test('the dark mode toggle switches the dark palette', async ({ page }) => {

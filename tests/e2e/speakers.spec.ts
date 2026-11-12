@@ -62,10 +62,14 @@ test.describe('Speakers', () => {
     await expect(session).toContainText('Grand Ballroom B');
   });
 
-  // SpeakerDetail.vue only shows the bio and social links, not the speaker's sessions.
-  test.fixme('shows the speaker sessions on the speaker detail', async ({ page }) => {
+  test('the back button returns from the speaker detail to the speaker list', async ({ page }) => {
     await speakerCard(page, 'Burt Bear').getByRole('button', { name: 'About Burt Bear' }).click();
+    await expect(speakerDetail(page)).toBeVisible();
 
-    await expect(speakerDetail(page).getByText('The Ionic Package')).toBeVisible();
+    await visible(page.getByRole('button', { name: 'back', exact: true })).click();
+
+    await expect(page).toHaveURL(/\/tabs\/speakers$/);
+    await expect(visibleTitle(page)).toHaveText('Speakers');
+    await expect(speakerCard(page, 'Burt Bear')).toBeVisible();
   });
 });
