@@ -11,11 +11,11 @@ export const visibleTitle = (page: Page): Locator => visible(page.locator('ion-t
 
 const escapeRegExp = (text: string): string => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-/** The link that opens a session from the schedule. */
+/* The link that opens a session from the schedule. */
 export const sessionLink = (page: Page, name: string): Locator =>
   visible(page.getByRole('link', { name: new RegExp(`^${escapeRegExp(name)} `) }));
 
-/** A session's sliding item on the schedule (its text lives here, not in the link's shadow root). */
+/* A session's sliding item on the schedule (its text lives here, not in the link's shadow root). */
 export const sessionItem = (page: Page, name: string): Locator =>
   visible(page.locator('ion-item-sliding')).filter({
     has: page.getByRole('heading', { name, exact: true }),
@@ -24,7 +24,7 @@ export const sessionItem = (page: Page, name: string): Locator =>
 export const segmentButton = (page: Page, name: 'All' | 'Favorites'): Locator =>
   visible(page.locator('ion-segment-button', { hasText: name }));
 
-/** The visible pages inside the tabs (an outgoing page can still be visible mid-transition). */
+/* The visible pages inside the tabs (an outgoing page can still be visible mid-transition). */
 export const tabPage = (page: Page): Locator => visible(page.locator('ion-tabs ion-router-outlet > .ion-page'));
 
 // The toolbar's icon-only buttons have no accessible name, so find them by position.
@@ -32,7 +32,7 @@ export const tabPage = (page: Page): Locator => visible(page.locator('ion-tabs i
 export const endToolbarButtons = (scope: Page | Locator): Locator =>
   visible(scope.locator('ion-header ion-buttons[slot="end"] ion-button'));
 
-/** Skips the tutorial and waits for the schedule's sessions to load. */
+/* Skips the tutorial and waits for the schedule's sessions to load. */
 export const openSchedule = async (page: Page): Promise<void> => {
   await page.goto('/');
   await page.getByRole('button', { name: 'Skip' }).click();
@@ -47,7 +47,7 @@ export const openMenu = async (page: Page): Promise<Locator> => {
   return menu;
 };
 
-/** Swipes a session's sliding item to the left to reveal its options. */
+/* Swipes a session's sliding item to the left to reveal its options. */
 export const swipeOpen = async (page: Page, slidingItem: Locator): Promise<void> => {
   // A sliding item ignores a new swipe while it is still animating closed.
   await expect(slidingItem).not.toHaveClass(/item-sliding-active-slide/);

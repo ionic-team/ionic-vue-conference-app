@@ -106,7 +106,7 @@ export const conferenceData = {
   ],
 };
 
-/** Stubs fetch so every request answers with `body` (a copy of the fixture by default). */
+/* Stubs fetch so every request answers with `body` (a copy of the fixture by default). */
 export const stubFetch = (body: unknown = structuredClone(conferenceData), ok = true): Mock => {
   const fetch = vi.fn().mockResolvedValue({
     ok,
