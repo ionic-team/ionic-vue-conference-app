@@ -81,7 +81,7 @@ import { ref, onMounted } from 'vue';
 
 const supportMessage = ref('');
 const submitted = ref(false);
-// Like the Angular app, the required message shows its error once touched (or submitted).
+// The required message shows once the field has been touched or the form is submitted.
 const touched = ref(false);
 
 onMounted(async () => {

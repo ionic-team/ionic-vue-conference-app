@@ -106,7 +106,7 @@ const router = useRouter();
 const store = useStore();
 const login = ref<UserOptions>({ username: '', password: '' });
 const submitted = ref(false);
-// Like the Angular app, a required field shows its error once it has been touched (or submitted).
+// A required field shows its error once it has been touched or the form is submitted.
 const touched = ref({ username: false, password: false });
 
 const onLogin = async () => {

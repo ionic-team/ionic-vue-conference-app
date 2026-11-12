@@ -8,7 +8,7 @@ export interface User {
   hasSeenTutorial: boolean;
 }
 
-// The same Preferences keys the Angular and React conference apps use.
+// The Preferences keys that keep the user logged in across reloads.
 export const HAS_LOGGED_IN = 'hasLoggedIn';
 export const USERNAME = 'username';
 
@@ -62,7 +62,7 @@ const userStore: Module<User, {}> = {
       await Preferences.set({ key: USERNAME, value: userName });
       commit('logIn', userName);
     },
-    // Signing up has no account to create, so it logs the user in like the other apps.
+    // Signing up has no account to create, so it logs the user in.
     async signUp({ dispatch }, userName: string) {
       await dispatch('logIn', userName);
     },
