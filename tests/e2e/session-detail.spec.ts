@@ -60,7 +60,7 @@ test.describe('Session detail', () => {
 
   test('favoriting a session adds it to Favorites', async ({ page }) => {
     await openSession(page, 'Ionic Tooling');
-    await button(sessionPage(page, 'Ionic Tooling'), 'Favorite').click();
+    await button(sessionPage(page, 'Ionic Tooling'), 'Add favorite').click();
     await expect(button(sessionPage(page, 'Ionic Tooling'), 'Remove favorite')).toBeVisible();
     await goBackToSchedule(page);
 
@@ -71,14 +71,14 @@ test.describe('Session detail', () => {
 
   test('unfavoriting a session removes it from Favorites', async ({ page }) => {
     await openSession(page, 'Ionic Tooling');
-    await button(sessionPage(page, 'Ionic Tooling'), 'Favorite').click();
+    await button(sessionPage(page, 'Ionic Tooling'), 'Add favorite').click();
     await goBackToSchedule(page);
     await segmentButton(page, 'Favorites').click();
     await expect(sessionItem(page, 'Ionic Tooling')).toBeVisible();
 
     await openSession(page, 'Ionic Tooling');
     await button(sessionPage(page, 'Ionic Tooling'), 'Remove favorite').click();
-    await expect(button(sessionPage(page, 'Ionic Tooling'), 'Favorite')).toBeVisible();
+    await expect(button(sessionPage(page, 'Ionic Tooling'), 'Add favorite')).toBeVisible();
     await goBackToSchedule(page);
 
     await expect(visible(page.getByText('No Sessions Found'))).toBeVisible();

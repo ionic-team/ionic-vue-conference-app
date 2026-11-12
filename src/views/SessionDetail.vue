@@ -6,7 +6,7 @@
           <ion-back-button :default-href="defaultHref"></ion-back-button>
         </ion-buttons>
         <ion-buttons slot="end">
-          <ion-button :aria-label="isFavorite ? 'Remove favorite' : 'Favorite'" @click="toggleFavorite">
+          <ion-button :aria-label="isFavorite ? 'Remove favorite' : 'Add favorite'" @click="toggleFavorite">
             <ion-icon v-if="!isFavorite" slot="icon-only" :icon="starOutline"></ion-icon>
             <ion-icon v-if="isFavorite" slot="icon-only" :icon="star"></ion-icon>
           </ion-button>

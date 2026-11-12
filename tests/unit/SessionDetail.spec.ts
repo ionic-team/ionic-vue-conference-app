@@ -94,12 +94,12 @@ describe('SessionDetail', () => {
   it('labels the favorite and share buttons', async () => {
     const wrapper = await mountSessionDetail();
     const labels = () => wrapper.findAll('ion-buttons[slot="end"] ion-button').map((b) => b.attributes('aria-label'));
-    expect(labels()).toEqual(['Favorite', 'Share']);
+    expect(labels()).toEqual(['Add favorite', 'Share']);
 
     await favoriteButton(wrapper).trigger('click');
     expect(labels()).toEqual(['Remove favorite', 'Share']);
 
     await favoriteButton(wrapper).trigger('click');
-    expect(labels()).toEqual(['Favorite', 'Share']);
+    expect(labels()).toEqual(['Add favorite', 'Share']);
   });
 });
