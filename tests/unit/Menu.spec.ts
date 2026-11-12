@@ -93,7 +93,7 @@ describe('Menu', () => {
     await store.dispatch('logIn', 'ionitron');
     const wrapper = mount(Menu);
 
-    await (wrapper.vm as any).logout();
+    await menuItem(wrapper, 'Logout').trigger('click');
     await flushPromises();
 
     expect(store.state.user.isAuthenticated).toBe(false);

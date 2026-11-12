@@ -39,6 +39,26 @@ export const openSchedule = async (page: Page): Promise<void> => {
   await expect(sessionLink(page, 'Breakfast')).toBeVisible({ timeout: DATA_TIMEOUT });
 };
 
+export const fillCredentials = async (page: Page, username: string, password: string): Promise<void> => {
+  await visible(page.getByRole('textbox', { name: 'Username' })).fill(username);
+  await visible(page.getByRole('textbox', { name: 'Password' })).fill(password);
+};
+
+export const openLogin = async (page: Page): Promise<void> => {
+  const menu = await openMenu(page);
+  await menu.getByRole('link', { name: 'Login' }).click();
+  await expect(page).toHaveURL(/\/login$/);
+  await expect(visibleTitle(page)).toHaveText('Login');
+};
+
+/* Logs in from the menu's Login page, which then opens the schedule. */
+export const login = async (page: Page, username: string): Promise<void> => {
+  await openLogin(page);
+  await fillCredentials(page, username, 'secret');
+  await visible(page.getByRole('button', { name: 'Login' })).click();
+  await expect(page).toHaveURL(/\/tabs\/schedule$/);
+};
+
 export const openMenu = async (page: Page): Promise<Locator> => {
   const menu = page.getByRole('navigation', { name: 'menu' });
   // Let the menu finish closing if a menu item was just tapped.
