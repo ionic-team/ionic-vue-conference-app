@@ -14,7 +14,7 @@
     "lint": "npm run eslint && npm run prettier -- --check",
     "lint:fix": "npm run eslint -- --fix && npm run prettier -- --write",
     "eslint": "eslint",
-    "prettier": "prettier \"**/*.{ts,vue}\""
+    "prettier": "prettier \"**/*.{ts,vue}\" \"*.{js,mjs,cjs,mts}\""
   },
   "dependencies": {
     "@capacitor/android": "^8.0.0",
