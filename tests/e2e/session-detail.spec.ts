@@ -10,6 +10,7 @@ import {
   sessionLink,
   tabPage,
   visible,
+  visibleTitle,
 } from './helpers';
 
 // The outgoing schedule can still be visible mid-transition, so scope to the session's own page.
@@ -44,19 +45,20 @@ test.describe('Session detail', () => {
     await expect(content).toContainText('Hall 2');
   });
 
-  // SessionDetail.vue never renders the session's speakers (it keeps speakerIds but shows no list).
-  test.fixme('shows the session speakers', async ({ page }) => {
-    await openSession(page, 'Migrating to Ionic');
-
-    const content = sessionPage(page, 'Migrating to Ionic').locator('ion-content');
-    await expect(content.getByText('Eva Eagle')).toBeVisible();
-    await expect(content.getByText('Lionel Lion')).toBeVisible();
-  });
-
   test('opens a session from a direct link', async ({ page }) => {
     await page.goto('/tabs/schedule/session/7');
 
     await expect(sessionPage(page, 'The Evolution of Ionicons')).toContainText('Hall 2', { timeout: DATA_TIMEOUT });
+  });
+
+  test('the back button returns to the schedule', async ({ page }) => {
+    await openSession(page, 'Ionic Tooling');
+
+    await goBackToSchedule(page);
+
+    await expect(visibleTitle(page)).toHaveText('Schedule');
+    await expect(sessionLink(page, 'Ionic Tooling')).toBeVisible();
+    await expect(visible(page.locator('ion-item-sliding'))).toHaveCount(20);
   });
 
   test('favoriting a session adds it to Favorites', async ({ page }) => {

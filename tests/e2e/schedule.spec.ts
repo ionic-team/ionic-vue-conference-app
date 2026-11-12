@@ -1,3 +1,4 @@
+import type { Locator, Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
 import {
@@ -9,6 +10,19 @@ import {
   swipeOpen,
   visible,
 } from './helpers';
+
+/* Favorites a session from the All segment with its sliding item and confirms the alert. */
+const addFavorite = async (page: Page, name: string): Promise<void> => {
+  await swipeOpen(page, sessionItem(page, name));
+  await visible(page.getByRole('button', { name: 'Favorite' })).click();
+  await expect(page.getByRole('alertdialog', { name: 'Favorite Added' })).toBeVisible();
+  await page.getByRole('button', { name: 'OK' }).click();
+};
+
+// The share fab and its social buttons are icon-only with no accessible name, so find them by color.
+const shareFab = (page: Page): Locator => visible(page.locator('ion-fab > ion-fab-button'));
+const socialButton = (page: Page, network: string): Locator =>
+  visible(page.locator(`ion-fab-list ion-fab-button[color="${network.toLowerCase()}"]`));
 
 test.beforeEach(async ({ page }) => {
   await openSchedule(page);
@@ -60,10 +74,7 @@ test.describe('Schedule', () => {
   });
 
   test('shows only favorited sessions under Favorites', async ({ page }) => {
-    await swipeOpen(page, sessionItem(page, 'Ionic Tooling'));
-    await visible(page.getByRole('button', { name: 'Favorite' })).click();
-    await expect(page.getByRole('alertdialog', { name: 'Favorite Added' })).toBeVisible();
-    await page.getByRole('button', { name: 'OK' }).click();
+    await addFavorite(page, 'Ionic Tooling');
 
     await segmentButton(page, 'Favorites').click();
 
@@ -82,9 +93,7 @@ test.describe('Schedule', () => {
   });
 
   test('removes a session from Favorites with its sliding item', async ({ page }) => {
-    await swipeOpen(page, sessionItem(page, 'Ionic Tooling'));
-    await visible(page.getByRole('button', { name: 'Favorite' })).click();
-    await page.getByRole('button', { name: 'OK' }).click();
+    await addFavorite(page, 'Ionic Tooling');
     await segmentButton(page, 'Favorites').click();
     await expect(sessionLink(page, 'Ionic Tooling')).toBeVisible();
 
@@ -132,5 +141,91 @@ test.describe('Schedule', () => {
     await expect(modal).toBeHidden();
 
     await expect(visible(page.getByText('No Sessions Found'))).toBeVisible();
+  });
+
+  test('Select All in the filter modal brings the sessions back after Deselect All', async ({ page }) => {
+    await endToolbarButtons(page).last().click();
+    const modal = page.locator('ion-modal');
+    // The filter's toolbar buttons keep their own casing, not Android's uppercase
+    await expect(modal.getByRole('button', { name: 'Deselect All' })).toHaveCSS('text-transform', 'capitalize');
+    await modal.getByRole('button', { name: 'Deselect All' }).click();
+    await modal.getByRole('button', { name: 'Done' }).click();
+    await expect(modal).toBeHidden();
+    await expect(visible(page.getByText('No Sessions Found'))).toBeVisible();
+
+    await endToolbarButtons(page).last().click();
+    await expect(modal.getByRole('checkbox', { checked: true })).toHaveCount(0);
+    await modal.getByRole('button', { name: 'Select All', exact: true }).click();
+    await expect(modal.getByRole('checkbox', { checked: false })).toHaveCount(0);
+    await modal.getByRole('button', { name: 'Done' }).click();
+    await expect(modal).toBeHidden();
+
+    await expect(visible(page.locator('ion-item-sliding'))).toHaveCount(20);
+    await expect(visible(page.getByText('No Sessions Found'))).toBeHidden();
+  });
+
+  test('search and the track filter combine', async ({ page }) => {
+    await endToolbarButtons(page).last().click();
+    const modal = page.locator('ion-modal');
+    await modal.getByRole('checkbox', { name: 'Ionic' }).click();
+    await modal.getByRole('button', { name: 'Done' }).click();
+    await expect(modal).toBeHidden();
+
+    await endToolbarButtons(page).first().click();
+    await visible(page.getByRole('searchbox')).fill('ionic');
+
+    // Only the sessions whose name contains "ionic" and that are outside the Ionic track are left.
+    const headings = visible(page.locator('ion-item-sliding')).getByRole('heading');
+    await expect(headings).toHaveCount(12);
+    await expect(sessionLink(page, 'Ionic Tooling')).toBeVisible();
+    await expect(sessionLink(page, 'Getting Started with Ionic')).toBeHidden();
+    await expect(sessionLink(page, 'Breakfast')).toBeHidden();
+
+    // Clearing the search keeps the track filter.
+    await visible(page.getByRole('button', { name: 'reset' })).click();
+
+    await expect(headings).toHaveCount(17);
+    await expect(sessionLink(page, 'Breakfast')).toBeVisible();
+    await expect(sessionLink(page, 'Getting Started with Ionic')).toBeHidden();
+  });
+
+  test('favoriting a session that is already a favorite offers to remove it', async ({ page }) => {
+    await addFavorite(page, 'Ionic Tooling');
+
+    await swipeOpen(page, sessionItem(page, 'Ionic Tooling'));
+    await visible(page.getByRole('button', { name: 'Favorite' })).click();
+    const alert = page.getByRole('alertdialog', { name: 'Favorite already added' });
+    await expect(alert).toContainText('Would you like to remove this session from your favorites?');
+    await alert.getByRole('button', { name: 'Cancel' }).click();
+    await expect(alert).toBeHidden();
+
+    // Cancel keeps the favorite.
+    await segmentButton(page, 'Favorites').click();
+    await expect(visible(page.locator('ion-item-sliding')).getByRole('heading')).toHaveText(['Ionic Tooling']);
+
+    await segmentButton(page, 'All').click();
+    await swipeOpen(page, sessionItem(page, 'Ionic Tooling'));
+    await visible(page.getByRole('button', { name: 'Favorite' })).click();
+    await alert.getByRole('button', { name: 'Remove' }).click();
+    await expect(alert).toBeHidden();
+
+    await segmentButton(page, 'Favorites').click();
+    await expect(visible(page.getByText('No Sessions Found'))).toBeVisible();
+  });
+
+  test('the share button opens the social share buttons', async ({ page }) => {
+    const networks = ['Vimeo', 'Instagram', 'Twitter', 'Facebook'];
+    for (const name of networks) {
+      await expect(socialButton(page, name)).toHaveCount(0);
+    }
+
+    await shareFab(page).click();
+
+    for (const name of networks) {
+      await expect(socialButton(page, name)).toBeVisible();
+    }
+    await socialButton(page, 'Vimeo').click();
+
+    await expect(page.getByText('Posting to Vimeo')).toBeVisible();
   });
 });
