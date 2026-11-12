@@ -3,8 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import Support from '@/views/Support.vue';
 
-const { toastCreate, present, alertCreate, leaveGuard } = vi.hoisted(() => ({
+const { toastCreate, toastDismiss, present, alertCreate, leaveGuard } = vi.hoisted(() => ({
   toastCreate: vi.fn(),
+  toastDismiss: vi.fn(),
   present: vi.fn(),
   alertCreate: vi.fn(),
   leaveGuard: { current: null as null | (() => Promise<boolean>) },
@@ -23,7 +24,7 @@ vi.mock('@ionic/vue', async () => {
     ...ionTags('IonTitle', 'IonRow', 'IonCol'),
     IonTextarea: ionInput('ion-textarea'),
     alertController: { create: alertCreate },
-    toastController: { create: toastCreate },
+    toastController: { create: toastCreate, dismiss: toastDismiss },
   };
 });
 
@@ -55,6 +56,7 @@ enableAutoUnmount(afterEach);
 beforeEach(() => {
   vi.clearAllMocks();
   toastCreate.mockResolvedValue({ present });
+  toastDismiss.mockResolvedValue(true);
   leaveGuard.current = null;
 });
 
@@ -75,6 +77,35 @@ describe('Support', () => {
 
     expect(toastMessages()).toContain('Your support request has been sent.');
     expect((wrapper.find('textarea').element as HTMLTextAreaElement).value).toBe('');
+  });
+
+  it('closes the notice before showing the confirmation', async () => {
+    const wrapper = await mountSupport();
+    expect(toastDismiss).not.toHaveBeenCalled();
+    await wrapper.find('textarea').setValue('The schedule is great!');
+
+    await wrapper.find('form').trigger('submit');
+    await flushPromises();
+
+    expect(toastDismiss).toHaveBeenCalledTimes(1);
+    expect(toastDismiss.mock.invocationCallOrder[0]).toBeLessThan(toastCreate.mock.invocationCallOrder[1]);
+    expect(toastMessages()).toEqual([
+      'This does not actually send a support request.',
+      'Your support request has been sent.',
+    ]);
+  });
+
+  it('confirms a sent message when the notice has already closed', async () => {
+    const wrapper = await mountSupport();
+    // Ionic rejects the dismiss when no toast is open.
+    toastDismiss.mockRejectedValue('overlay does not exist');
+    await wrapper.find('textarea').setValue('The schedule is great!');
+
+    await wrapper.find('form').trigger('submit');
+    await flushPromises();
+
+    expect(toastMessages()).toContain('Your support request has been sent.');
+    expect(present).toHaveBeenCalledTimes(2);
   });
 
   it('does not send an empty message and shows the required error', async () => {

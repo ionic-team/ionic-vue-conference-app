@@ -121,6 +121,8 @@ const submit = async () => {
     submitted.value = false;
     touched.value = false;
 
+    // Close the notice shown when the page opens, if it is still up, so the two toasts do not stack.
+    await toastController.dismiss().catch(() => undefined);
     const toast = await toastController.create({
       message: 'Your support request has been sent.',
       duration: 3000,
