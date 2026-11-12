@@ -42,6 +42,14 @@ test.describe('Session detail', () => {
     await expect(content).toContainText('Hall 2');
   });
 
+  test('the favorite and share buttons have accessible names', async ({ page }) => {
+    await openSession(page, 'Ionic Tooling');
+
+    const detail = sessionPage(page, 'Ionic Tooling');
+    await expect(button(detail, 'Add favorite')).toBeVisible();
+    await expect(button(detail, 'Share')).toBeVisible();
+  });
+
   test('opens a session from a direct link', async ({ page }) => {
     await page.goto('/tabs/schedule/session/7');
 
