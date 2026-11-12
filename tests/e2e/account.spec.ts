@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
 import { openMenu, openSchedule, visible, visibleTitle } from './helpers';
@@ -15,11 +15,29 @@ const openLogin = async (page: Page): Promise<void> => {
   await expect(visibleTitle(page)).toHaveText('Login');
 };
 
+const closeMenu = async (page: Page, menu: Locator): Promise<void> => {
+  await page.keyboard.press('Escape');
+  await expect(menu).toBeHidden();
+};
+
+const expectLoggedOut = async (page: Page): Promise<void> => {
+  const menu = await openMenu(page);
+  await expect(menu.getByRole('link', { name: 'Login' })).toBeVisible();
+  await expect(menu.getByRole('link', { name: 'Signup' })).toBeVisible();
+  await expect(menu.getByRole('link', { name: 'Account' })).toHaveCount(0);
+  await expect(menu.getByRole('button', { name: 'Logout' })).toHaveCount(0);
+  await closeMenu(page, menu);
+};
+
 test.beforeEach(async ({ page }) => {
   await openSchedule(page);
 });
 
 test.describe('Account', () => {
+  test('the menu starts logged out', async ({ page }) => {
+    await expectLoggedOut(page);
+  });
+
   test('logging in with a username and password opens the schedule', async ({ page }) => {
     await openLogin(page);
     await fillCredentials(page, 'ionitron', 'secret');
@@ -28,7 +46,7 @@ test.describe('Account', () => {
     await expect(page).toHaveURL(/\/tabs\/schedule$/);
   });
 
-  test('the login page links to signup', async ({ page }) => {
+  test('the Login page links to Signup', async ({ page }) => {
     await openLogin(page);
     await visible(page.getByRole('button', { name: 'Signup' })).click();
 

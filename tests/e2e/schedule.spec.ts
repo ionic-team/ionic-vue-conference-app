@@ -143,11 +143,19 @@ test.describe('Schedule', () => {
     await expect(visible(page.getByText('No Sessions Found'))).toBeVisible();
   });
 
+  test('the filter toolbar buttons keep their casing', async ({ page }) => {
+    await endToolbarButtons(page).last().click();
+    const modal = page.locator('ion-modal');
+
+    // Material Design uppercases button text, and the filter's toolbar buttons opt out of that.
+    for (const name of ['Reset', 'Done', 'Deselect All', 'Select All']) {
+      await expect(modal.getByRole('button', { name, exact: true })).toHaveCSS('text-transform', 'capitalize');
+    }
+  });
+
   test('Select All in the filter modal brings the sessions back after Deselect All', async ({ page }) => {
     await endToolbarButtons(page).last().click();
     const modal = page.locator('ion-modal');
-    // The filter's toolbar buttons keep their own casing, not Android's uppercase
-    await expect(modal.getByRole('button', { name: 'Deselect All' })).toHaveCSS('text-transform', 'capitalize');
     await modal.getByRole('button', { name: 'Deselect All' }).click();
     await modal.getByRole('button', { name: 'Done' }).click();
     await expect(modal).toBeHidden();
@@ -224,8 +232,18 @@ test.describe('Schedule', () => {
     for (const name of networks) {
       await expect(socialButton(page, name)).toBeVisible();
     }
+    // The loading indicator only stays up for 0.5 to 1.5 seconds, so record its message when it opens.
+    await page.evaluate(() => {
+      document.addEventListener(
+        'ionLoadingWillPresent',
+        (event) => {
+          document.body.dataset.loadingMessage = (event.target as HTMLElement & { message: string }).message;
+        },
+        { once: true },
+      );
+    });
     await socialButton(page, 'Vimeo').click();
 
-    await expect(page.getByText('Posting to Vimeo')).toBeVisible();
+    await expect(page.locator('body')).toHaveAttribute('data-loading-message', 'Posting to Vimeo');
   });
 });

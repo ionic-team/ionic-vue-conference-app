@@ -140,10 +140,10 @@ test.describe('Navigation', () => {
     await expect(page.getByText('This does not actually send a support request.')).toBeVisible();
   });
 
-  test('the Support form confirms when a message is sent', async ({ page }) => {
+  test('the Support page confirms when a message is sent', async ({ page }) => {
     const menu = await openMenu(page);
     await menu.getByRole('link', { name: 'Support' }).click();
-    await expect(page.getByText('This does not actually send a support request.')).toBeVisible();
+    await expect(visibleTitle(page)).toHaveText('Support');
 
     const message = visible(page.getByRole('textbox', { name: 'Enter your support message below' }));
     await message.fill('The schedule is great!');
@@ -152,6 +152,18 @@ test.describe('Navigation', () => {
     await expect(page.getByText('Your support request has been sent.')).toBeVisible();
     await expect(message).toHaveValue('');
     await expect(page.getByText('Support message is required')).toBeHidden();
+  });
+
+  test('the Support page leaves without asking when the message is empty', async ({ page }) => {
+    const menu = await openMenu(page);
+    await menu.getByRole('link', { name: 'Support' }).click();
+    await expect(visibleTitle(page)).toHaveText('Support');
+
+    await (await openMenu(page)).getByRole('link', { name: 'Schedule' }).click();
+
+    await expect(page).toHaveURL(/\/tabs\/schedule$/);
+    await expect(visibleTitle(page)).toHaveText('Schedule');
+    await expect(page.getByRole('alertdialog')).toHaveCount(0);
   });
 
   test('the dark mode toggle switches the dark palette', async ({ page }) => {
