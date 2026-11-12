@@ -61,7 +61,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
 import {
   IonPage,
   IonHeader,
@@ -76,6 +75,7 @@ import {
   IonCol,
   toastController,
 } from '@ionic/vue';
+import { ref, onMounted } from 'vue';
 
 const supportMessage = ref('');
 const submitted = ref(false);

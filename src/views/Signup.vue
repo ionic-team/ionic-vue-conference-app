@@ -50,8 +50,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
 import {
   IonPage,
   IonHeader,
@@ -65,6 +63,8 @@ import {
   IonRow,
   IonCol,
 } from '@ionic/vue';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 interface UserOptions {
   username: string;
