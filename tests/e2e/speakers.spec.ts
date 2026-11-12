@@ -53,7 +53,7 @@ test.describe('Speakers', () => {
     await expect(speakerDetail(page).getByRole('heading', { name: 'Rachel Rabbit', level: 2 })).toBeVisible();
   });
 
-  test("opens the session detail from one of the speaker's sessions", async ({ page }) => {
+  test('opens the session detail from a session on the speaker card', async ({ page }) => {
     await speakerCard(page, 'Burt Bear').getByRole('button', { name: 'The Ionic Package' }).click();
 
     await expect(page).toHaveURL(/\/tabs\/speakers\/session\/15$/);
