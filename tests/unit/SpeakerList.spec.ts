@@ -70,7 +70,7 @@ describe('SpeakerList', () => {
     expect(card(wrapper, 'Ted Turtle').find('img').attributes('alt')).toBe('Ted Turtle profile picture');
   });
 
-  it("lists each speaker's sessions", async () => {
+  it('lists the sessions of each speaker', async () => {
     const wrapper = await mountSpeakerList();
 
     expect(
