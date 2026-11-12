@@ -23,5 +23,4 @@ const modules = {
   user: withFreshState(user),
 };
 
-/** A store wired like the app's, with fresh state. */
-export const createTestStore = (): Store<StoreState> => createStore<StoreState>({ modules, strict: true });
+/* A store wired like the app's, with fresh state. */export const createTestStore = (): Store<StoreState> => createStore<StoreState>({ modules, strict: true });
