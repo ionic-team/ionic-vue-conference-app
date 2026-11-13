@@ -48,7 +48,7 @@
         <ion-toolbar>
           <ion-title size="large">Schedule</ion-title>
         </ion-toolbar>
-        <ion-toolbar>
+        <ion-toolbar v-if="isIos">
           <ion-searchbar
             v-model="queryText"
             @ionInput="updateSearchTerm"
