@@ -251,7 +251,7 @@ test.describe('Schedule', () => {
     for (const name of networks) {
       await expect(button(page, name)).toBeVisible();
     }
-    // The loading indicator only stays up for 0.5 to 1.5 seconds, so record its message when it opens.
+    // The loading indicator only stays up for one second, so record its message when it opens.
     await page.evaluate(() => {
       document.addEventListener(
         'ionLoadingWillPresent',
@@ -264,5 +264,35 @@ test.describe('Schedule', () => {
     await button(page, 'Vimeo').click();
 
     await expect(page.locator('body')).toHaveAttribute('data-loading-message', 'Posting to Vimeo');
+  });
+
+  test('the posting message shows for one second', async ({ page }) => {
+    await button(page, 'Share').click();
+    // Record the duration the loading indicator is given and how long it stays open.
+    const timing = page.evaluate(
+      () =>
+        new Promise<{ duration: number; shownFor: number }>((resolve) => {
+          document.addEventListener(
+            'ionLoadingDidPresent',
+            (presented) => {
+              const shownAt = performance.now();
+              const { duration } = presented.target as HTMLElement & { duration: number };
+              document.addEventListener(
+                'ionLoadingDidDismiss',
+                () => resolve({ duration, shownFor: performance.now() - shownAt }),
+                { once: true },
+              );
+            },
+            { once: true },
+          );
+        }),
+    );
+    await button(page, 'Vimeo').click();
+
+    const { duration, shownFor } = await timing;
+    expect(duration).toBe(1000);
+    // It closes itself once the duration is up, plus the time its leave animation takes.
+    expect(shownFor).toBeGreaterThanOrEqual(1000);
+    expect(shownFor).toBeLessThan(2000);
   });
 });
