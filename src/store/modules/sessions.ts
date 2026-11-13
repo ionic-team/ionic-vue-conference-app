@@ -32,7 +32,8 @@ export interface SessionGroup {
   isFirstLoad: true;
 }
 
-const defaultState: SessionState = {
+// A function, so every store gets its own copy instead of sharing one object.
+const defaultState = (): SessionState => ({
   searchText: '',
   trackFilters: [],
   sessions: [],
@@ -41,7 +42,7 @@ const defaultState: SessionState = {
   selectedTrackFilters: [],
   isFirstLoad: true,
   schedule: [],
-};
+});
 
 const sessionStore: Module<SessionState, {}> = {
   state: defaultState,

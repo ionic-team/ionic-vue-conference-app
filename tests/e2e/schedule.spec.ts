@@ -1,15 +1,7 @@
-import type { Locator, Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
-import {
-  endToolbarButtons,
-  openSchedule,
-  segmentButton,
-  sessionItem,
-  sessionLink,
-  swipeOpen,
-  visible,
-} from './helpers';
+import { button, openSchedule, segmentButton, sessionItem, sessionLink, swipeOpen, visible } from './helpers';
 
 /* Favorites a session from the All segment with its sliding item and confirms the alert. */
 const addFavorite = async (page: Page, name: string): Promise<void> => {
@@ -18,11 +10,6 @@ const addFavorite = async (page: Page, name: string): Promise<void> => {
   await expect(page.getByRole('alertdialog', { name: 'Favorite Added' })).toBeVisible();
   await page.getByRole('button', { name: 'OK' }).click();
 };
-
-// The share fab and its social buttons are icon-only with no accessible name, so find them by color.
-const shareFab = (page: Page): Locator => visible(page.locator('ion-fab > ion-fab-button'));
-const socialButton = (page: Page, network: string): Locator =>
-  visible(page.locator(`ion-fab-list ion-fab-button[color="${network.toLowerCase()}"]`));
 
 test.beforeEach(async ({ page }) => {
   await openSchedule(page);
@@ -52,7 +39,7 @@ test.describe('Schedule', () => {
   });
 
   test('filters the sessions by name and restores them when the search is cleared', async ({ page }) => {
-    await endToolbarButtons(page).first().click();
+    await button(page, 'Search').click();
     const searchbox = visible(page.getByRole('searchbox'));
     await searchbox.fill('VUE');
 
@@ -66,8 +53,21 @@ test.describe('Schedule', () => {
     await expect(sessionLink(page, 'Breakfast')).toBeVisible();
   });
 
+  test('cancelling the search hides the searchbar and shows every session again', async ({ page }) => {
+    await button(page, 'Search').click();
+    const searchbar = visible(page.locator('ion-searchbar'));
+    await visible(page.getByRole('searchbox')).fill('VUE');
+    const headings = visible(page.locator('ion-item-sliding')).getByRole('heading');
+    await expect(headings).toHaveCount(2);
+
+    await searchbar.getByRole('button', { name: 'cancel' }).click();
+
+    await expect(searchbar).toHaveCount(0);
+    await expect(headings).toHaveCount(20);
+  });
+
   test('shows the empty state when no session matches the search', async ({ page }) => {
-    await endToolbarButtons(page).first().click();
+    await button(page, 'Search').click();
     await visible(page.getByRole('searchbox')).fill('no such session');
 
     await expect(visible(page.getByText('No Sessions Found'))).toBeVisible();
@@ -106,8 +106,7 @@ test.describe('Schedule', () => {
   });
 
   test('the filter modal can exclude a track and include it again', async ({ page }) => {
-    // Filter is the last toolbar button on Material Design.
-    await endToolbarButtons(page).last().click();
+    await button(page, 'Filter').click();
     const modal = page.locator('ion-modal');
     await expect(modal.getByText('Filter Sessions')).toBeVisible();
     await expect(modal.getByRole('checkbox', { name: 'Food' })).toBeChecked();
@@ -121,7 +120,7 @@ test.describe('Schedule', () => {
     await expect(sessionLink(page, 'Ionic Tooling')).toBeVisible();
     await expect(visible(page.locator('ion-item-sliding'))).toHaveCount(18);
 
-    await endToolbarButtons(page).last().click();
+    await button(page, 'Filter').click();
     await expect(modal.getByRole('checkbox', { name: 'Food' })).not.toBeChecked();
     await modal.getByRole('checkbox', { name: 'Food' }).click();
     await expect(modal.getByRole('checkbox', { name: 'Food' })).toBeChecked();
@@ -134,7 +133,7 @@ test.describe('Schedule', () => {
   });
 
   test('deselecting every track in the filter modal shows no sessions', async ({ page }) => {
-    await endToolbarButtons(page).last().click();
+    await button(page, 'Filter').click();
     const modal = page.locator('ion-modal');
     await modal.getByRole('button', { name: 'Deselect All' }).click();
     await modal.getByRole('button', { name: 'Done' }).click();
@@ -144,7 +143,7 @@ test.describe('Schedule', () => {
   });
 
   test('the filter toolbar buttons keep their casing', async ({ page }) => {
-    await endToolbarButtons(page).last().click();
+    await button(page, 'Filter').click();
     const modal = page.locator('ion-modal');
 
     // Material Design uppercases button text, and the filter's toolbar buttons opt out of that.
@@ -154,14 +153,14 @@ test.describe('Schedule', () => {
   });
 
   test('Select All in the filter modal brings the sessions back after Deselect All', async ({ page }) => {
-    await endToolbarButtons(page).last().click();
+    await button(page, 'Filter').click();
     const modal = page.locator('ion-modal');
     await modal.getByRole('button', { name: 'Deselect All' }).click();
     await modal.getByRole('button', { name: 'Done' }).click();
     await expect(modal).toBeHidden();
     await expect(visible(page.getByText('No Sessions Found'))).toBeVisible();
 
-    await endToolbarButtons(page).last().click();
+    await button(page, 'Filter').click();
     await expect(modal.getByRole('checkbox', { checked: true })).toHaveCount(0);
     await modal.getByRole('button', { name: 'Select All', exact: true }).click();
     await expect(modal.getByRole('checkbox', { checked: false })).toHaveCount(0);
@@ -172,14 +171,28 @@ test.describe('Schedule', () => {
     await expect(visible(page.getByText('No Sessions Found'))).toBeHidden();
   });
 
+  test('Reset in the filter deselects every track', async ({ page }) => {
+    await button(page, 'Filter').click();
+    const modal = page.locator('ion-modal');
+    await modal.getByRole('button', { name: 'Reset' }).click();
+    await expect(modal.getByRole('checkbox', { checked: true })).toHaveCount(0);
+
+    await modal.getByRole('checkbox', { name: 'Workshop' }).click();
+    await modal.getByRole('button', { name: 'Done' }).click();
+    await expect(modal).toBeHidden();
+
+    await expect(visible(page.locator('ion-item-sliding'))).toHaveCount(1);
+    await expect(sessionLink(page, 'Ionic Workshop')).toBeVisible();
+  });
+
   test('search and the track filter combine', async ({ page }) => {
-    await endToolbarButtons(page).last().click();
+    await button(page, 'Filter').click();
     const modal = page.locator('ion-modal');
     await modal.getByRole('checkbox', { name: 'Ionic' }).click();
     await modal.getByRole('button', { name: 'Done' }).click();
     await expect(modal).toBeHidden();
 
-    await endToolbarButtons(page).first().click();
+    await button(page, 'Search').click();
     await visible(page.getByRole('searchbox')).fill('ionic');
 
     // Only the sessions whose name contains "ionic" and that are outside the Ionic track are left.
@@ -221,18 +234,24 @@ test.describe('Schedule', () => {
     await expect(visible(page.getByText('No Sessions Found'))).toBeVisible();
   });
 
+  test('the icon-only buttons have accessible names', async ({ page }) => {
+    await expect(button(page, 'Search')).toBeVisible();
+    await expect(button(page, 'Filter')).toBeVisible();
+    await expect(button(page, 'Share')).toBeVisible();
+  });
+
   test('the share button opens the social share buttons', async ({ page }) => {
     const networks = ['Vimeo', 'Instagram', 'Twitter', 'Facebook'];
     for (const name of networks) {
-      await expect(socialButton(page, name)).toHaveCount(0);
+      await expect(button(page, name)).toHaveCount(0);
     }
 
-    await shareFab(page).click();
+    await button(page, 'Share').click();
 
     for (const name of networks) {
-      await expect(socialButton(page, name)).toBeVisible();
+      await expect(button(page, name)).toBeVisible();
     }
-    // The loading indicator only stays up for 0.5 to 1.5 seconds, so record its message when it opens.
+    // The loading indicator only stays up for one second, so record its message when it opens.
     await page.evaluate(() => {
       document.addEventListener(
         'ionLoadingWillPresent',
@@ -242,8 +261,38 @@ test.describe('Schedule', () => {
         { once: true },
       );
     });
-    await socialButton(page, 'Vimeo').click();
+    await button(page, 'Vimeo').click();
 
     await expect(page.locator('body')).toHaveAttribute('data-loading-message', 'Posting to Vimeo');
+  });
+
+  test('the posting message shows for one second', async ({ page }) => {
+    await button(page, 'Share').click();
+    // Record the duration the loading indicator is given and how long it stays open.
+    const timing = page.evaluate(
+      () =>
+        new Promise<{ duration: number; shownFor: number }>((resolve) => {
+          document.addEventListener(
+            'ionLoadingDidPresent',
+            (presented) => {
+              const shownAt = performance.now();
+              const { duration } = presented.target as HTMLElement & { duration: number };
+              document.addEventListener(
+                'ionLoadingDidDismiss',
+                () => resolve({ duration, shownFor: performance.now() - shownAt }),
+                { once: true },
+              );
+            },
+            { once: true },
+          );
+        }),
+    );
+    await button(page, 'Vimeo').click();
+
+    const { duration, shownFor } = await timing;
+    expect(duration).toBe(1000);
+    // It closes itself once the duration is up, plus the time its leave animation takes.
+    expect(shownFor).toBeGreaterThanOrEqual(1000);
+    expect(shownFor).toBeLessThan(2000);
   });
 });

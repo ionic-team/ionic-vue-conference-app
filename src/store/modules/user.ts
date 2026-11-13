@@ -1,3 +1,4 @@
+import { Preferences } from '@capacitor/preferences';
 import type { Module } from 'vuex';
 
 export interface User {
@@ -7,12 +8,17 @@ export interface User {
   hasSeenTutorial: boolean;
 }
 
-const defaultState: User = {
+// The Preferences keys that keep the user logged in across reloads.
+export const HAS_LOGGED_IN = 'hasLoggedIn';
+export const USERNAME = 'username';
+
+// A function, so every store (and every reset) gets its own copy instead of sharing one object.
+const defaultState = (): User => ({
   pictureLocation: null,
   userName: null,
   isAuthenticated: false,
   hasSeenTutorial: false,
-};
+});
 
 const userStore: Module<User, {}> = {
   state: defaultState,
@@ -25,7 +31,10 @@ const userStore: Module<User, {}> = {
       state.isAuthenticated = true;
     },
     logOut(state) {
-      Object.assign(state, defaultState);
+      Object.assign(state, defaultState());
+    },
+    setUserName(state, userName: string) {
+      state.userName = userName;
     },
     updateUserPicture(state, pictureLocation: string) {
       state.pictureLocation = pictureLocation;
@@ -38,15 +47,33 @@ const userStore: Module<User, {}> = {
     sawTutorial({ commit }) {
       commit('sawTutorial');
     },
-    logIn({ commit }, userName: string) {
-      setTimeout(() => {
-        commit('logIn', userName);
-      }, 50);
+    // Restores the logged-in user saved by logIn or signUp.
+    async loadUserData({ commit }) {
+      const [{ value: hasLoggedIn }, { value: userName }] = await Promise.all([
+        Preferences.get({ key: HAS_LOGGED_IN }),
+        Preferences.get({ key: USERNAME }),
+      ]);
+      if (hasLoggedIn === 'true') {
+        commit('logIn', userName ?? '');
+      }
     },
-    logOut({ commit }) {
-      setTimeout(() => {
-        commit('logOut');
-      }, 50);
+    async logIn({ commit }, userName: string) {
+      await Preferences.set({ key: HAS_LOGGED_IN, value: 'true' });
+      await Preferences.set({ key: USERNAME, value: userName });
+      commit('logIn', userName);
+    },
+    // Signing up has no account to create, so it logs the user in.
+    async signUp({ dispatch }, userName: string) {
+      await dispatch('logIn', userName);
+    },
+    async logOut({ commit }) {
+      await Preferences.remove({ key: HAS_LOGGED_IN });
+      await Preferences.remove({ key: USERNAME });
+      commit('logOut');
+    },
+    async setUserName({ commit }, userName: string) {
+      await Preferences.set({ key: USERNAME, value: userName });
+      commit('setUserName', userName);
     },
     updateUserPicture({ commit }, pictureLocation: string) {
       setTimeout(() => {

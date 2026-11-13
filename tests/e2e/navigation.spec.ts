@@ -1,7 +1,7 @@
 import type { Locator, Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
-import { DATA_TIMEOUT, endToolbarButtons, openMenu, openSchedule, visible, visibleTitle } from './helpers';
+import { button, DATA_TIMEOUT, login, openMenu, openSchedule, visible, visibleTitle } from './helpers';
 
 // The About page has no toolbar title; its content starts with an "About" heading instead.
 const expectAboutPage = async (page: Page): Promise<void> => {
@@ -12,8 +12,7 @@ const expectAboutPage = async (page: Page): Promise<void> => {
 const openAboutOptions = async (page: Page): Promise<Locator> => {
   await page.getByRole('tab', { name: 'About' }).click();
   await expectAboutPage(page);
-  // More options is the only button at the end of the About page's toolbar.
-  await endToolbarButtons(page).click();
+  await button(page, 'More options').click();
   const popover = visible(page.locator('ion-popover')).filter({ hasText: 'Learn Ionic' });
   await expect(popover).toBeVisible();
   return popover;
@@ -154,6 +153,87 @@ test.describe('Navigation', () => {
     await expect(page.getByText('Support message is required')).toBeHidden();
   });
 
+  test('the Support page shows the confirmation even while the notice is still open', async ({ page }) => {
+    const menu = await openMenu(page);
+    await menu.getByRole('link', { name: 'Support' }).click();
+    await visible(page.getByRole('textbox', { name: 'Enter your support message below' })).fill(
+      'The schedule is great!',
+    );
+    await expect(page.getByText('This does not actually send a support request.')).toBeVisible();
+
+    await visible(page.getByRole('button', { name: 'Submit' })).click();
+
+    await expect(page.getByText('Your support request has been sent.')).toBeVisible();
+    // Sending closes the notice before the confirmation opens. Count the toasts right away instead of
+    // waiting, since the notice also closes on its own after 3 seconds.
+    expect(await visible(page.locator('ion-toast')).count()).toBe(1);
+  });
+
+  test('the Support page requires a message', async ({ page }) => {
+    const menu = await openMenu(page);
+    await menu.getByRole('link', { name: 'Support' }).click();
+    await expect(visibleTitle(page)).toHaveText('Support');
+
+    await visible(page.getByRole('button', { name: 'Submit' })).click();
+
+    await expect(visible(page.getByText('Support message is required'))).toBeVisible();
+    await expect(page.getByText('Your support request has been sent.')).toHaveCount(0);
+
+    await visible(page.getByRole('textbox', { name: 'Enter your support message below' })).fill('Hello');
+    await expect(visible(page.getByText('Support message is required'))).toHaveCount(0);
+  });
+
+  test('the Support page asks before leaving with an unsent message', async ({ page }) => {
+    let menu = await openMenu(page);
+    await menu.getByRole('link', { name: 'Support' }).click();
+    await expect(visibleTitle(page)).toHaveText('Support');
+    const message = visible(page.getByRole('textbox', { name: 'Enter your support message below' }));
+    await message.fill('Unsent message');
+
+    menu = await openMenu(page);
+    await menu.getByRole('link', { name: 'Schedule' }).click();
+    const alert = page.getByRole('alertdialog', { name: 'Leave this page?' });
+    await expect(alert).toContainText('Your support message will not be submitted.');
+    await alert.getByRole('button', { name: 'Stay' }).click();
+
+    await expect(alert).toHaveCount(0);
+    await expect(page).toHaveURL(/\/support$/);
+    await expect(visibleTitle(page)).toHaveText('Support');
+    await expect(message).toHaveValue('Unsent message');
+
+    menu = await openMenu(page);
+    await menu.getByRole('link', { name: 'Schedule' }).click();
+    await alert.getByRole('button', { name: 'Leave' }).click();
+
+    await expect(page).toHaveURL(/\/tabs\/schedule$/);
+    await expect(visibleTitle(page)).toHaveText('Schedule');
+  });
+
+  test('the Support page asks before showing the tutorial with an unsent message', async ({ page }) => {
+    let menu = await openMenu(page);
+    await menu.getByRole('link', { name: 'Support' }).click();
+    await expect(visibleTitle(page)).toHaveText('Support');
+    const message = visible(page.getByRole('textbox', { name: 'Enter your support message below' }));
+    await message.fill('Unsent message');
+
+    menu = await openMenu(page);
+    await menu.getByRole('button', { name: 'Show Tutorial' }).click();
+    const alert = page.getByRole('alertdialog', { name: 'Leave this page?' });
+    await alert.getByRole('button', { name: 'Stay' }).click();
+
+    // Staying leaves the menu and the tutorial state as they were.
+    await expect(alert).toHaveCount(0);
+    await expect(page).toHaveURL(/\/support$/);
+    await expect(message).toHaveValue('Unsent message');
+    expect(await page.evaluate(() => localStorage.getItem('CapacitorStorage.ion_did_tutorial'))).toBe('true');
+
+    menu = await openMenu(page);
+    await menu.getByRole('button', { name: 'Show Tutorial' }).click();
+    await alert.getByRole('button', { name: 'Leave' }).click();
+
+    await expect(page).toHaveURL(/\/tutorial$/);
+  });
+
   test('the Support page leaves without asking when the message is empty', async ({ page }) => {
     const menu = await openMenu(page);
     await menu.getByRole('link', { name: 'Support' }).click();
@@ -181,5 +261,15 @@ test.describe('Navigation', () => {
 
     await expect(toggle).not.toBeChecked();
     await expect(html).not.toHaveClass(/ion-palette-dark/);
+  });
+
+  test('the dark mode toggle is in the menu while logged in', async ({ page }) => {
+    await login(page, 'ionitron');
+
+    const menu = await openMenu(page);
+    await expect(menu.getByRole('button', { name: 'Logout' })).toBeVisible();
+    await menu.getByRole('switch', { name: 'Dark Mode' }).click();
+
+    await expect(page.locator('html')).toHaveClass(/ion-palette-dark/);
   });
 });

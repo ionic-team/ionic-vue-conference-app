@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
-import { DATA_TIMEOUT, openSchedule, tabPage, visible, visibleTitle } from './helpers';
+import { button, DATA_TIMEOUT, openSchedule, tabPage, visible, visibleTitle } from './helpers';
 
 const speakerCard = (page: Page, name: string) =>
   visible(page.locator('ion-card')).filter({ has: page.getByRole('heading', { name, exact: true }) });
@@ -42,6 +42,14 @@ test.describe('Speakers', () => {
     await expect(detail.getByRole('img', { name: 'Burt Bear' })).toBeVisible();
     await expect(detail).toContainText("Burt is a Bear. Burt's interests include poetry");
     await expect(detail.getByText('GitHub', { exact: true })).toBeVisible();
+  });
+
+  test('the speaker detail Contact and Share buttons have accessible names', async ({ page }) => {
+    await speakerCard(page, 'Burt Bear').getByRole('button', { name: 'About Burt Bear' }).click();
+
+    const detail = speakerDetail(page);
+    await expect(button(detail, 'Contact')).toBeVisible();
+    await expect(button(detail, 'Share')).toBeVisible();
   });
 
   test('opens the speaker detail by tapping the speaker', async ({ page }) => {

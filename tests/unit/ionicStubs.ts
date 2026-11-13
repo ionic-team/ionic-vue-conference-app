@@ -14,11 +14,14 @@ export const ionTag = (name: string): Component =>
 export const ionTags = (...names: string[]): Record<string, Component> =>
   Object.fromEntries(names.map((name) => [name, ionTag(name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase())]));
 
-/* A v-model stub for ion-input and ion-textarea. */
+/**
+ * A v-model stub for ion-input and ion-textarea. Other attributes (such as its class and error-text)
+ * land on the native element, and blurring it emits ionBlur.
+ */
 export const ionInput = (name: string): Component =>
   defineComponent({
     props: { modelValue: { type: String, default: '' } },
-    emits: ['update:modelValue'],
+    emits: ['update:modelValue', 'ionBlur'],
     setup:
       (props, { emit, attrs }) =>
       () =>
@@ -26,5 +29,6 @@ export const ionInput = (name: string): Component =>
           name: attrs.name,
           value: props.modelValue,
           onInput: (event: Event) => emit('update:modelValue', (event.target as HTMLInputElement).value),
+          onBlur: () => emit('ionBlur'),
         }),
   });

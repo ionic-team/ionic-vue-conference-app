@@ -7,7 +7,7 @@
             <ion-menu-button></ion-menu-button>
           </ion-buttons>
           <ion-buttons slot="end">
-            <ion-button id="popover-button">
+            <ion-button id="popover-button" aria-label="More options">
               <ion-icon slot="icon-only" :ios="ellipsisHorizontal" :md="ellipsisVertical"></ion-icon>
             </ion-button>
           </ion-buttons>
@@ -208,7 +208,7 @@ import {
   popoverController,
 } from '@ionic/vue';
 import { ellipsisHorizontal, ellipsisVertical } from 'ionicons/icons';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 
 import { dateFormat } from '@/filters/dateFormat';
@@ -216,7 +216,7 @@ import router from '@/router';
 
 const store = useStore();
 const location = ref('madison');
-const conferenceDate = computed(() => {
+const scheduleDate = computed(() => {
   const date = store.state.sessions.schedule?.[0]?.date;
   // If we have a date from the store, parse it and create a UTC date
   if (date) {
@@ -224,6 +224,11 @@ const conferenceDate = computed(() => {
     return new Date(Date.UTC(year, month - 1, day)).toISOString().split('T')[0];
   }
   return '2047-05-17';
+});
+// The date picker changes the shown date, so keep it in a ref that follows the schedule's date when that loads.
+const conferenceDate = ref(scheduleDate.value);
+watch(scheduleDate, (date) => {
+  conferenceDate.value = date;
 });
 
 const selectOptions = {

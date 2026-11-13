@@ -6,11 +6,11 @@
           <ion-back-button :default-href="defaultHref"></ion-back-button>
         </ion-buttons>
         <ion-buttons slot="end">
-          <ion-button @click="toggleFavorite">
+          <ion-button :aria-label="isFavorite ? 'Remove favorite' : 'Add favorite'" @click="toggleFavorite">
             <ion-icon v-if="!isFavorite" slot="icon-only" :icon="starOutline"></ion-icon>
             <ion-icon v-if="isFavorite" slot="icon-only" :icon="star"></ion-icon>
           </ion-button>
-          <ion-button>
+          <ion-button aria-label="Share" @click="openShare">
             <ion-icon slot="icon-only" :icon="share"></ion-icon>
           </ion-button>
         </ion-buttons>
@@ -156,6 +156,7 @@ import {
   IonItem,
   IonBackButton,
   IonText,
+  actionSheetController,
 } from '@ionic/vue';
 import { star, starOutline, share, cloudDownload } from 'ionicons/icons';
 import { ref, computed, onMounted } from 'vue';
@@ -182,6 +183,35 @@ const toggleFavorite = () => {
   } else {
     store.dispatch('addFavorite', session.value.id);
   }
+};
+
+const openShare = async () => {
+  if (!session.value) return;
+
+  const actionSheet = await actionSheetController.create({
+    header: 'Share ' + session.value.name,
+    buttons: [
+      {
+        text: 'Copy Link',
+        handler: () => {
+          const sessionUrl = window.location.href;
+          console.log('Copy link clicked on ' + sessionUrl);
+          if (window.cordova?.plugins?.clipboard) {
+            window.cordova.plugins.clipboard.copy(sessionUrl);
+          }
+        },
+      },
+      {
+        text: 'Share via ...',
+      },
+      {
+        text: 'Cancel',
+        role: 'cancel',
+      },
+    ],
+  });
+
+  await actionSheet.present();
 };
 
 onMounted(async () => {
