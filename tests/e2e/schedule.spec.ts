@@ -1,7 +1,17 @@
 import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
-import { button, openSchedule, segmentButton, sessionItem, sessionLink, swipeOpen, visible } from './helpers';
+import {
+  button,
+  isIos,
+  openSchedule,
+  openSearch,
+  segmentButton,
+  sessionItem,
+  sessionLink,
+  swipeOpen,
+  visible,
+} from './helpers';
 
 /* Favorites a session from the All segment with its sliding item and confirms the alert. */
 const addFavorite = async (page: Page, name: string): Promise<void> => {
@@ -39,8 +49,7 @@ test.describe('Schedule', () => {
   });
 
   test('filters the sessions by name and restores them when the search is cleared', async ({ page }) => {
-    await button(page, 'Search').click();
-    const searchbox = visible(page.getByRole('searchbox'));
+    const searchbox = await openSearch(page);
     await searchbox.fill('VUE');
 
     const headings = visible(page.locator('ion-item-sliding')).getByRole('heading');
@@ -54,9 +63,10 @@ test.describe('Schedule', () => {
   });
 
   test('cancelling the search hides the searchbar and shows every session again', async ({ page }) => {
-    await button(page, 'Search').click();
+    test.skip(await isIos(page), 'The iOS searchbar stays under the large title and has no Cancel button');
+    const searchbox = await openSearch(page);
     const searchbar = visible(page.locator('ion-searchbar'));
-    await visible(page.getByRole('searchbox')).fill('VUE');
+    await searchbox.fill('VUE');
     const headings = visible(page.locator('ion-item-sliding')).getByRole('heading');
     await expect(headings).toHaveCount(2);
 
@@ -67,8 +77,7 @@ test.describe('Schedule', () => {
   });
 
   test('shows the empty state when no session matches the search', async ({ page }) => {
-    await button(page, 'Search').click();
-    await visible(page.getByRole('searchbox')).fill('no such session');
+    await (await openSearch(page)).fill('no such session');
 
     await expect(visible(page.getByText('No Sessions Found'))).toBeVisible();
   });
@@ -143,6 +152,7 @@ test.describe('Schedule', () => {
   });
 
   test('the filter toolbar buttons keep their casing', async ({ page }) => {
+    test.skip(await isIos(page), 'Only Material Design uppercases button text');
     await button(page, 'Filter').click();
     const modal = page.locator('ion-modal');
 
@@ -172,6 +182,7 @@ test.describe('Schedule', () => {
   });
 
   test('Reset in the filter deselects every track', async ({ page }) => {
+    test.skip(await isIos(page), 'iOS shows Cancel instead of Reset');
     await button(page, 'Filter').click();
     const modal = page.locator('ion-modal');
     await modal.getByRole('button', { name: 'Reset' }).click();
@@ -185,6 +196,23 @@ test.describe('Schedule', () => {
     await expect(sessionLink(page, 'Ionic Workshop')).toBeVisible();
   });
 
+  test('Cancel in the filter closes it without applying the changes', async ({ page }) => {
+    test.skip(!(await isIos(page)), 'Material Design shows Reset instead of Cancel');
+    await button(page, 'Filter').click();
+    const modal = page.locator('ion-modal');
+    await modal.getByRole('checkbox', { name: 'Food' }).click();
+    await expect(modal.getByRole('checkbox', { name: 'Food' })).not.toBeChecked();
+
+    await modal.getByRole('button', { name: 'Cancel' }).click();
+    await expect(modal).toBeHidden();
+
+    await expect(sessionLink(page, 'Breakfast')).toBeVisible();
+    await expect(visible(page.locator('ion-item-sliding'))).toHaveCount(20);
+
+    await button(page, 'Filter').click();
+    await expect(modal.getByRole('checkbox', { name: 'Food' })).toBeChecked();
+  });
+
   test('search and the track filter combine', async ({ page }) => {
     await button(page, 'Filter').click();
     const modal = page.locator('ion-modal');
@@ -192,8 +220,7 @@ test.describe('Schedule', () => {
     await modal.getByRole('button', { name: 'Done' }).click();
     await expect(modal).toBeHidden();
 
-    await button(page, 'Search').click();
-    await visible(page.getByRole('searchbox')).fill('ionic');
+    await (await openSearch(page)).fill('ionic');
 
     // Only the sessions whose name contains "ionic" and that are outside the Ionic track are left.
     const headings = visible(page.locator('ion-item-sliding')).getByRole('heading');
@@ -235,7 +262,13 @@ test.describe('Schedule', () => {
   });
 
   test('the icon-only buttons have accessible names', async ({ page }) => {
-    await expect(button(page, 'Search')).toBeVisible();
+    if (await isIos(page)) {
+      // iOS shows the searchbar under the large title instead of a Search button.
+      await expect(button(page, 'Search')).toHaveCount(0);
+      await expect(visible(page.getByRole('searchbox'))).toBeVisible();
+    } else {
+      await expect(button(page, 'Search')).toBeVisible();
+    }
     await expect(button(page, 'Filter')).toBeVisible();
     await expect(button(page, 'Share')).toBeVisible();
   });
