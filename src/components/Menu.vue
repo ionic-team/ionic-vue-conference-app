@@ -182,9 +182,17 @@ export default defineComponent({
     };
 
     const openTutorial = async () => {
+      const { value } = await Preferences.get({ key: 'ion_did_tutorial' });
       await Preferences.set({ key: 'ion_did_tutorial', value: 'false' });
-      await menuController.enable(false);
-      await router.push('/tutorial');
+
+      // The Support page can ask to stay, so keep the menu and put the tutorial state back if the tutorial does not open.
+      if (!(await router.push('/tutorial'))) {
+        await menuController.enable(false);
+      } else if (value === null) {
+        await Preferences.remove({ key: 'ion_did_tutorial' });
+      } else {
+        await Preferences.set({ key: 'ion_did_tutorial', value });
+      }
     };
 
     const logout = async () => {
