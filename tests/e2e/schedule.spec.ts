@@ -171,6 +171,20 @@ test.describe('Schedule', () => {
     await expect(visible(page.getByText('No Sessions Found'))).toBeHidden();
   });
 
+  test('Reset in the filter deselects every track', async ({ page }) => {
+    await button(page, 'Filter').click();
+    const modal = page.locator('ion-modal');
+    await modal.getByRole('button', { name: 'Reset' }).click();
+    await expect(modal.getByRole('checkbox', { checked: true })).toHaveCount(0);
+
+    await modal.getByRole('checkbox', { name: 'Workshop' }).click();
+    await modal.getByRole('button', { name: 'Done' }).click();
+    await expect(modal).toBeHidden();
+
+    await expect(visible(page.locator('ion-item-sliding'))).toHaveCount(1);
+    await expect(sessionLink(page, 'Ionic Workshop')).toBeVisible();
+  });
+
   test('search and the track filter combine', async ({ page }) => {
     await button(page, 'Filter').click();
     const modal = page.locator('ion-modal');
