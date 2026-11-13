@@ -2,6 +2,7 @@ import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
 import {
+  backButton,
   button,
   DATA_TIMEOUT,
   openSchedule,
@@ -23,7 +24,7 @@ const openSession = async (page: Page, name: string): Promise<void> => {
 };
 
 const goBackToSchedule = async (page: Page): Promise<void> => {
-  await visible(page.getByRole('button', { name: 'back', exact: true })).click();
+  await backButton(page).click();
   await expect(page).toHaveURL(/\/tabs\/schedule$/);
 };
 

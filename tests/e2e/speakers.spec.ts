@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
-import { button, DATA_TIMEOUT, openSchedule, tabPage, visible, visibleTitle } from './helpers';
+import { backButton, button, DATA_TIMEOUT, openSchedule, tabPage, visible, visibleTitle } from './helpers';
 
 const speakerCard = (page: Page, name: string) =>
   visible(page.locator('ion-card')).filter({ has: page.getByRole('heading', { name, exact: true }) });
@@ -74,7 +74,7 @@ test.describe('Speakers', () => {
     await speakerCard(page, 'Burt Bear').getByRole('button', { name: 'About Burt Bear' }).click();
     await expect(speakerDetail(page)).toBeVisible();
 
-    await visible(page.getByRole('button', { name: 'back', exact: true })).click();
+    await backButton(page).click();
 
     await expect(page).toHaveURL(/\/tabs\/speakers$/);
     await expect(visibleTitle(page)).toHaveText('Speakers');

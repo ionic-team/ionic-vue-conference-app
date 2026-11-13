@@ -17,6 +17,11 @@ export default defineConfig({
       name: 'Mobile Chrome',
       use: { ...devices['Pixel 7'] },
     },
+    {
+      // Ionic picks iOS mode from the user agent, so Chromium runs the iOS mode tests without WebKit.
+      name: 'Mobile Safari',
+      use: { ...devices['iPhone 15'], browserName: 'chromium' },
+    },
   ],
   webServer: {
     // CI tests the production build, which is what gets deployed, so build-tool
