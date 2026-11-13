@@ -98,6 +98,38 @@ test.describe('Navigation', () => {
     await expect(about).toContainText('ica2047');
   });
 
+  test('the About page shows the location chosen in the location select', async ({ page }) => {
+    await page.getByRole('tab', { name: 'About' }).click();
+    await expectAboutPage(page);
+    const image = (location: string) => visible(page.locator(`.about-header .about-image.${location}`));
+    await expect(image('madison')).toHaveCSS('opacity', '1');
+
+    // The select's own button sits under its visible control, so tap the select like a user would.
+    await visible(page.locator('ion-select')).click();
+    const alert = page.getByRole('alertdialog', { name: 'Select a Location' });
+    await alert.getByRole('radio', { name: 'Austin, TX' }).click();
+    await alert.getByRole('button', { name: 'OK' }).click();
+    await expect(alert).toHaveCount(0);
+
+    await expect(visible(page.getByRole('button', { name: 'Location, Austin, TX' }))).toBeVisible();
+    // Each location has its own header image, and the chosen one fades in over the others.
+    await expect(image('austin')).toHaveCSS('opacity', '1');
+    await expect(image('madison')).toHaveCSS('opacity', '0');
+  });
+
+  test('the About page shows the date chosen in the date picker', async ({ page }) => {
+    await page.getByRole('tab', { name: 'About' }).click();
+    const about = visible(page.locator('ion-content')).filter({ hasText: 'The Ionic Conference is a one-day event' });
+    await expect(about).toContainText('happening on May 17, 2047');
+
+    await about.getByRole('button', { name: /^Date/ }).click();
+    const picker = visible(page.locator('ion-popover ion-datetime'));
+    await picker.getByRole('button', { name: 'Monday, May 20' }).click();
+
+    await expect(about).toContainText('happening on May 20, 2047');
+    await expect(about.getByRole('button', { name: 'Date May 20, 2047' })).toBeVisible();
+  });
+
   test('the About page More options open the Ionic links in a new tab', async ({ page, context }) => {
     // The links open external sites; answer them locally so the test stays off the network.
     await context.route(/^https:\/\/(showcase\.)?(ionicframework|github)\.com\//, (route) =>

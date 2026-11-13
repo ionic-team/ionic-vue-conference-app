@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
-import { button, DATA_TIMEOUT, openSchedule, tabPage, visible, visibleTitle } from './helpers';
+import { backButton, button, DATA_TIMEOUT, openSchedule, tabPage, visible, visibleTitle } from './helpers';
 
 const speakerCard = (page: Page, name: string) =>
   visible(page.locator('ion-card')).filter({ has: page.getByRole('heading', { name, exact: true }) });
@@ -52,6 +52,55 @@ test.describe('Speakers', () => {
     await expect(button(detail, 'Share')).toBeVisible();
   });
 
+  test('the speaker detail Contact button offers to email or call the speaker', async ({ page }) => {
+    await speakerCard(page, 'Burt Bear').getByRole('button', { name: 'About Burt Bear' }).click();
+
+    await button(speakerDetail(page), 'Contact').click();
+
+    const sheet = page.getByRole('dialog', { name: 'Contact Burt Bear' });
+    await expect(sheet.getByRole('button')).toHaveText([
+      'Email ( burt@example.com )',
+      'Call ( +1-541-754-3010 )',
+      'Cancel',
+    ]);
+    await sheet.getByRole('button', { name: 'Cancel' }).click();
+    await expect(sheet).toHaveCount(0);
+  });
+
+  test('the speaker detail Contact options open the email and phone links', async ({ page }) => {
+    await speakerCard(page, 'Burt Bear').getByRole('button', { name: 'About Burt Bear' }).click();
+    await expect(speakerDetail(page)).toBeVisible();
+    // Record the links instead of opening them, since mailto and tel links would leave the page.
+    await page.evaluate(() => {
+      window.open = (url) => {
+        document.body.dataset.openedUrl = String(url);
+        return null;
+      };
+    });
+    const sheet = page.getByRole('dialog', { name: 'Contact Burt Bear' });
+
+    await button(speakerDetail(page), 'Contact').click();
+    await sheet.getByRole('button', { name: 'Email ( burt@example.com )' }).click();
+    await expect(sheet).toHaveCount(0);
+    await expect(page.locator('body')).toHaveAttribute('data-opened-url', 'mailto:burt@example.com');
+
+    await button(speakerDetail(page), 'Contact').click();
+    await sheet.getByRole('button', { name: 'Call ( +1-541-754-3010 )' }).click();
+    await expect(sheet).toHaveCount(0);
+    await expect(page.locator('body')).toHaveAttribute('data-opened-url', 'tel:+1-541-754-3010');
+  });
+
+  test('the speaker detail Share button opens the share options', async ({ page }) => {
+    await speakerCard(page, 'Burt Bear').getByRole('button', { name: 'About Burt Bear' }).click();
+
+    await button(speakerDetail(page), 'Share').click();
+
+    const sheet = page.getByRole('dialog', { name: 'Share Burt Bear' });
+    await expect(sheet.getByRole('button')).toHaveText(['Copy Link', 'Share via ...', 'Cancel']);
+    await sheet.getByRole('button', { name: 'Cancel' }).click();
+    await expect(sheet).toHaveCount(0);
+  });
+
   test('opens the speaker detail by tapping the speaker', async ({ page }) => {
     await speakerCard(page, 'Rachel Rabbit')
       .getByRole('button', { name: /^Rachel Rabbit profile picture/ })
@@ -74,7 +123,7 @@ test.describe('Speakers', () => {
     await speakerCard(page, 'Burt Bear').getByRole('button', { name: 'About Burt Bear' }).click();
     await expect(speakerDetail(page)).toBeVisible();
 
-    await visible(page.getByRole('button', { name: 'back', exact: true })).click();
+    await backButton(page).click();
 
     await expect(page).toHaveURL(/\/tabs\/speakers$/);
     await expect(visibleTitle(page)).toHaveText('Speakers');
