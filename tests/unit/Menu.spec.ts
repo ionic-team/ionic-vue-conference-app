@@ -1,4 +1,5 @@
 import { Preferences } from '@capacitor/preferences';
+import { menuController } from '@ionic/vue';
 import { enableAutoUnmount, flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Store } from 'vuex';
@@ -51,6 +52,7 @@ describe('Menu', () => {
 
   beforeEach(async () => {
     push.mockClear();
+    vi.mocked(menuController.enable).mockClear();
     await Preferences.clear();
     store = createTestStore();
     testStore.current = store;
@@ -112,5 +114,20 @@ describe('Menu', () => {
 
     expect((await Preferences.get({ key: 'ion_did_tutorial' })).value).toBe('false');
     expect(push).toHaveBeenCalledWith('/tutorial');
+    expect(menuController.enable).toHaveBeenCalledWith(false);
+  });
+
+  it('keeps the tutorial flag and the menu when the tutorial does not open', async () => {
+    await Preferences.set({ key: 'ion_did_tutorial', value: 'true' });
+    /* Vue Router resolves with a navigation failure when a guard cancels the navigation. */
+    push.mockResolvedValueOnce(new Error('Navigation aborted'));
+    const wrapper = mount(Menu);
+    await flushPromises();
+
+    await menuItem(wrapper, 'Show Tutorial').trigger('click');
+    await flushPromises();
+
+    expect((await Preferences.get({ key: 'ion_did_tutorial' })).value).toBe('true');
+    expect(menuController.enable).not.toHaveBeenCalledWith(false);
   });
 });
