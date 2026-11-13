@@ -93,7 +93,7 @@
 
       <ion-list-header v-show="allGroupedComputed?.length === 0"> No Sessions Found </ion-list-header>
 
-      <ion-fab slot="fixed" vertical="bottom" horizontal="end" ref="fab">
+      <ion-fab slot="fixed" vertical="bottom" horizontal="end">
         <ion-fab-button aria-label="Share">
           <ion-icon :icon="shareSocial"></ion-icon>
         </ion-fab-button>
@@ -237,7 +237,6 @@ const isIos = computed(() => {
 
 const segment = ref('all');
 const queryText = ref('');
-const fab = ref<HTMLIonFabElement | null>(null);
 const store = useStore();
 const allGroupedRef = ref<GroupedSession[]>([]);
 const allGroupedComputed = computed(() => {
@@ -370,13 +369,12 @@ const cancelSearch = (): void => {
   store.dispatch('setSearchText', '');
 };
 
-const openSocial = async (network: any) => {
+const openSocial = async (network: string) => {
   const loading = await loadingController.create({
     message: `Posting to ${network}`,
-    duration: (Math.random() * 1000 + 500) as number,
+    duration: 1000,
   });
   await loading.present();
-  await loading.onWillDismiss();
 };
 
 const checkAndLoadData = async () => {
