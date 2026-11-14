@@ -44,11 +44,11 @@
     </ion-header>
 
     <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
+      <ion-header scroll-effect="condense">
         <ion-toolbar>
           <ion-title size="large">Schedule</ion-title>
         </ion-toolbar>
-        <ion-toolbar>
+        <ion-toolbar v-if="isIos">
           <ion-searchbar
             v-model="queryText"
             @ionInput="updateSearchTerm"
