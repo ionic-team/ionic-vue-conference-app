@@ -40,7 +40,7 @@
         <ion-chip
           color="dark"
           button
-          @click="openExternalUrl('https://github.com/' + speaker?.github)"
+          @click="openExternalUrl('https://github.com/ionic-team/ionic-framework')"
           aria-label="Visit GitHub profile"
         >
           <ion-icon :icon="logoGithub"></ion-icon>
