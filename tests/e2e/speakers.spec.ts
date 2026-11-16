@@ -90,6 +90,30 @@ test.describe('Speakers', () => {
     await expect(page.locator('body')).toHaveAttribute('data-opened-url', 'tel:+1-541-754-3010');
   });
 
+  test('the speaker detail social chips open the social profiles', async ({ page }) => {
+    await speakerCard(page, 'Burt Bear').getByRole('button', { name: 'About Burt Bear' }).click();
+    await expect(speakerDetail(page)).toBeVisible();
+    // Record the links instead of opening them, since they would leave the page.
+    await page.evaluate(() => {
+      const opened: string[] = [];
+      (window as Window & { opened?: string[] }).opened = opened;
+      window.open = (url) => {
+        opened.push(String(url));
+        return null;
+      };
+    });
+
+    for (const name of ['Twitter', 'GitHub', 'Instagram']) {
+      await speakerDetail(page).locator('ion-chip', { hasText: name }).click();
+    }
+
+    expect(await page.evaluate(() => (window as Window & { opened?: string[] }).opened)).toEqual([
+      'https://twitter.com/ionicframework',
+      'https://github.com/ionic-team/ionic-framework',
+      'https://instagram.com/ionicframework',
+    ]);
+  });
+
   test('the speaker detail Share button opens the share options', async ({ page }) => {
     await speakerCard(page, 'Burt Bear').getByRole('button', { name: 'About Burt Bear' }).click();
 
