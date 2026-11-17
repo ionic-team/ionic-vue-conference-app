@@ -107,7 +107,7 @@ test.describe('Navigation', () => {
       { name: 'Learn Ionic', url: 'https://ionicframework.com/getting-started' },
       { name: 'Documentation', url: 'https://ionicframework.com/docs/' },
       { name: 'Showcase', url: 'https://showcase.ionicframework.com/' },
-      { name: 'GitHub Repo', url: 'https://github.com/ionic-team/ionic' },
+      { name: 'GitHub Repo', url: 'https://github.com/ionic-team/ionic-framework' },
     ];
 
     for (const { name, url } of links) {
