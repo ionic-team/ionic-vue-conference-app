@@ -22,7 +22,7 @@ vi.mock('@ionic/vue', async () => ({
     'IonHeader',
     'IonToolbar',
     'IonButtons',
-    'IonBackButton',
+    'IonMenuButton',
     'IonContent',
     'IonList',
     'IonItem',

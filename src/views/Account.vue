@@ -3,7 +3,7 @@
     <ion-header>
       <ion-toolbar color="primary">
         <ion-buttons slot="start">
-          <ion-back-button></ion-back-button>
+          <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <ion-title>Account</ion-title>
       </ion-toolbar>
@@ -31,7 +31,7 @@ import {
   IonHeader,
   IonToolbar,
   IonButtons,
-  IonBackButton,
+  IonMenuButton,
   IonContent,
   IonList,
   IonItem,
