@@ -191,6 +191,19 @@ test.describe('Account', () => {
     await expectLoggedOut(page);
   });
 
+  test('logging in again after logging out from the Account page shows the schedule', async ({ page }) => {
+    await login(page, 'ionitron');
+    await openAccount(page);
+
+    await (await openMenu(page)).getByRole('button', { name: 'Logout' }).click();
+    await expect(page).toHaveURL(/\/tabs\/schedule$/);
+    await expect(page.locator('ion-content.page-account')).toBeHidden();
+    await login(page, 'ionitron');
+
+    await expect(page.locator('ion-content.page-account')).toBeHidden();
+    await expect(visibleTitle(page)).toHaveText('Schedule');
+  });
+
   test('logging in survives a reload', async ({ page }) => {
     await login(page, 'ionitron');
 
