@@ -12,6 +12,7 @@
     "lib": ["ESNext", "DOM"],
     "skipLibCheck": true,
     "noEmit": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
     "paths": {
       "@/*": ["./src/*"]
     }
