@@ -27,9 +27,26 @@ export const segmentButton = (page: Page, name: 'All' | 'Favorites'): Locator =>
 /* The visible pages inside the tabs (an outgoing page can still be visible mid-transition). */
 export const tabPage = (page: Page): Locator => visible(page.locator('ion-tabs ion-router-outlet > .ion-page'));
 
+/* Whether Ionic picked iOS mode, which it marks on the html element. */
+export const isIos = async (page: Page): Promise<boolean> =>
+  (await page.locator('html').getAttribute('mode')) === 'ios';
+
+/* The toolbar back button, named "back" in Material Design and labelled "Back" in iOS. */
+export const backButton = (page: Page): Locator =>
+  // The iOS page transition animates a copy of the back button outside the toolbar and leaves it hidden there.
+  visible(page.locator('ion-toolbar').getByRole('button', { name: /^back$/i }));
+
 /* A button found by its exact accessible name, e.g. the toolbar's icon-only "Search" or "Add favorite". */
 export const button = (scope: Page | Locator, name: string): Locator =>
   visible(scope.getByRole('button', { name, exact: true }));
+
+/* Shows the schedule's searchbar: iOS has it under the large title, Material Design behind the Search button. */
+export const openSearch = async (page: Page): Promise<Locator> => {
+  if (!(await isIos(page))) {
+    await button(page, 'Search').click();
+  }
+  return visible(page.getByRole('searchbox'));
+};
 
 /* Skips the tutorial and waits for the schedule's sessions to load. */
 export const openSchedule = async (page: Page): Promise<void> => {
@@ -73,6 +90,10 @@ export const openMenu = async (page: Page): Promise<Locator> => {
     }
     await expect(menu).toBeVisible({ timeout: 1000 });
   }).toPass();
+  // The menu shows as soon as it starts opening, but only takes focus (and so closes on Escape) once it is open.
+  await expect
+    .poll(() => menu.evaluate((element) => (element as HTMLElement & { isOpen: () => Promise<boolean> }).isOpen()))
+    .toBe(true);
   return menu;
 };
 
