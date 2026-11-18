@@ -22,9 +22,7 @@
         <ion-item v-for="track in tracks" :key="track.name" :data-track="track.name.toLowerCase()">
           <ion-icon v-if="isIos" slot="start" :icon="track.icon" color="medium"></ion-icon>
 
-          <ion-checkbox
-            v-model="track.isChecked"
-          >
+          <ion-checkbox v-model="track.isChecked">
             {{ track.name }}
           </ion-checkbox>
         </ion-item>
@@ -77,7 +75,7 @@
 </style>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+import { getMode } from '@ionic/core/components';
 import {
   IonPage,
   IonHeader,
@@ -92,9 +90,8 @@ import {
   IonListHeader,
   IonCheckbox,
   IonFooter,
-  modalController
+  modalController,
 } from '@ionic/vue';
-import { getMode } from '@ionic/core/components';
 import {
   logoIonic,
   logoVue,
@@ -105,34 +102,36 @@ import {
   construct,
   restaurant,
   documents,
-  compass
+  compass,
 } from 'ionicons/icons';
+import { ref, onMounted } from 'vue';
+
 import store from '@/store';
 
 const isIos = getMode() === 'ios';
 
 const iconMap: { [key: string]: string } = {
-  'Ionic': logoIonic,
-  'Vue': logoVue,
-  'Communication': peopleCircle,
-  'Tooling': hammer,
-  'Services': build,
-  'Design': colorPalette,
-  'Workshop': construct,
-  'Food': restaurant,
-  'Documentation': documents,
-  'Navigation': compass
+  Ionic: logoIonic,
+  Vue: logoVue,
+  Communication: peopleCircle,
+  Tooling: hammer,
+  Services: build,
+  Design: colorPalette,
+  Workshop: construct,
+  Food: restaurant,
+  Documentation: documents,
+  Navigation: compass,
 };
 
 const props = defineProps({
   excludedTracks: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   allTracks: {
     type: Array,
-    default: () => []
-  }
+    default: () => [],
+  },
 });
 
 const tracks = ref<{ name: string; icon: string; isChecked: boolean }[]>([]);
@@ -148,15 +147,13 @@ onMounted(() => {
     isChecked: isFirstLoad ? true : trackFilters.includes(track.name),
   }));
 
-  if(isFirstLoad) store.commit('setFirstLoad', false);
+  if (isFirstLoad) store.commit('setFirstLoad', false);
 });
 
 const dismiss = () => modalController.dismiss();
 
 const applyFilters = () => {
-  const newSelectedTrackNames = tracks.value
-    .filter((t) => t.isChecked)
-    .map((t) => t.name);
+  const newSelectedTrackNames = tracks.value.filter((t) => t.isChecked).map((t) => t.name);
 
   modalController.dismiss(newSelectedTrackNames);
 };

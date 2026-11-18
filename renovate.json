@@ -13,7 +13,7 @@
   "gitIgnoredAuthors": ["hi@ionicframework.com"],
   "packageRules": [
     {
-      "matchPackageNames": ["@ionic/**"],
+      "matchPackageNames": ["@ionic/**", "!@ionic/eslint-config", "!@ionic/prettier-config"],
       "minimumReleaseAge": "0 days",
       "groupName": "ionic"
     },
@@ -48,6 +48,10 @@
         "@eslint/**",
         "eslint-plugin-*",
         "@vue/eslint-config-typescript",
+        "@ionic/eslint-config",
+        "@ionic/prettier-config",
+        "globals",
+        "prettier",
         "typescript",
         "vue-tsc"
       ],

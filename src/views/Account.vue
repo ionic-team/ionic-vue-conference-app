@@ -26,8 +26,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useStore } from 'vuex';
 import {
   IonPage,
   IonHeader,
@@ -39,6 +37,8 @@ import {
   IonItem,
   IonTitle,
 } from '@ionic/vue';
+import { ref } from 'vue';
+import { useStore } from 'vuex';
 
 const store = useStore();
 

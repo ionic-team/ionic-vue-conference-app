@@ -36,23 +36,16 @@
 </style>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, onActivated, ref, watch } from 'vue';
-import { useStore } from '@/store';
-import {
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonButtons,
-  IonMenuButton,
-  IonTitle,
-  IonContent,
-} from "@ionic/vue";
+import { IonPage, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonContent } from '@ionic/vue';
 import L from 'leaflet';
-import { Location } from '@/store/modules/locations';
-import 'leaflet/dist/leaflet.css';
-import markerIconUrl from 'leaflet/dist/images/marker-icon.png';
 import markerIconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIconUrl from 'leaflet/dist/images/marker-icon.png';
 import markerShadowUrl from 'leaflet/dist/images/marker-shadow.png';
+import { defineComponent, computed, onMounted, onActivated, ref, watch } from 'vue';
+
+import { useStore } from '@/store';
+import type { Location } from '@/store/modules/locations';
+import 'leaflet/dist/leaflet.css';
 
 // Fix for marker icons in Vite
 L.Icon.Default.prototype.options.iconUrl = markerIconUrl;
@@ -79,13 +72,10 @@ export default defineComponent({
 
     const locations = computed(() => store.state.locations.locations);
     const mapCenter = computed(() => {
-      return store.state.locations.locations.find(
-        (location: Location) => location.center
-      );
+      return store.state.locations.locations.find((location: Location) => location.center);
     });
 
     const initializeMap = () => {
-
       if (!mapCanvas.value || !mapCenter.value) {
         return;
       }
@@ -93,7 +83,7 @@ export default defineComponent({
       // Remove existing map if it exists
       if (map.value) {
         map.value.remove();
-        markers.value.forEach(marker => marker.remove());
+        markers.value.forEach((marker) => marker.remove());
         markers.value = [];
       }
 
@@ -104,20 +94,18 @@ export default defineComponent({
 
       // Add tile layer
       const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
+        attribution: '© OpenStreetMap contributors',
       });
       tileLayer.addTo(mapInstance);
 
       // Add markers for all locations
       locations.value.forEach((location: Location) => {
-        const marker = L.marker([location.lat, location.lng])
-          .addTo(mapInstance)
-          .bindPopup(`${location.name}`);
+        const marker = L.marker([location.lat, location.lng]).addTo(mapInstance).bindPopup(`${location.name}`);
         markers.value.push(marker);
       });
 
       // Show map
-      mapCanvas.value.classList.add("show-map");
+      mapCanvas.value.classList.add('show-map');
 
       // Force a resize after a short delay to ensure proper rendering
       setTimeout(() => {
@@ -140,15 +128,18 @@ export default defineComponent({
       }
     });
 
-    watch(() => locations.value, () => {
-      if (map.value) {
-        initializeMap();
-      }
-    });
+    watch(
+      () => locations.value,
+      () => {
+        if (map.value) {
+          initializeMap();
+        }
+      },
+    );
 
     return {
-      mapCanvas
+      mapCanvas,
     };
-  }
+  },
 });
 </script>
