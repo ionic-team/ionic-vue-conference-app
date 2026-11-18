@@ -185,18 +185,6 @@ import { useRoute } from 'vue-router';
 import { useStore } from '@/store';
 import type { Speaker } from '@/store/modules/speakers';
 
-declare global {
-  interface Window {
-    cordova?: {
-      plugins: {
-        clipboard: {
-          copy: (text: string) => void;
-        };
-      };
-    };
-  }
-}
-
 const store = useStore();
 const route = useRoute();
 
@@ -273,11 +261,7 @@ const openSpeakerShare = async () => {
         text: 'Copy Link',
         handler: () => {
           if (speaker.value?.twitter) {
-            const twitterUrl = 'https://twitter.com/' + speaker.value.twitter;
-            console.log('Copy link clicked on ' + twitterUrl);
-            if (window.cordova?.plugins?.clipboard) {
-              window.cordova.plugins.clipboard.copy(twitterUrl);
-            }
+            navigator.clipboard.writeText('https://twitter.com/' + speaker.value.twitter);
           }
         },
       },

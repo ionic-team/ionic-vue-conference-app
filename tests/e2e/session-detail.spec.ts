@@ -61,6 +61,18 @@ test.describe('Session detail', () => {
     await expect(sheet).toHaveCount(0);
   });
 
+  test('Copy Link in the share sheet copies the session link', async ({ context, page }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    await openSession(page, 'Ionic Tooling');
+
+    await button(sessionPage(page, 'Ionic Tooling'), 'Share').click();
+    const sheet = page.getByRole('dialog', { name: 'Share Ionic Tooling' });
+    await sheet.getByRole('button', { name: 'Copy Link' }).click();
+
+    await expect(sheet).toHaveCount(0);
+    await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe(page.url());
+  });
+
   test('opens a session from a direct link', async ({ page }) => {
     await page.goto('/tabs/schedule/session/7');
 

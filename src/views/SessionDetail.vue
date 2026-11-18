@@ -194,11 +194,7 @@ const openShare = async () => {
       {
         text: 'Copy Link',
         handler: () => {
-          const sessionUrl = window.location.href;
-          console.log('Copy link clicked on ' + sessionUrl);
-          if (window.cordova?.plugins?.clipboard) {
-            window.cordova.plugins.clipboard.copy(sessionUrl);
-          }
+          navigator.clipboard.writeText(window.location.href);
         },
       },
       {
