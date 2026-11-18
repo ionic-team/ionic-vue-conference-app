@@ -59,8 +59,9 @@ test.describe('Tutorial', () => {
     await expect(page.getByRole('heading', { name: 'Welcome to ICA' })).toBeVisible();
 
     await expect(page.getByRole('button', { name: 'menu', exact: true })).toHaveCount(0);
-    await swipeFromEdge(page);
-    await expect(page.getByRole('navigation', { name: 'menu' })).toBeHidden();
+    // A swipe right after the page loads can run before the menu's gesture is ready and pass either way,
+    // so check that no enabled menu exists. Ionic sets menu-enabled on a menu that is not disabled.
+    await expect(page.locator('ion-menu.menu-enabled')).toHaveCount(0);
   });
 
   test('the side menu works again after skipping the tutorial', async ({ page }) => {
