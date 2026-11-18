@@ -125,6 +125,20 @@ test.describe('Speakers', () => {
     await expect(sheet).toHaveCount(0);
   });
 
+  test('Copy Link in the speaker share sheet copies the speaker Twitter link', async ({ context, page }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    await speakerCard(page, 'Burt Bear').getByRole('button', { name: 'About Burt Bear' }).click();
+
+    await button(speakerDetail(page), 'Share').click();
+    const sheet = page.getByRole('dialog', { name: 'Share Burt Bear' });
+    await sheet.getByRole('button', { name: 'Copy Link' }).click();
+
+    await expect(sheet).toHaveCount(0);
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe('https://twitter.com/ionicframework');
+  });
+
   test('opens the speaker detail by tapping the speaker', async ({ page }) => {
     await speakerCard(page, 'Rachel Rabbit')
       .getByRole('button', { name: /^Rachel Rabbit profile picture/ })
