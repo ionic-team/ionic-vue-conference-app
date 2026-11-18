@@ -1,7 +1,5 @@
-import { IonicVue } from '@ionic/vue';
 import { createRouter, createWebHistory } from '@ionic/vue-router';
-import type { App } from 'vue';
-import type { RouteRecordRaw, Router } from 'vue-router';
+import type { RouteRecordRaw } from 'vue-router';
 
 import store from './store';
 
@@ -109,11 +107,5 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
 });
-
-export function configureRouter(app: App): Router {
-  app.use(router);
-  app.use(IonicVue);
-  return router;
-}
 
 export default router;
