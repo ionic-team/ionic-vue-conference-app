@@ -3,14 +3,14 @@
     <ion-header>
       <ion-toolbar color="primary">
         <ion-buttons slot="start">
-          <ion-back-button></ion-back-button>
+          <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <ion-title>Account</ion-title>
       </ion-toolbar>
     </ion-header>
 
     <ion-content class="outer-content page-account">
-      <div>
+      <div v-if="username">
         <img src="http://www.gravatar.com/avatar?d=mm&s=140" alt="avatar" />
         <h2>{{ username }}</h2>
         <ion-list inset>
@@ -31,24 +31,62 @@ import {
   IonHeader,
   IonToolbar,
   IonButtons,
-  IonBackButton,
+  IonMenuButton,
   IonContent,
   IonList,
   IonItem,
   IonTitle,
+  alertController,
 } from '@ionic/vue';
-import { ref } from 'vue';
-import { useStore } from 'vuex';
+import { computed } from 'vue';
+import { useRouter } from 'vue-router';
+
+import { useStore } from '@/store';
 
 const store = useStore();
+const router = useRouter();
+
+const username = computed(() => store.state.user.userName);
 
 const updatePicture = () => {};
-const changeUsername = () => {};
-const changePassword = () => {};
-const support = () => {};
-const logOutUser = () => {};
 
-const username = ref(store.state.user.username);
+// Present an alert with the current username populated: Ok saves the new username, Cancel keeps it.
+const changeUsername = async () => {
+  const alert = await alertController.create({
+    header: 'Change Username',
+    buttons: [
+      'Cancel',
+      {
+        text: 'Ok',
+        handler: (data: { username: string }) => {
+          // Returning false keeps the alert open, so the username can't be cleared.
+          if (!data.username.trim()) return false;
+          store.dispatch('setUserName', data.username.trim());
+        },
+      },
+    ],
+    inputs: [
+      {
+        type: 'text',
+        name: 'username',
+        value: username.value,
+        placeholder: 'username',
+      },
+    ],
+  });
+  await alert.present();
+};
+
+const changePassword = () => {};
+
+const support = () => {
+  router.push('/support');
+};
+
+const logOutUser = async () => {
+  await store.dispatch('logOut');
+  router.push('/login');
+};
 </script>
 
 <style scoped>

@@ -32,7 +32,6 @@ describe('speakers', () => {
       name: 'Ted Turtle',
       profilePic: '/assets/img/speakers/turtle.jpg',
       twitter: 'ionicframework',
-      github: '',
       instagram: '',
       about: 'Ted is a Turtle.',
       title: 'Software Engineer',

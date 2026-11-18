@@ -18,77 +18,78 @@
           </ion-item>
         </ion-menu-toggle>
       </ion-list>
-      <ion-list v-if="loggedIn" lines="none">
+      <ion-list lines="none">
         <ion-list-header> Account </ion-list-header>
-        <ion-menu-toggle :auto-hide="false" :key="'/account|' + currentPath">
-          <ion-item
-            button
-            :detail="false"
-            router-direction="root"
-            router-link="/account"
-            :class="{ selected: isSelected('/account') }"
-          >
-            <ion-icon slot="start" :icon="ionIcons.person"></ion-icon>
-            <ion-label> Account </ion-label>
-          </ion-item>
-        </ion-menu-toggle>
-        <ion-menu-toggle :auto-hide="false" :key="'/support|' + currentPath">
-          <ion-item
-            button
-            :detail="false"
-            router-direction="root"
-            router-link="/support"
-            :class="{ selected: isSelected('/support') }"
-          >
-            <ion-icon slot="start" :icon="ionIcons.help"></ion-icon>
-            <ion-label> Support </ion-label>
-          </ion-item>
-        </ion-menu-toggle>
-        <ion-menu-toggle :auto-hide="false">
-          <ion-item button :detail="false" @click="logout()">
-            <ion-icon slot="start" :icon="ionIcons.logOut"></ion-icon>
-            <ion-label> Logout </ion-label>
-          </ion-item>
-        </ion-menu-toggle>
-      </ion-list>
-      <ion-list v-if="!loggedIn" lines="none">
-        <ion-list-header> Account </ion-list-header>
-        <ion-menu-toggle :auto-hide="false" :key="'/login|' + currentPath">
-          <ion-item
-            button
-            :detail="false"
-            router-direction="root"
-            router-link="/login"
-            :class="{ selected: isSelected('/login') }"
-          >
-            <ion-icon slot="start" :icon="ionIcons.logIn"></ion-icon>
-            <ion-label> Login </ion-label>
-          </ion-item>
-        </ion-menu-toggle>
-        <ion-menu-toggle :auto-hide="false" :key="'/support|' + currentPath">
-          <ion-item
-            button
-            :detail="false"
-            router-direction="root"
-            router-link="/support"
-            :class="{ selected: isSelected('/support') }"
-          >
-            <ion-icon slot="start" :icon="ionIcons.help"></ion-icon>
-            <ion-label> Support </ion-label>
-          </ion-item>
-        </ion-menu-toggle>
-        <ion-menu-toggle :auto-hide="false" :key="'/signup|' + currentPath">
-          <ion-item
-            button
-            :detail="false"
-            router-direction="root"
-            router-link="/signup"
-            :class="{ selected: isSelected('/signup') }"
-          >
-            <ion-icon slot="start" :icon="ionIcons.personAdd"></ion-icon>
-            <ion-label> Signup </ion-label>
-          </ion-item>
-        </ion-menu-toggle>
+        <template v-if="loggedIn">
+          <ion-menu-toggle :auto-hide="false" :key="'/account|' + currentPath">
+            <ion-item
+              button
+              :detail="false"
+              router-direction="root"
+              router-link="/account"
+              :class="{ selected: isSelected('/account') }"
+            >
+              <ion-icon slot="start" :icon="ionIcons.person"></ion-icon>
+              <ion-label> Account </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle :auto-hide="false" :key="'/support|' + currentPath">
+            <ion-item
+              button
+              :detail="false"
+              router-direction="root"
+              router-link="/support"
+              :class="{ selected: isSelected('/support') }"
+            >
+              <ion-icon slot="start" :icon="ionIcons.help"></ion-icon>
+              <ion-label> Support </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle :auto-hide="false">
+            <ion-item button :detail="false" @click="logout()">
+              <ion-icon slot="start" :icon="ionIcons.logOut"></ion-icon>
+              <ion-label> Logout </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </template>
+        <template v-else>
+          <ion-menu-toggle :auto-hide="false" :key="'/login|' + currentPath">
+            <ion-item
+              button
+              :detail="false"
+              router-direction="root"
+              router-link="/login"
+              :class="{ selected: isSelected('/login') }"
+            >
+              <ion-icon slot="start" :icon="ionIcons.logIn"></ion-icon>
+              <ion-label> Login </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle :auto-hide="false" :key="'/support|' + currentPath">
+            <ion-item
+              button
+              :detail="false"
+              router-direction="root"
+              router-link="/support"
+              :class="{ selected: isSelected('/support') }"
+            >
+              <ion-icon slot="start" :icon="ionIcons.help"></ion-icon>
+              <ion-label> Support </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle :auto-hide="false" :key="'/signup|' + currentPath">
+            <ion-item
+              button
+              :detail="false"
+              router-direction="root"
+              router-link="/signup"
+              :class="{ selected: isSelected('/signup') }"
+            >
+              <ion-icon slot="start" :icon="ionIcons.personAdd"></ion-icon>
+              <ion-label> Signup </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </template>
         <ion-item>
           <ion-icon slot="start" :icon="ionIcons.moonOutline"></ion-icon>
           <ion-toggle v-model="localDark" label-placement="start"> Dark Mode </ion-toggle>
@@ -158,7 +159,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const store = useStore();
     const localDark = ref(false);
-    const loggedIn = ref(false);
+    const loggedIn = computed(() => store.state.user.isAuthenticated);
 
     const currentPath = computed(() => router.currentRoute.value.path);
     const isSelected = (path: string) => {
@@ -181,12 +182,23 @@ export default defineComponent({
     };
 
     const openTutorial = async () => {
+      const { value } = await Preferences.get({ key: 'ion_did_tutorial' });
       await Preferences.set({ key: 'ion_did_tutorial', value: 'false' });
-      await menuController.enable(false);
-      await router.push('/tutorial');
+
+      // The Support page can ask to stay, so keep the menu and put the tutorial state back if the tutorial does not open.
+      if (!(await router.push('/tutorial'))) {
+        await menuController.enable(false);
+      } else if (value === null) {
+        await Preferences.remove({ key: 'ion_did_tutorial' });
+      } else {
+        await Preferences.set({ key: 'ion_did_tutorial', value });
+      }
     };
 
-    const logout = () => {};
+    const logout = async () => {
+      await store.dispatch('logOut');
+      await router.push('/tabs/schedule');
+    };
 
     return {
       localDark,

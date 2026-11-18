@@ -7,10 +7,10 @@
             <ion-back-button defaultHref="/tabs/speakers"></ion-back-button>
           </ion-buttons>
           <ion-buttons slot="end">
-            <ion-button @click="openContact">
+            <ion-button aria-label="Contact" @click="openContact">
               <ion-icon :ios="callOutline" :md="callSharp" slot="icon-only"></ion-icon>
             </ion-button>
-            <ion-button @click="openSpeakerShare">
+            <ion-button aria-label="Share" @click="openSpeakerShare">
               <ion-icon :ios="shareOutline" :md="shareSharp" slot="icon-only"></ion-icon>
             </ion-button>
           </ion-buttons>
@@ -40,7 +40,7 @@
         <ion-chip
           color="dark"
           button
-          @click="openExternalUrl('https://github.com/' + speaker?.github)"
+          @click="openExternalUrl('https://github.com/ionic-team/ionic-framework')"
           aria-label="Visit GitHub profile"
         >
           <ion-icon :icon="logoGithub"></ion-icon>
@@ -185,18 +185,6 @@ import { useRoute } from 'vue-router';
 import { useStore } from '@/store';
 import type { Speaker } from '@/store/modules/speakers';
 
-declare global {
-  interface Window {
-    cordova?: {
-      plugins: {
-        clipboard: {
-          copy: (text: string) => void;
-        };
-      };
-    };
-  }
-}
-
 const store = useStore();
 const route = useRoute();
 
@@ -273,11 +261,7 @@ const openSpeakerShare = async () => {
         text: 'Copy Link',
         handler: () => {
           if (speaker.value?.twitter) {
-            const twitterUrl = 'https://twitter.com/' + speaker.value.twitter;
-            console.log('Copy link clicked on ' + twitterUrl);
-            if (window.cordova?.plugins?.clipboard) {
-              window.cordova.plugins.clipboard.copy(twitterUrl);
-            }
+            navigator.clipboard.writeText('https://twitter.com/' + speaker.value.twitter);
           }
         },
       },

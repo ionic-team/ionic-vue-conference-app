@@ -90,4 +90,16 @@ describe('SessionDetail', () => {
     expect(store.state.sessions.favoriteSessions).toEqual([]);
     expect(favoriteButton(wrapper).find('ion-icon').attributes('icon')).toBe(starOutline);
   });
+
+  it('labels the favorite button with what tapping it does', async () => {
+    const wrapper = await mountSessionDetail();
+    const label = () => favoriteButton(wrapper).attributes('aria-label');
+    expect(label()).toBe('Add favorite');
+
+    await favoriteButton(wrapper).trigger('click');
+    expect(label()).toBe('Remove favorite');
+
+    await favoriteButton(wrapper).trigger('click');
+    expect(label()).toBe('Add favorite');
+  });
 });

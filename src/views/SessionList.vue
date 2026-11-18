@@ -18,15 +18,15 @@
           show-cancel-button="always"
           v-model="queryText"
           @ionInput="updateSearchTerm"
-          @ionCancel="showSearchbar = false"
+          @ionCancel="cancelSearch"
           placeholder="Search"
         ></ion-searchbar>
 
         <ion-buttons slot="end">
-          <ion-button v-if="!isIos && !showSearchbar" @click="showSearchbar = true">
+          <ion-button v-if="!isIos && !showSearchbar" aria-label="Search" @click="showSearchbar = true">
             <ion-icon slot="icon-only" :icon="search"></ion-icon>
           </ion-button>
-          <ion-button v-if="!showSearchbar" @click="presentFilter">
+          <ion-button v-if="!showSearchbar" aria-label="Filter" @click="presentFilter">
             <span v-if="isIos">Filter</span>
             <span v-else>
               <ion-icon slot="icon-only" :icon="options"></ion-icon>
@@ -93,21 +93,21 @@
 
       <ion-list-header v-show="allGroupedComputed?.length === 0"> No Sessions Found </ion-list-header>
 
-      <ion-fab slot="fixed" vertical="bottom" horizontal="end" ref="fab">
-        <ion-fab-button>
+      <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+        <ion-fab-button aria-label="Share">
           <ion-icon :icon="shareSocial"></ion-icon>
         </ion-fab-button>
         <ion-fab-list side="top">
-          <ion-fab-button color="vimeo" @click="openSocial('Vimeo')">
+          <ion-fab-button color="vimeo" aria-label="Vimeo" @click="openSocial('Vimeo')">
             <ion-icon :icon="logoVimeo"></ion-icon>
           </ion-fab-button>
-          <ion-fab-button color="instagram" @click="openSocial('Instagram')">
+          <ion-fab-button color="instagram" aria-label="Instagram" @click="openSocial('Instagram')">
             <ion-icon :icon="logoInstagram"></ion-icon>
           </ion-fab-button>
-          <ion-fab-button color="twitter" @click="openSocial('Twitter')">
+          <ion-fab-button color="twitter" aria-label="Twitter" @click="openSocial('Twitter')">
             <ion-icon :icon="logoTwitter"></ion-icon>
           </ion-fab-button>
-          <ion-fab-button color="facebook" @click="openSocial('Facebook')">
+          <ion-fab-button color="facebook" aria-label="Facebook" @click="openSocial('Facebook')">
             <ion-icon :icon="logoFacebook"></ion-icon>
           </ion-fab-button>
         </ion-fab-list>
@@ -237,7 +237,6 @@ const isIos = computed(() => {
 
 const segment = ref('all');
 const queryText = ref('');
-const fab = ref<HTMLIonFabElement | null>(null);
 const store = useStore();
 const allGroupedRef = ref<GroupedSession[]>([]);
 const allGroupedComputed = computed(() => {
@@ -363,13 +362,19 @@ const updateSearchTerm = (e: any) => {
   store.dispatch('setSearchText', e.detail.value);
 };
 
-const openSocial = async (network: any) => {
+// Cancelling hides the searchbar before it reports its cleared value, so clear the search here.
+const cancelSearch = (): void => {
+  showSearchbar.value = false;
+  queryText.value = '';
+  store.dispatch('setSearchText', '');
+};
+
+const openSocial = async (network: string) => {
   const loading = await loadingController.create({
     message: `Posting to ${network}`,
-    duration: (Math.random() * 1000 + 500) as number,
+    duration: 1000,
   });
   await loading.present();
-  await loading.onWillDismiss();
 };
 
 const checkAndLoadData = async () => {

@@ -45,7 +45,9 @@
             v-model="supportMessage"
             name="supportQuestion"
             :rows="6"
-            :error-text="submitted && !supportMessage ? 'Support message is required' : ''"
+            error-text="Support message is required"
+            :class="{ 'ion-touched': touched || submitted, 'ion-invalid': !supportMessage }"
+            @ionBlur="touched = true"
             required
           ></ion-textarea>
 
@@ -73,12 +75,16 @@ import {
   IonTextarea,
   IonRow,
   IonCol,
+  alertController,
   toastController,
 } from '@ionic/vue';
 import { ref, onMounted } from 'vue';
+import { onBeforeRouteLeave } from 'vue-router';
 
 const supportMessage = ref('');
 const submitted = ref(false);
+// The required message shows once the field has been touched or the form is submitted.
+const touched = ref(false);
 
 onMounted(async () => {
   const toast = await toastController.create({
@@ -88,13 +94,35 @@ onMounted(async () => {
   await toast.present();
 });
 
+// Leaving with an unsent message asks first, so it is not lost by accident.
+onBeforeRouteLeave(async () => {
+  if (!supportMessage.value.trim()) {
+    return true;
+  }
+
+  const alert = await alertController.create({
+    header: 'Leave this page?',
+    message: 'Are you sure you want to leave this page? Your support message will not be submitted.',
+    buttons: [
+      { text: 'Stay', role: 'cancel' },
+      { text: 'Leave', role: 'confirm' },
+    ],
+  });
+  await alert.present();
+  const { role } = await alert.onDidDismiss();
+  return role !== 'cancel';
+});
+
 const submit = async () => {
   submitted.value = true;
 
   if (supportMessage.value) {
     supportMessage.value = '';
     submitted.value = false;
+    touched.value = false;
 
+    // Close the notice shown when the page opens, if it is still up, so the two toasts do not stack.
+    await toastController.dismiss().catch(() => undefined);
     const toast = await toastController.create({
       message: 'Your support request has been sent.',
       duration: 3000,

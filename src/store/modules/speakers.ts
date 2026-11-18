@@ -7,7 +7,6 @@ export interface Speaker {
   name: string;
   profilePic: string;
   twitter: string;
-  github: string;
   instagram: string;
   about: string;
   title: string;
@@ -22,9 +21,9 @@ export interface SpeakerState {
 }
 
 const speakerStore: Module<SpeakerState, {}> = {
-  state: {
+  state: () => ({
     speakers: [],
-  },
+  }),
   mutations: {
     updateSpeakers(state, speakers: Speaker[]) {
       state.speakers = speakers;
@@ -67,7 +66,6 @@ const speakerStore: Module<SpeakerState, {}> = {
             name: speaker.name || '',
             profilePic: speaker.profilePic,
             twitter: speaker.twitter || '',
-            github: speaker.github || '',
             instagram: speaker.instagram || '',
             about: speaker.about || '',
             title: speaker.title || '',
