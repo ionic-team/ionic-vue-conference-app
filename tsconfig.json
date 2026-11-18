@@ -12,10 +12,11 @@
     "lib": ["ESNext", "DOM"],
     "skipLibCheck": true,
     "noEmit": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "tests/unit/**/*.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
