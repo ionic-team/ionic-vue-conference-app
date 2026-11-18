@@ -105,7 +105,7 @@ describe('SessionList', () => {
   it('updates the list when the search changes', async () => {
     const wrapper = await mountSessionList();
 
-    await (wrapper.vm as any).updateSearchTerm({ detail: { value: 'tooling' } });
+    await wrapper.find('ion-searchbar').trigger('ion-input', { detail: { value: 'tooling' } });
     await flushPromises();
 
     expect(store.state.sessions.searchText).toBe('tooling');
@@ -126,7 +126,7 @@ describe('SessionList', () => {
     const wrapper = await mountSessionList();
     await store.dispatch('addFavorite', 3);
 
-    (wrapper.vm as any).updateSegment({ detail: { value: 'favorites' } });
+    await wrapper.find('ion-segment').trigger('ion-change', { detail: { value: 'favorites' } });
     await flushPromises();
 
     expect(groups(wrapper)).toEqual([{ time: '9:15 am', sessions: ['Ionic Tooling'] }]);
