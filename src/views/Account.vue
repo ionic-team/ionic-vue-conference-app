@@ -59,7 +59,9 @@ const changeUsername = async () => {
       {
         text: 'Ok',
         handler: (data: { username: string }) => {
-          store.dispatch('setUserName', data.username);
+          // Returning false keeps the alert open, so the username can't be cleared.
+          if (!data.username.trim()) return false;
+          store.dispatch('setUserName', data.username.trim());
         },
       },
     ],

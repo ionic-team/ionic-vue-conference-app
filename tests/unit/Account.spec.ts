@@ -33,7 +33,7 @@ vi.mock('@ionic/vue', async () => ({
 
 type AlertOptions = {
   header: string;
-  buttons: (string | { text: string; handler: (data: { username: string }) => void })[];
+  buttons: (string | { text: string; handler: (data: { username: string }) => boolean | void })[];
   inputs: { name: string; value: string }[];
 };
 
@@ -84,6 +84,23 @@ describe('Account', () => {
 
     expect(wrapper.find('h2').text()).toBe('capacitor');
     expect((await Preferences.get({ key: 'username' })).value).toBe('capacitor');
+  });
+
+  it('keeps the alert open and the username when Ok is tapped with an empty username', async () => {
+    const wrapper = await mountAccount();
+
+    await item(wrapper, 'Change Username').trigger('click');
+    await flushPromises();
+    const options: AlertOptions = alertCreate.mock.calls[0][0];
+    const ok = options.buttons.find((b) => typeof b !== 'string' && b.text === 'Ok') as Exclude<
+      AlertOptions['buttons'][number],
+      string
+    >;
+    expect(ok.handler({ username: '   ' })).toBe(false);
+    await flushPromises();
+
+    expect(wrapper.find('h2').text()).toBe('ionitron');
+    expect((await Preferences.get({ key: 'username' })).value).toBe('ionitron');
   });
 
   it('logs out and opens the login page', async () => {
